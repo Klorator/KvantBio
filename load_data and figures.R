@@ -38,5 +38,14 @@ table(diabetes$location, diabetes$gender)
 
 # Skapa & snygga till figurer
 ## Histogram
-hist(diabetes$height)
+hist(diabetes$height)    # Normal dist.
+hist(diabetes$age)       # Normal dist. -ish
+hist(diabetes$stab.glu)  # Not normal !
+hist(diabetes$bp.1s)     # Normal dist.
+hist(diabetes$waist)     # Normal dist. ?
+
+## Scatterplot x = height, y = weight
+plot(x = diabetes$height,
+     y = diabetes$weight)
+
 
