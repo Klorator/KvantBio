@@ -18,8 +18,20 @@ ekvation <- function(
     L_t1 = 141) {
   result <- L(t, L_inf, k, L0) - L_t1
 }
+L_t1 <- 141
 
 root <- uniroot(ekvation, c(0, 100))
 t1 <- root$root
 
-## Fråga 7
+## Fråga 6-7
+t2 <- t1 + 1
+L_t2 <- L(t2)
+
+## Fråga 8
+W <- function(L) {
+  weight <- 8.11 * 10^(-6) * L^(3.08)
+  return(weight)
+}
+
+W(L_t1)
+W(L_t2)
