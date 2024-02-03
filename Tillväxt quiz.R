@@ -44,6 +44,7 @@ curve(8.11 * 10^(-6) * L^(3.08),
       ylab = "Weight")
 
 Weight_gain <- W(L_t2) - W(L_t1) # G i quizet
+# Weight_gain_alt <- L_t2 - L_t1
 
 ## Fråga 10-11
 energy_in_shark <- 5400 # kJ/kg of shark
@@ -102,7 +103,7 @@ K_daily_2 <- uniroot(Konsumtion_equ_2,
 # L(t) = 340 - c * exp(-k * t)
 
 L0 <- 2 # L(0) = 2 cm
-L4 <- 120 # L(4) = 150 cm
+L4 <- 150 # L(4) = 150 cm
 
 # 2 = 340 - c * exp(-k * 0)
 # => 2 = 340 - c * exp(0)
