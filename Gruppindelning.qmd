@@ -1,0 +1,54 @@
+---
+title: "Seminariegrupper"
+format: docx
+editor: visual
+output:
+  theme: 
+    code: null
+editor_options: 
+  chunk_output_type: console
+---
+
+## 
+
+```{r}
+#| echo: false
+
+options(encoding="ISO-8859-1")
+#names <- read.table("D:/Box/Teaching/Kvantitativ biologi/2024/Gruppindelning/Namn.csv", sep=";", dec=".", header = T)
+
+namn_lista <- c("Emma Andersson", "Oscar Karlsson", "Sofia Lindström", "Alexander Johansson", "Julia Eriksson", "Victor Persson", "Isabella Nilsson", "Lucas Svensson","Olivia Gustafsson", "Simon Pettersson", "Ella Larsson", "Liam Johansson","Maja Andersson", "William Nilsson", "Alice Karlsson", "Oliver Persson","Elsa Svensson", "Noah Gustafsson", "Amanda Eriksson", "Theo Larsson","Alma Pettersson", "Elias Nilsson", "Emilia Karlsson", "Felix Svensson","Nellie Gustafsson", "Leo Persson", "Nova Andersson", "Axel Eriksson","Ellen Larsson", "Isak Johansson", "Saga Svensson", "Adam Gustafsson","Wilma Nilsson", "Hugo Karlsson", "Elin Persson", "Ludvig Larsson","Ebba Eriksson", "Anton Andersson", "Molly Gustafsson", "Lukas Nilsson","Klara Karlsson", "Max Persson", "Vilma Svensson", "Theodor Larsson","Iris Johansson", "Edvin Andersson", "Filippa Eriksson", "Elliot Gustafsson","Alicia Persson", "Vincent Nilsson", "Hanna Karlsson", "Arvid Svensson","Lova Larsson", "Leon Johansson", "Linnea Andersson", "Melvin Persson","Frida Gustafsson", "Walter Eriksson", "Selma Svensson", "Albin Nilsson","Ellinor Karlsson", "Algot Larsson", "Signe Persson", "Frank Andersson","Ester Johansson", "Viktor Svensson", "Sara Gustafsson", "Melker Eriksson","Elvira Nilsson", "Gustav Karlsson", "Saga Persson", "Kasper Larsson","Astrid Andersson", "Edvard Johansson", "Lovisa Svensson", "Benjamin Gustafsson","Agnes Eriksson", "Oskar Nilsson", "Cornelia Karlsson", "Gabriel Persson","Lilly Larsson", "Ebbe Andersson", "Ida Johansson", "Milton Svensson","Emelie Gustafsson", "Joel Eriksson", "Elise Nilsson", "Jonathan Karlsson")
+names<-data.frame(Namn=namn_lista)
+
+tot_size <- length(names$Namn)            # how many in total
+
+groups <- 8                               # number of groups
+
+repetitions <- floor(tot_size / groups)   # min number in each group
+start <- repetitions*groups               # number to even in each group
+short <- tot_size-start                   # extra on top of even groups
+
+
+temp1 <- rep(1:groups, each = repetitions) # numbers to assign even
+if (short>0){                              # only create if uneven groups
+temp2 <- rep(1:short, each = 1)            
+}else{
+  temp2 <- c()                             # create empty vector if even groups
+}
+temp3 <- c(temp1,temp2)                    # combine to one vector
+
+
+names$grupp_num <- sample(temp3, tot_size, replace=FALSE)  # assign each student agroup number
+
+grupper <- split(names$Namn, names$grupp_num)    # split into group number
+
+grupp <- LETTERS[1:8]                    # for 8 groups A to H
+
+sal <- c("Lärosal 1", "Grupprum 2", "Grupprum 3", "Grupprum 4", "Grupprum 5", "Grupprum 6", "Grupprum 7", "Grupprum 8")
+
+for (i in 1:length(grupper)) {                      # create nice output
+  cat("Grupp", grupp[i]," i ", sal[i],":\n")
+  cat(paste(grupper[[i]], collapse = ", "), "\n\n")
+}
+
+```
