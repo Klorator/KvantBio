@@ -1,3 +1,46 @@
+## Fråga 1
+hist(yunnan$ljus[yunnan$kronhojd == "high"])
+hist(yunnan$ljus[yunnan$kronhojd == "low"])
+
+t.test(yunnan$ljus ~ yunnan$kronhojd)
+# wilcox.test(yunnan$ljus ~ yunnan$kronhojd)
+
+## Fråga 2
+# wilcox.test(df$Long, df$kort)
+# wilcox.test(df$Long, df$kort, paired = T)
+
+# Fråga 3
+# a) H0 = mean är 27,5 dagar; H1 = Skiljer sig
+# b) 
+mean(period)
+hist(period)
+qqnorm(period) ; qqline(period)
+
+t.test(period, mu = 27.5)
+
+
+# Fråga 4
+# a)
+# b)
+hist(endo$jan)
+qqnorm(endo$jan) ; qqline(endo$jan)
+
+hist(endo$maj)
+qqnorm(endo$maj) ; qqline(endo$maj)
+
+t.test(endo$maj,
+       endo$jan,
+       paired = T)
+
+## Fråga 5
+t.test(rokning$ejrok,
+       rokning$rok)
+
+## Fråga 6
+
+
+
+
 # Konfidensintervall med känd population ####
 
 # Illustration av hur p < 0.05 betyder att 5% av alla konfidensintervall inte 
