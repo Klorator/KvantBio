@@ -171,3 +171,69 @@ plot(
   ylim = c(0,600),
   type = "l"
 )
+
+
+# Quiz 3 ----
+
+dlt <- function(n, r, k) {
+  n_ny <- n + r*n*(1-n/k)
+  return(n_ny)
+}
+
+k <- 1000 # bärkraft, individer
+# r <- rnorm( # slumpad reproduktion
+#   n = 1,
+#   mean = 0,
+#   sd = 0.25
+# )
+
+sluttid <- 20 # år
+t <- 1:(sluttid+1)
+
+n <- c()
+n[1] <- 50 # startvärde, individer
+
+collapse <- 10 # färre individer = pop. ded
+
+
+plot( # Draw blank graph window
+  NULL,
+  xlim = c(0,sluttid),
+  ylim = c(0,200),
+  type = "l",
+  xlab = "Years",
+  ylab = "Flying squirrels"
+)
+pop_ded <- 0 # counter for failed pop.
+for (j in 1:100) {
+  
+  for (i in 1:sluttid) {
+    n[i+1] <- dlt( # ekv.
+      n = n[i],
+      r = rnorm( # slumpad reproduktion
+        n = 1,
+        mean = 0,
+        sd = 0.25),
+      k = k)
+    
+    if (n[i] < collapse) {
+      pop_ded <- pop_ded + 1 # counter for failed pop. (increase)
+      cli::cli_alert_warning(c( # fun warning message :)
+        "Population collapsed! \n",
+        "Total pop. collapse: {pop_ded}"
+      ))
+      break # end loop early
+    }
+    
+  }
+  
+  farbe <- rgb(runif(1),runif(1),runif(1)) # random color
+  lines( # add pop. line
+    x = t,
+    y = n,
+    lwd = 1,
+    col = farbe
+  )
+ 
+}
+
