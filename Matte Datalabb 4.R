@@ -48,6 +48,17 @@ future_dist
 
 ## Fråga 6 ----
 library(deSolve)
+
+
+### OBS! ----
+# Källor: 
+## https://www.youtube.com/watch?v=4ctSY-eEtbM
+## chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/viewer.html?pdfurl=https%3A%2F%2Fcran.r-project.org%2Fweb%2Fpackages%2FdeSolve%2Fvignettes%2FdeSolve.pdf&clen=667963&chunk=true
+## https://www.jstatsoft.org/article/download/v033i09/369
+
+# Runge-Kutta method är default?
+
+
 ### Function
 my_ode <- function(t, # Gets `times` argument from ode
                    state, # Gets `y` argument from ode
