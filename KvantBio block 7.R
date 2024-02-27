@@ -82,6 +82,7 @@ summary(NVDI_lm)
 plot(NVDI$income,
      NVDI$plant)
 
+
 ## Info box ----
 plot( # Basic plot
   NVDI$income,
@@ -123,3 +124,40 @@ text( # Add text
 # Quiz 3 ----
 # ANOVA
 
+## Fråga 1-2 ----
+boxplot(ind_per_km ~ area,
+        data = steenbok)
+
+## Fråga 3-11 ----
+# Assumptions of ind_p_km by area
+## fr
+hist(steenbok$ind_per_km[steenbok$area == "fr"]) # Norm. dist., skewed
+qqnorm(steenbok$ind_per_km[steenbok$area == "fr"]) # Possibly an outlier
+qqline(steenbok$ind_per_km[steenbok$area == "fr"])
+
+## cga
+hist(steenbok$ind_per_km[steenbok$area == "cga"]) # Norm. dist., good
+qqnorm(steenbok$ind_per_km[steenbok$area == "cga"]) # Looks fine
+qqline(steenbok$ind_per_km[steenbok$area == "cga"])
+
+## wma
+hist(steenbok$ind_per_km[steenbok$area == "wma"]) # Norm. dist., fine
+qqnorm(steenbok$ind_per_km[steenbok$area == "wma"]) # Looks fine
+qqline(steenbok$ind_per_km[steenbok$area == "wma"])
+
+## np
+hist(steenbok$ind_per_km[steenbok$area == "np"]) # Norm. dist., not np
+qqnorm(steenbok$ind_per_km[steenbok$area == "np"]) # Looks fine
+qqline(steenbok$ind_per_km[steenbok$area == "np"])
+
+## Equal variance
+steenbok_lm <- lm(
+  ind_per_km ~ area,
+  data = steenbok
+)
+par(mfrow = c(2,2))
+plot(steenbok_lm)
+par(mfrow = c(1,1))
+
+
+## Fråga 12 ----
