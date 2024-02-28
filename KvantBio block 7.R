@@ -270,3 +270,85 @@ kruskal.test(grass$cover ~ grass$area)
 
 
 # Quiz 4 ----
+## Fråga 1-2 ----
+cck$genotype <- as.factor(cck$genotype)
+cck$season <- as.factor(cck$season)
+
+cck_aov <- aov(
+  level ~ genotype*season,
+  data = cck
+)
+par(mfrow = c(2,2))
+plot(cck_aov)
+par(mfrow = c(1,1))
+# Not the best, but ok?
+
+hist(cck$level[cck$genotype == "c"]) # heavily skewed at small values
+hist(cck$level[cck$genotype == "t"]) # skewed
+hist(cck$level[cck$season == "s"]) # better
+hist(cck$level[cck$season == "w"]) # heavily skewed at small values
+
+## Fråga 3-4 ----
+# log transformation
+cck$loglevel <- log(cck$level)
+
+hist(cck$loglevel[cck$genotype == "c"]) # good
+hist(cck$loglevel[cck$genotype == "t"]) # fine
+hist(cck$loglevel[cck$season == "s"]) # good
+hist(cck$loglevel[cck$season == "w"]) # fine
+
+table(cck$genotype:cck$season)
+table(cck$genotype, cck$season)
+
+
+# Fråga 5 ----
+cck_aov <- aov(
+  loglevel ~ genotype*season,
+  data = cck
+)
+par(mfrow = c(2,2))
+plot(cck_aov)
+par(mfrow = c(1,1))
+# Ser bra ut
+
+## Fråga 6-7 ----
+anova(cck_aov)
+# Analysis of Variance Table
+# 
+# Response: loglevel
+#                 Df  Sum Sq Mean Sq F value    Pr(>F)
+# genotype         1  0.2330  0.2330  0.2916    0.5925
+# season           1 19.9687 19.9687 24.9848 1.509e-05
+# genotype:season  1  1.2515  1.2515  1.5659    0.2189
+# Residuals       36 28.7723  0.7992                  
+# 
+# genotype           
+# season          ***
+# genotype:season  
+# Residuals 
+
+# Season is significant
+
+## Fråga 8 ----
+interaction.plot(cck$season, cck$genotype, cck$loglevel)
+interaction.plot(cck$genotype, cck$season, cck$loglevel)
+
+
+## Info block ----
+medel<-aggregate(
+  loglevel~genotype+season, 
+  data=cck, mean
+)
+sterr<-aggregate(
+  loglevel~genotype+season, 
+  data=cck,
+  function(x) sd(x)/sqrt(length(x))
+)
+
+plotrix::plotCI(
+  x = c(1,2,3,4),
+  y = medel$loglevel,
+  ui = medel$loglevel + sterr$loglevel,
+  li = medel$loglevel - sterr$loglevel,
+  xlim = c(0,5)
+)
