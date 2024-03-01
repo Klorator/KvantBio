@@ -1,0 +1,153 @@
+---
+title: ".daddy_code"
+author: "Rasmus Hammar"
+format: html
+editor: visual
+execute: 
+  echo: true
+---
+
+## Allmänt
+
+Lite allmänna funktioner som är bra att kunna.
+
+För att installera ett paket.
+
+```{r}
+#| eval: false
+# För att installera paketet som heter palmerpenguins
+install.packages("palmerpenguins")
+
+# För Stats
+install.packages("MKinfer")
+install.packages("lmboot")
+install.packages("boot.pval")
+```
+
+För att använda funktioner i ett paket måste man ladda in paketet i R genom `library()`
+
+```{r}
+# Exempel data
+library(palmerpenguins)
+
+# KvantBio
+
+
+# Stats
+library(MKinfer)
+library(lmboot)
+library(boot.pval)
+
+# Matte
+library(pracma)
+# library()
+```
+
+För att läsa in data från t.ex. en .csv eller .txt fil. Öppna filen och identifiera vilken symbol som **sep**arerar kolumner samt **dec**imaltecken.
+
+```{r}
+#| eval: false
+file.choose() # Returnerar vägen till filen man väljer, hitta fönstret med alt + tab.
+
+my_data <- read.table(
+  file = file.choose(), # Välj fil interaktivt
+  header = TRUE, # Om det finns namn på kolumnerna
+  sep = ",", # Här används ett kommatecken för att skilja på kolumner
+  dec = "." # Här används en punkt som decimaltecken
+)
+```
+
+För att undersöka data kan man använda
+
+```{r}
+# View(penguins) # Öppnar som separat flik
+head(penguins)
+```
+
+För att skapa olika datastrukturer
+
+Variabel
+
+```{r}
+var_1 <- "Text/character string" # Någonting inuti "" är text
+var_2 <- 25 # Nummer
+```
+
+Vektor
+
+```{r}
+vec <- c() # Skapar en tom vektor
+vec <- c(36, 56, 48) # Skapa en vektor med tre värden
+vec[4] <- 25 # Sätta in ett värde i index plats 1
+vec # Printa innehållet av variablen (vektorn)
+```
+
+```{r}
+vec[2] # Printa innehållet i index 2
+```
+
+Data frame
+
+```{r}
+df <- data.frame( # Skapa en dataframe med kolumn_namn = vektor
+  vec, # Kolumn 1, vec från tidigare
+  letters = LETTERS[1:8] # Kolumn 2, lite bokstäver
+)
+df
+```
+
+```{r}
+df$letters
+```
+
+Matris
+
+```{r}
+
+```
+
+Lite andra funktioner
+
+```{r}
+#| eval: false
+rbind()
+
+class()
+print()
+
+```
+
+## KvantBio
+
+## Stats
+
+```{r}
+#| eval: false
+dbinom()
+pbinom()
+
+t.test()
+boot.t.test()
+wilcox.test()
+
+chisq.test()
+fisher.test()
+
+cor.test()
+cor()
+
+aov()
+ANOVA.boot()
+TukeyHSD()
+p.adjust()
+
+lm()
+boot_summary()
+predict()
+```
+
+```{r}
+
+```
+
+## Matte
