@@ -11,6 +11,8 @@ execute:
 
 Lite allmänna funktioner som är bra att kunna.
 
+#### Paket & funktioner
+
 För att installera ett paket.
 
 ```{r}
@@ -22,11 +24,18 @@ install.packages("palmerpenguins")
 install.packages("MKinfer")
 install.packages("lmboot")
 install.packages("boot.pval")
+
+# För Matte
+install.packages("pracma")
+install.packages("expm")
+install.packages("deSolve")
 ```
 
 För att använda funktioner i ett paket måste man ladda in paketet i R genom `library()`
 
 ```{r}
+#| output: false
+#| warning: false
 # Exempel data
 library(palmerpenguins)
 
@@ -40,7 +49,8 @@ library(boot.pval)
 
 # Matte
 library(pracma)
-# library()
+library(expm)
+library(deSolve)
 ```
 
 För att läsa in data från t.ex. en .csv eller .txt fil. Öppna filen och identifiera vilken symbol som **sep**arerar kolumner samt **dec**imaltecken.
@@ -57,64 +67,156 @@ my_data <- read.table(
 )
 ```
 
-För att undersöka data kan man använda
+För att titta på data kan man använda
 
 ```{r}
 # View(penguins) # Öppnar som separat flik
-head(penguins)
+head(penguins) # Printar de första 6 raderna
 ```
 
 För att skapa olika datastrukturer
 
-Variabel
+#### Variabel
 
 ```{r}
 var_1 <- "Text/character string" # Någonting inuti "" är text
-var_2 <- 25 # Nummer
+var_2 <- 25 # Nummer, för decimaltal 25.99
+var_3 <- TRUE # Boolean, kan bara vara TRUE (T) eller FALSE (F)
+var_4 <- NA # Not Available (NA), inte samma som "NA" (text string)!
+var_5 <- NULL # Ingenting, tenderar att radera saker!
 ```
 
-Vektor
+#### Vektor
 
 ```{r}
-vec <- c() # Skapar en tom vektor
-vec <- c(36, 56, 48) # Skapa en vektor med tre värden
-vec[4] <- 25 # Sätta in ett värde i index plats 1
-vec # Printa innehållet av variablen (vektorn)
+vec_1 <- c() # Skapar en tom vektor
+vec_1 <- c(36, 56, 48) # Skapa en vektor med tre värden
+vec_1[4] <- 25 # Sätta in ett värde i index plats 1
+vec_1 # Printa innehållet av variablen (vektorn)
 ```
 
 ```{r}
-vec[2] # Printa innehållet i index 2
+vec_1[2] # Printa innehållet i index 2
 ```
 
-Data frame
+```{r}
+vec_1[c(1,3)] # Printa index 1 och 3
+```
+
+Vektorer kan innehålla namn och indexeras med namn
+
+```{r}
+vec_2 <- c(element_1 = 99, element_2 = 100, element_3 = 101)
+vec_2["element_4"] <- 102 # Sätt in ett värde med namn
+vec_2
+```
+
+```{r}
+vec_2["element_2"]
+```
+
+```{r}
+vec_2[c("element_1", "element_3")]
+```
+
+#### Data frame
 
 ```{r}
 df <- data.frame( # Skapa en dataframe med kolumn_namn = vektor
-  vec, # Kolumn 1, vec från tidigare
-  letters = LETTERS[1:8] # Kolumn 2, lite bokstäver
+  vec_1, # Kolumn 1, vec från tidigare
+  letters = LETTERS[1:4] # Kolumn 2, lite bokstäver
 )
 df
 ```
 
+Man kan lägga till kolumner med \$
+
 ```{r}
-df$letters
+df$col_3 <- vec_2 # Kolumn 3
+df
 ```
 
-Matris
+Andra sätt att lägga till kolumner är med namn
 
 ```{r}
+df["col4"] <- letters[1:4]
+df
+```
+
+En kolumn kan användas med \$
+
+```{r}
+df$letters # Ger en vektor, samma som med df[["letters]]
+```
+
+Eller med indexering/namn, N.B. enkla \[ \] ger ett subset = en mindre del av samma objekt typ
+
+```{r}
+df[3] # Ger en data frame med enbart kolumn 3
+df["col4"] # Ger en data frame med kolumn "col4"
+```
+
+medan dubbla \[\[ \]\] ger objektet inut
+
+```{r}
+df[[1]] # Ger det "mindre objektet inuti", alltså en vektor i detta fall
+```
+
+#### Matris
+
+```{r}
+M <- rbind( # Skapar en matris radvis
+  r1 = c(col1 = 0.90, col2 = 0, col3 = 0, col4 = 0, col5 = 0.45),
+  r2 = c(          0,     0.45,        0,        0,           0),
+  r3 = c(          0,     0.23,     0.45,        0,           0),
+  r4 = c(          0,        0,     0.23,     0.45,           0),
+  r5 = c(          0,        0,        0,     0.23,        0.20)
+)
+M
+```
+
+#### Lista (den riktiga listan)
+
+I en vektor **måste** alla element vara av samma typ (numerisk/text osv.) och i en data frame **måste** alla kolumner (som är vektorer) vara lika långa.
+
+Listor kan ha olika typer av objekt i sig och brukar användas för att bunta ihop olika objekt man vill hålla tillsammans. Till exempel är output från `t.test()` en lista.
+
+```{r}
+my_list <- list() # En tom lista
+my_list$df_1 <- df # Lägg till en data frame med $
+my_list[[2]] <- var_2 # Lägg till en variabel med index, N.B. [[]]
+my_list[["plats_3"]] <- vec_2 # Lägg till en vektor med namn, N.B. [[]]
+my_list
+```
+
+#### Lite andra funktioner
+
+Ett objekts typ heter "klass" och kan kollas med funktionen `class()`
+
+```{r}
+class(var_1) # var_1 är text
+class(var_2) # var_2 är numerisk
+class(var_3) # var_3 är logical (TRUE/FALSE)
+class(vec_1) # vec_1 är numerisk vektor
+class(df) # df är en data frame
+class(my_list) # my_list är en lista
+```
+
+För att se till att någonting skrivs i konsollfönstret används `print()`
+
+```{r}
+print(var_1)
 
 ```
 
-Lite andra funktioner
+För att skriva ihop text m.m. används `paste()`, den tar dock enbart enskilda element (inte vektor/data frame/list
 
 ```{r}
-#| eval: false
-rbind()
-
-class()
-print()
-
+message <- paste(
+  "Hello", "world", var_1, 55, vec_2[3], # Alla objekt man vill skriva ihop
+  sep = " " # Separator att infoga mellan varje objekt, här ett mellanslag
+)
+print(message)
 ```
 
 ## KvantBio
