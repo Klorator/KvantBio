@@ -11,7 +11,7 @@ execute:
 
 Lite allmänna funktioner som är bra att kunna.
 
-#### Paket & funktioner
+#### Paket & inläsning av data
 
 För att installera ett paket.
 
@@ -53,14 +53,14 @@ library(expm)
 library(deSolve)
 ```
 
-För att läsa in data från t.ex. en .csv eller .txt fil. Öppna filen och identifiera vilken symbol som **sep**arerar kolumner samt **dec**imaltecken.
+För att läsa in data från t.ex. en .csv eller .txt fil. Öppna filen och identifiera vilka symboler som **sep**arerar kolumner samt används som **dec**imaltecken.
 
 ```{r}
 #| eval: false
 file.choose() # Returnerar vägen till filen man väljer, hitta fönstret med alt + tab.
 
 my_data <- read.table(
-  file = file.choose(), # Välj fil interaktivt
+  file = file.choose(), # Välj fil interaktivt, alt. filens sökväg som en text string
   header = TRUE, # Om det finns namn på kolumnerna
   sep = ",", # Här används ett kommatecken för att skilja på kolumner
   dec = "." # Här används en punkt som decimaltecken
@@ -91,7 +91,7 @@ var_5 <- NULL # Ingenting, tenderar att radera saker!
 ```{r}
 vec_1 <- c() # Skapar en tom vektor
 vec_1 <- c(36, 56, 48) # Skapa en vektor med tre värden
-vec_1[4] <- 25 # Sätta in ett värde i index plats 1
+vec_1[4] <- 25 # Sätta in ett värde i index plats 4
 vec_1 # Printa innehållet av variablen (vektorn)
 ```
 
@@ -123,7 +123,7 @@ vec_2[c("element_1", "element_3")]
 
 ```{r}
 df <- data.frame( # Skapa en dataframe med kolumn_namn = vektor
-  vec_1, # Kolumn 1, vec från tidigare
+  vec_1, # Kolumn 1, vec_1 från tidigare
   letters = LETTERS[1:4] # Kolumn 2, lite bokstäver
 )
 df
@@ -156,16 +156,87 @@ df[3] # Ger en data frame med enbart kolumn 3
 df["col4"] # Ger en data frame med kolumn "col4"
 ```
 
-medan dubbla \[\[ \]\] ger objektet inut
+medan dubbla \[\[ \]\] ger objektet inuti
 
 ```{r}
 df[[1]] # Ger det "mindre objektet inuti", alltså en vektor i detta fall
 ```
 
-#### Matris
+Enkla `[ ]` kan indexeras med rader och kolumner samtidigt
 
 ```{r}
-M <- rbind( # Skapar en matris radvis
+df[2] # Kolumn 2 (en data frame med en kolumn)
+df[3,2] # Rad 3, kolumn 2 (en vektor av längd ett)
+df[ ,2] # Alla rader, kolumn 2 (en vektor)
+df[3, ] # Rad 3, alla kolumner (en data frame med en rad)
+```
+
+På tal om subsetting, för att ta ett subset av en data frame kan man filtrera rader baserat på ett kriterium
+
+```{r}
+penguins_chin <- penguins[penguins$species == "Chinstrap", ] # Utan komma läses det som att du vill filtrera kolumner! == är det matematiska lika med (eftersom = är samma som <- )
+head(penguins_chin)
+
+penguins_heavy <- penguins[penguins$body_mass_g > 3500, ]
+head(penguins_heavy)
+```
+
+Man kan även göra detta för att få en kolumn filtrerad/subset baserad på en annan kolumn
+
+```{r}
+#| error: true
+penguins_chin_weight <- penguins$body_mass_g[penguins$species == "Chinstrap", ]
+```
+
+Det blir en error därför att nu försöker man ta både rader och kolumner (2 dimensioner) på en kolumn (kolumn/vektor har bara 1 dimension) därför att \$ ger en vektor. Om vi istället provar utan extra kommatecken för att ange rader & kolumner samtidigt fungerar det (ger en vektor). Alternativt ange kolumnen med namn istället för med \$ (ger en mindre data frame).
+
+```{r}
+# Utan extra kommatecken
+penguins_chin_weight <- penguins$body_mass_g[penguins$species == "Chinstrap"]
+head(penguins_chin_weight)
+
+# Ange kolumnen med namn
+penguins_chin_weight <- penguins[penguins$species == "Chinstrap", "body_mass_g"]
+head(penguins_chin_weight)
+```
+
+Vi kan även bli av med `NA` på ett kontrollerat sätt med den här metoden. Om man vill se till att vikt och näbblängd inte har `NA` kan man använda funtionen `in.na()` och operatorn `!`.
+
+```{r}
+is.na(NA) # Kolla om NA är NA
+!is.na(NA) # ! negerar ett TRUE/FALSE uttryck
+
+vec_NA <- c(NA, 50)
+is.na(vec_NA) # Kolla vilka element som är NA
+!is.na(vec_NA)
+```
+
+```{r}
+# Alla rader där kolumnen body_mass_g inte är NA och alla kolumner
+penguins_no_NA <- penguins[!is.na(penguins$body_mass_g), ]
+# Alla rader där kolumnen bill_length_mm inte är NA och alla kolumner
+penguins_no_NA <- penguins_no_NA[!is.na(penguins_no_NA$bill_length_mm), ]
+data.frame(
+  rows = c(penguins = nrow(penguins), no_NA = nrow(penguins_no_NA)),
+  columns = c(penguins = ncol(penguins), no_NA = ncol(penguins_no_NA))
+)
+```
+
+#### Matris
+
+Vi kan skapa matriser med `rbind()` (går även att använda `cbind()` men då placeras vektorerna vertikalt från det övre vänstra hörnet, istället för horisontellt). Med `rbind()` blir matrisen som den ser ut när man skriver den.
+
+```{r}
+rbind( # en "character matrix"
+  c("a", "b"),
+  c("c", "d")
+)
+cbind( # skillnaden med cbind()
+  c("a", "b"),
+  c("c", "d")
+)
+
+M <- rbind( # Skapar en matris radvis med namngivna rader och kolumner
   r1 = c(col1 = 0.90, col2 = 0, col3 = 0, col4 = 0, col5 = 0.45),
   r2 = c(          0,     0.45,        0,        0,           0),
   r3 = c(          0,     0.23,     0.45,        0,           0),
@@ -173,6 +244,17 @@ M <- rbind( # Skapar en matris radvis
   r5 = c(          0,        0,        0,     0.23,        0.20)
 )
 M
+```
+
+För matris matte se [Matte] sektionen.
+
+Matriser kan indexeras på samma sätt som data frames
+
+```{r}
+M[3, 2]
+M[3:5, 2:3]
+M[c(3,5), c(2,3)]
+M[c("r3","r5"), c("col2","col3")]
 ```
 
 #### Lista (den riktiga listan)
@@ -199,13 +281,14 @@ class(var_2) # var_2 är numerisk
 class(var_3) # var_3 är logical (TRUE/FALSE)
 class(vec_1) # vec_1 är numerisk vektor
 class(df) # df är en data frame
+class(M) # M är en matris
 class(my_list) # my_list är en lista
 ```
 
 För att se till att någonting skrivs i konsollfönstret används `print()`
 
 ```{r}
-print(var_1)
+print(var_1) # Tar enbart ett objekt! Se paste()
 
 ```
 
@@ -219,9 +302,89 @@ message <- paste(
 print(message)
 ```
 
+Notera att `print()` enbart accepterar ett objekt, därav den vanliga kombinationen `print(paste(arg1, arg2))`.
+
+```{r}
+print(paste("Nu","klarar","vi","tentan!", sep = "! "))
+```
+
+Kolla längden på saker med
+
+```{r}
+length(vec_1) # Längden på en vektor
+length(penguins) # Längden på en data frame är antalet kolumner
+nrow(penguins) # För antalet rader i en data frame
+ncol(penguins) # Antalet columner på en data frame
+```
+
+Få en vektor med namnen på kolumner
+
+```{r}
+colnames(penguins)
+```
+
+Få alla unika element i en vektor
+
+```{r}
+unique(penguins$species)
+```
+
 ## KvantBio
 
 ## Stats
+
+Min binomiala studie:
+
+-   20 försök
+
+-   varje försök är Ja/Nej
+
+-   37 % sannolikhet för Ja för varje oberoende försök
+
+För att beräkna sannolikheten för utfall med binomial fördelning används `dbinom()` för att beräkna sannolikheten för exakt x antal gynsamma utfall,
+
+```{r}
+f5 <- dbinom(
+  x = 5, # Exakt antal 'Ja'
+  size = 20, # Totalt antal försök
+  prob = 0.37 # Sannolikheten för försöket
+)
+print(paste("Sannolikhet att exakt fem av 20 försök blir 'Ja':", f5))
+```
+
+Dessa sannolikheter kan adderas.
+
+```{r}
+f6 <- dbinom(
+  x = 6, # Exakt 6st Ja
+  size = 20,
+  prob = 0.37
+)
+print(paste("p att exakt 5-6st av 20 försök blir 'Ja':", (f5+f6)))
+```
+
+eller `1 - pbinom()` för att beräkna sannolikheten för alla utfall **över** det man anger.
+
+```{r}
+f15_20 <- (1 - pbinom(
+  q = 14, # utfall över det angivna
+  size = 20,
+  prob = 0.37
+))
+print(paste("p att få 15 eller fler 'Ja':",f15_20))
+```
+
+Enbart `pbinom()` ger den motsatta sannolikheten (alltså 0-14 Ja) vilket är kompliment till 15-20 Ja. Använd `lower.tail = FALSE` för att få 15-20 Ja istället.
+
+```{r}
+f15_20_igen <- pbinom(
+  q = 14,
+  size = 20,
+  prob = 0.37,
+  lower.tail = FALSE # Istället för 1 - pbinom()
+)
+print(paste("p att få 15 eller fler 'Ja':",f15_20_igen))
+```
 
 ```{r}
 #| eval: false
@@ -249,7 +412,13 @@ predict()
 ```
 
 ```{r}
+#| eval: false
+mean()
+sum()
+median()
 
+rowMeans()
+rowSums()
 ```
 
 ## Matte
