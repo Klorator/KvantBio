@@ -71,7 +71,10 @@ För att titta på data kan man använda
 
 ```{r}
 # View(penguins) # Öppnar som separat flik
-head(penguins) # Printar de första 6 raderna
+head(penguins, # Printar de första 4 raderna
+     n = 4)
+tail(penguins, # Printar de sista 4 raderna
+     n = 4)
 ```
 
 För att skapa olika datastrukturer
@@ -329,7 +332,7 @@ Få alla unika element i en vektor
 unique(penguins$species)
 ```
 
-## KvantBio
+#### Plotting
 
 ## Stats
 
@@ -422,3 +425,5 @@ rowSums()
 ```
 
 ## Matte
+
+## KvantBio
