@@ -3,11 +3,17 @@ title: ".daddy_code"
 author: "Rasmus Hammar"
 format:
   pdf:
-    highlight-style: arrow
+    highlight-style: atom-one
     toc: true
-    toc-depth: 3
     number-sections: true
-    number-depth: 3
+  html: 
+    highlight-style: atom-one
+    toc: true
+    number-sections: true
+include-in-header: 
+  text: |
+    \usepackage{fvextra}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 editor: visual
 execute: 
   echo: true
@@ -184,19 +190,22 @@ df[3, ] # Rad 3, alla kolumner (en data frame med en rad)
 På tal om subsetting, för att ta ett subset av en data frame kan man filtrera rader baserat på ett kriterium
 
 ```{r}
-penguins_chin <- penguins[penguins$species == "Chinstrap", ] # Utan komma läses det som att du vill filtrera kolumner! == är det matematiska lika med (eftersom = är samma som <- )
+penguins_chin <- penguins[penguins$species == "Chinstrap", ] 
+# Utan komma läses det som att du vill filtrera kolumner! '==' är det matematiska 'lika med' (eftersom '=' är samma som '<-' )
 head(penguins_chin)
 
 penguins_heavy <- penguins[penguins$body_mass_g > 3500, ]
 head(penguins_heavy)
 ```
 
-Man kan även göra detta för att få en kolumn filtrerad/subset baserad på en annan kolumn
+Man kan även göra detta för att få en kolumn filtrerad/subset baserad på en annan kolumn.
 
 ```{r}
-#| error: true
+#| eval: false
 penguins_chin_weight <- penguins$body_mass_g[penguins$species == "Chinstrap", ]
 ```
+
+`Error in penguins$body_mass_g[penguins$species == "Chinstrap", ] :    incorrect number of dimensions`
 
 Det blir en error därför att nu försöker man ta både rader och kolumner (2 dimensioner) på en kolumn (kolumn/vektor har bara 1 dimension) därför att \$ ger en vektor. Om vi istället provar utan extra kommatecken för att ange rader & kolumner samtidigt fungerar det (ger en vektor). Alternativt ange kolumnen med namn istället för med \$ (ger en mindre data frame).
 
@@ -258,7 +267,7 @@ M
 
 För matris matte se [Matte] sektionen.
 
-Matriser kan indexeras på samma sätt som data frames
+Matriser kan indexeras ungefär på samma sätt som data frames.
 
 ```{r}
 M[3, 2]
@@ -343,6 +352,14 @@ unique(penguins$species)
 
 # Stats
 
+Rapportera alltid testets namn, statistiken (t.ex. t-/F-värdet), frihetsgrader och p-värde, samt en mening som ger slutsatsen/tolkningen av testet. Andra relevanta saker kan också inkluderas, såsom konfidens intervall.
+
+Exempel: Förklarande mening (\[testets namn\], t(\[frihetsgrader\]) = \[värdet\], p = \[värdet\]).
+
+> Det fanns en skillnad mellan Grupp 1 och den förväntade vikten (mu = 3000 g) enligt internet (One sample t-test, t(150) = 18.776, p \< 2.2e-16).
+
+Tips från coachen, gör detta snyggare än jag...
+
 ## Binomial fördelning
 
 Min binomiala studie:
@@ -398,13 +415,58 @@ f15_20_igen <- pbinom(
 print(paste("p att få 15 eller fler 'Ja':",f15_20_igen))
 ```
 
-## T-test
+## Skillnad mellan grupper
+
+### T-test: ensidigt
+
+För att testa om en grupp med kontinuerlig data skiljer sig från ett känt eller teoretiskt väntevärde.
+
+```{r}
+grupp_1 <- penguins$body_mass_g[penguins$species == "Adelie"]
+
+t.test(
+  x = grupp_1, # En vektor
+  mu = 3000    # Väntevärdet vi hittade på internet
+)
+```
+
+#### Resultat:
+
+Det fanns en skillnad mellan Grupp 1 och den förväntade vikten enligt internet (One sample t-test, t(150) = 18.776, p \< 2.2e-16).
+
+### T-test: tvåsidigt
+
+För att testa om det finns en skillnad mellan två grupper av kontinuerlig data.
+
+```{r}
+grupp_1 <- penguins$body_mass_g[penguins$species == "Adelie"]
+grupp_2 <- penguins$body_mass_g[penguins$species == "Gentoo"]
+
+t.test(
+  x = grupp_1, # En vektor
+  y = grupp_2, # En annan vektor
+)
+
+# Alternativt sätt att skriva koden är med formel
+peng_groups <- penguins[ which(penguins$species == "Adelie" | penguins$species == "Gentoo"), ]
+
+t.test(
+  
+)
+```
+
+#### Resultat:
+
+Det fanns en skillnad mellan Grupp 1 och Grupp 2 (Welch two sample t-test, t(249.64) = -23.386, p \< 2.2e-16).
+
+### T-test: paired/beroende
+
+First rule of Crayfish Fight Club is you do not talk about Crayfish Fight Club.
+
+Vi studerar kräftor och vill undersöka effekten av storleken på klorna
 
 ```{r}
 #| eval: false
-dbinom()
-pbinom()
-
 t.test()
 boot.t.test()
 wilcox.test()
