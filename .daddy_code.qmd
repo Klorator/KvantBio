@@ -298,6 +298,7 @@ my_list
 Ett objekts typ heter "klass" och kan kollas med funktionen `class()`
 
 ```{r}
+#| eval: false
 class(var_1) # var_1 är text
 class(var_2) # var_2 är numerisk
 class(var_3) # var_3 är logical/boolean (TRUE/FALSE)
@@ -363,7 +364,7 @@ Drivna över bristningsgränsen av kursen har en student blivit galen och vandra
 
 -   **H~1~** = Skillnad mellan medelvärden
 
-p-värdet är sannolikheten att en stackars vilsen student slumpmässigt skulle betrakta dessa träd om det i verkligheten inte finns någon skillnad mellan observerade och skogens medelvärden (alltså om **H~0~** är sann).
+p-värdet är sannolikheten att en stackars vilsen student slumpmässigt skulle betrakta dessa träd och konstatera att deras höjd skiljer sig från resten av skogens (alltså acceptera **H~1~**), när det i verkligheten inte finns någon skillnad mellan observerade och skogens medelvärden (alltså om **H~0~** är sann).
 
 -   Om p-värde \> alfa, alltså p \> 0.05, säger vi att det inte finns en skillnad (acceptera **H~0~**).
 
@@ -394,6 +395,8 @@ Många av funktionerna för de statistiska testen kan, eller måste, ges en form
 -   '\*', adderar en ytterligare *Faktor* **och** interaktionen (`Respons ~ Faktor_1 * Faktor_2` )
 
 -   ':', adderar enbart interaktionen (`Respons ~ Faktor_1:Faktor_2`)
+
+### Beslutsschema
 
 ## Binomial fördelning
 
