@@ -474,9 +474,17 @@ print(paste("p att få 15 eller fler 'Ja':",f15_20_igen))
 
 ## Skillnad mellan grupper
 
-### T-test: krav/antaganden
+### T-test
 
-### T-test: ensidigt
+#### Krav/antaganden
+
+-   Data på intervall eller kvotskala (kontinuerlig)
+
+-   Normalfördelad (parametrisk)
+
+-   Lika varians (homogen varians, ej för Welch t-test)
+
+#### Ensidigt
 
 För att testa om en grupp med kontinuerlig data skiljer sig från ett känt eller teoretiskt väntevärde.
 
@@ -489,11 +497,11 @@ t.test(
 )
 ```
 
-#### Resultat:
+##### Resultat:
 
 Det fanns en skillnad mellan Grupp 1 och den förväntade vikten enligt internet (One sample t-test, t(150) = 18.776, p \< 2.2e-16).
 
-### T-test: tvåsidigt
+#### Tvåsidigt
 
 För att testa om det finns en skillnad mellan två grupper av kontinuerlig data.
 
@@ -518,11 +526,11 @@ t.test( # Respons = mätdata & Faktor = två olika arter (alltså två grupper)
 )
 ```
 
-#### Resultat:
+##### Resultat:
 
 Det fanns en skillnad mellan Grupp 1 och Grupp 2 (Welch two sample t-test, t(249.64) = -23.386, p \< 2.2e-16).
 
-### T-test: paired/beroende
+#### Paired/beroende
 
 First rule of Crayfish Fight Club is you do not talk about Crayfish Fight Club.
 
@@ -536,7 +544,7 @@ crayfish_fight_club <- data.frame(
 head(crayfish_fight_club)
 ```
 
-Alltså består varje rad av mätningar på två individer där grupperingen är **beroende** på vem de jämförs med, och därför gör vi ett parat t-test.
+Alltså består varje rad av mätningar på två individer där grupperingen är **beroende** på vem de jämförs med, och därför gör vi ett parat t-test. (Det känns inte rimligt att jämföra vinnaren på rad tre (75 cm) med förloraren på rad fyra (85 cm) eftersom de inte stred med varandra, vilket är vad vi hade gjort om vi behandlat data som oberoende, alltså `paired = FALSE`.)
 
 ```{r}
 t.test(
@@ -546,9 +554,28 @@ t.test(
 )
 ```
 
-#### Resultat:
+##### Resultat:
 
 Paired t-test, t(9) = 3.5266, p = 0.006448, Signifikant.
+
+#### Wilcox-test (icke parametriskt)
+
+För när data inte uppfyller krav för t-test eller vi vill titta på skillnader i median.
+
+```{r}
+wilcox.test( # Motsvarar vanligt t-test för två grupper
+  grupp_1,
+  grupp_2
+)
+
+wilcox.test( # Motsvarar parat t-test för beroende data
+  crayfish_fight_club$winner,
+  crayfish_fight_club$loser,
+  paired = TRUE
+)
+```
+
+För denna kurs, ignorera `Warning: cannot compute exact p-value with ties`. Det betyder att det finns två av samma mätvärde vilket inte går att rangordna.
 
 ```{r}
 #| eval: false
