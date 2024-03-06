@@ -1,17 +1,23 @@
 ---
 title: ".daddy_code"
 author: "Rasmus Hammar"
-format: html
+format:
+  pdf:
+    highlight-style: arrow
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    number-depth: 3
 editor: visual
 execute: 
   echo: true
 ---
 
-## Allmänt
+# Allmänt
 
 Lite allmänna funktioner som är bra att kunna.
 
-#### Paket & inläsning av data
+## Paket & inläsning av data
 
 För att installera ett paket.
 
@@ -39,9 +45,6 @@ För att använda funktioner i ett paket måste man ladda in paketet i R genom `
 # Exempel data
 library(palmerpenguins)
 
-# KvantBio
-
-
 # Stats
 library(MKinfer)
 library(lmboot)
@@ -51,6 +54,10 @@ library(boot.pval)
 library(pracma)
 library(expm)
 library(deSolve)
+
+# KvantBio
+
+
 ```
 
 För att läsa in data från t.ex. en .csv eller .txt fil. Öppna filen och identifiera vilka symboler som **sep**arerar kolumner samt används som **dec**imaltecken.
@@ -79,7 +86,7 @@ tail(penguins, # Printar de sista 4 raderna
 
 För att skapa olika datastrukturer
 
-#### Variabel
+## Variabel
 
 ```{r}
 var_1 <- "Text/character string" # Någonting inuti "" är text
@@ -89,7 +96,7 @@ var_4 <- NA # Not Available (NA), inte samma som "NA" (text string)!
 var_5 <- NULL # Ingenting, tenderar att radera saker!
 ```
 
-#### Vektor
+## Vektor
 
 ```{r}
 vec_1 <- c() # Skapar en tom vektor
@@ -122,7 +129,7 @@ vec_2["element_2"]
 vec_2[c("element_1", "element_3")]
 ```
 
-#### Data frame
+## Data frame
 
 ```{r}
 df <- data.frame( # Skapa en dataframe med kolumn_namn = vektor
@@ -225,7 +232,7 @@ data.frame(
 )
 ```
 
-#### Matris
+## Matris
 
 Vi kan skapa matriser med `rbind()` (går även att använda `cbind()` men då placeras vektorerna vertikalt från det övre vänstra hörnet, istället för horisontellt). Med `rbind()` blir matrisen som den ser ut när man skriver den.
 
@@ -260,7 +267,7 @@ M[c(3,5), c(2,3)]
 M[c("r3","r5"), c("col2","col3")]
 ```
 
-#### Lista (den riktiga listan)
+## Lista (den riktiga listan)
 
 I en vektor **måste** alla element vara av samma typ (numerisk/text osv.) och i en data frame **måste** alla kolumner (som är vektorer) vara lika långa.
 
@@ -274,14 +281,14 @@ my_list[["plats_3"]] <- vec_2 # Lägg till en vektor med namn, N.B. [[]]
 my_list
 ```
 
-#### Lite andra funktioner
+## Lite andra funktioner
 
 Ett objekts typ heter "klass" och kan kollas med funktionen `class()`
 
 ```{r}
 class(var_1) # var_1 är text
 class(var_2) # var_2 är numerisk
-class(var_3) # var_3 är logical (TRUE/FALSE)
+class(var_3) # var_3 är logical/boolean (TRUE/FALSE)
 class(vec_1) # vec_1 är numerisk vektor
 class(df) # df är en data frame
 class(M) # M är en matris
@@ -332,9 +339,11 @@ Få alla unika element i en vektor
 unique(penguins$species)
 ```
 
-#### Plotting
+## Plotting
 
-## Stats
+# Stats
+
+## Binomial fördelning
 
 Min binomiala studie:
 
@@ -389,6 +398,8 @@ f15_20_igen <- pbinom(
 print(paste("p att få 15 eller fler 'Ja':",f15_20_igen))
 ```
 
+## T-test
+
 ```{r}
 #| eval: false
 dbinom()
@@ -424,6 +435,203 @@ rowMeans()
 rowSums()
 ```
 
-## Matte
+# Matte
 
-## KvantBio
+## Lösa differentialekvationer
+
+```{r}
+# Funktion med ekvationssystemet att lösa
+DE_fun <- function(times, # Intervall
+                   y,     # Begynnelsevärden
+                   parms  # Andra värden
+) {
+  # variabler att använda (från parms)
+  alfa <- parms["alfa"]
+  beta <- parms["beta"]
+  delta <- parms["delta"]
+  gamma <- parms["gamma"]
+  
+  # Begynnelsevärden (från y)
+  I <- y["I"]
+  S <- y["S"]
+  
+  # Differentialekvationen att lösa numeriskt
+  #   (Minst 1 ekv. men sedan är det bara att lägga till fler ekv.
+  #   på var sin rad. Varje ekv. måste ha ett begynnelsevärde &
+  #   sedan returneras i result_vec)
+  dI <- alfa * I - beta * I * S
+  dS <- delta * I * S - gamma * S
+  
+  # Spara & returnera resultatet (ode() är lite speciell...)
+  result_vec <- c( # Först som vektor
+    dI,
+    dS
+  )
+  result_list <- list(result_vec) # Sedan som lista
+  return(result_list) #Returnera
+}
+
+# Vektor med alla tidssteg (t) att sätta in
+DE_time_span <- seq(
+  from = 0, # Början på intervall
+  to = 30,  # Slut på intervall
+  by = 0.1  # Steglängd
+)
+
+# Vektor med begynnelsevärden 
+#   (enklast att namnge dem och sedan indexera med namnet i fun)
+DE_init <- c(
+  I = 200,
+  S = 10
+)
+
+# Vektor med andra värden för formeln
+#   (enklast att namnge dem och sedan indexera med namnet i fun)
+DE_params <- c(
+  alfa = 2.5,
+  beta = 0.15,
+  delta = 0.02,
+  gamma = 1.5
+)
+
+# Lösa ekvationerna numeriskt
+DE_sol <- ode(
+  y = DE_init,           # Begynnelsevärden
+  times = DE_time_span,  # Intervall
+  func = DE_fun,         # Funktionen
+  parms = DE_params,     # Andra värden
+  method = "rk4"         # Runge-Kutta version 4
+)
+# Konvertera till data frame för att göra den lättare att hantera
+DE_sol <- as.data.frame(DE_sol)
+
+
+# Plotta dI respektive dS mot tid
+plot( # Plot fönster & dI mot tid
+  DE_sol$time,
+  DE_sol$I,
+  type = "l",
+  
+  col = "blue",
+  
+  xlab = "Time",
+  ylab = "Värde på dIdt & dSdt",
+  main = "Numerisk lösning för system av differentialekvationer"
+)
+lines( # Lägg till dS mot tid
+  DE_sol$time,
+  DE_sol$S,
+  
+  col = "darkorange"
+)
+```
+
+# KvantBio
+
+## Lotka-Volterra byte-predator modell
+
+En specifik model som bygger på att lösa ett ekvationssystem av differentialekvationer.
+
+```{r}
+# Funktion med ekvationssystemet att lösa
+LV_fun <- function(times, # Intervall
+                   y,     # Begynnelsevärden
+                   parms  # Andra värden
+) {
+  # variabler att använda (från parms)
+  alfa <- parms["alfa"]
+  beta <- parms["beta"]
+  delta <- parms["delta"]
+  gamma <- parms["gamma"]
+  
+  # Begynnelsevärden (från y)
+  I <- y["I"]
+  S <- y["S"]
+  
+  # Differentialekvationen att lösa numeriskt
+  dIdt <- (alfa * I - beta * I * S)
+  dSdt <- (delta * I * S - gamma * S)
+  
+  # Spara & returnera resultatet
+  result_vec <- c(
+    dIdt,
+    dSdt
+  )
+  result_list <- list(result_vec)
+  return(result_list)
+}
+
+# Vektor med alla tidssteg (t) att sätta in
+time_span_LV <- seq(
+  0,
+  30,
+  by = 0.1
+)
+
+# Vektor med begynnelsevärden
+init_LV <- c(
+  I = 200,
+  S = 10
+)
+
+# Vektor med andra värden för formeln
+params_LV <- c(
+  alfa = 2.5,
+  beta = 0.15,
+  delta = 0.02,
+  gamma = 1.5
+)
+
+# Lösa ekvationerna numeriskt
+sol_LV <- ode(
+  y = init_LV,           # Begynnelsevärden
+  times = time_span_LV,  # Intervall
+  func = LV_fun,         # Funktionen
+  parms = params_LV,     # Andra värden
+  method = "rk4"         # Runge-Kutta version 4
+)
+sol_LV <- as.data.frame(sol_LV)
+
+
+# Plotta antal insekter [milljoner] respektive spindlar [tusen] mot tid
+plot(
+  sol_LV$time,
+  sol_LV$I,
+  type = "l",
+  
+  col = "blue",
+  
+  xlab = "Time",
+  ylab = "Number of individuals",
+  main = "Lotka-Volterra model"
+)
+lines(
+  sol_LV$time,
+  sol_LV$S,
+  
+  col = "darkorange"
+)
+legend(
+  "topright",
+  legend = c("Insects [millions]", 
+             "Spiders [thousands]"),
+  
+  lty = c(1, 1),
+  col = c("blue",
+          "darkorange")
+)
+
+
+# "Fasporträtt" (två pop. mot varandra där tiden blir att följa linjen)
+plot(
+  sol_LV$I,
+  sol_LV$S,
+  type = "l",
+  
+  col = "darkgreen",
+  
+  xlab = "Insects",
+  ylab = "Spiders",
+  main = "Fasporträtt"
+)
+```

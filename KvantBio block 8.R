@@ -19,10 +19,11 @@ island_fun <- function(times, # Intervall
   dSdt <- (1 - (S/P))*c - ((S*m)/P)
   
   # Spara & returnera resultatet
-  result <- list(
+  result_vec <- c(
     dSdt
   )
-  return(result)
+  result_list <- list(result_vec)
+  return(result_list)
 }
 
 # Vektor med begynnelsevärden
@@ -85,7 +86,8 @@ sista
 S_eq <- function(S,
                  c = 2,
                  P = 50,
-                 m = 4) {
+                 m = 4
+) {
   (1 - (S/P))*c - ((S*m)/P)
 }
 uniroot(S_eq, c(0,20))$root
@@ -108,20 +110,22 @@ LV_fun <- function(times, # Intervall
   I <- y["I"]
   S <- y["S"]
   
-  dIdt <- alfa * I - beta * I * S
-  dSdt <- delta * I * S - gamma * S
+  dIdt <- (alfa * I - beta * I * S)
+  dSdt <- (delta * I * S - gamma * S)
   
-  result <- list(
+  result_vec <- c(
     dIdt,
     dSdt
   )
-  return(result)
+  
+  result_list <- list(result_vec)
+  return(result_list)
 }
 
 time_span_LV <- seq(
   0,
   30,
-  by = 1
+  by = 0.1
 )
 
 init_LV <- c(
@@ -131,7 +135,7 @@ init_LV <- c(
 
 params_LV <- c(
   alfa = 2.5,
-  brata = 0.15,
+  beta = 0.15,
   delta = 0.02,
   gamma = 1.5
 )
@@ -144,3 +148,118 @@ sol_LV <- ode(
   method = "rk4"         # Runge-Kutta version 4
 )
 sol_LV <- as.data.frame(sol_LV)
+
+plot(
+  sol_LV$time,
+  sol_LV$I,
+  type = "l",
+  col = "blue",
+  xlab = "Time",
+  ylab = "Number of individuals"
+)
+lines(
+  sol_LV$time,
+  sol_LV$S,
+  col = "darkorange"
+)
+legend(
+  "topright",
+  legend = c("Insects [millions]", 
+             "Spiders [thousands]"),
+  
+  lty = c(1, 1), # Måste ange line type för att färgen på linjer ska synas
+  col = c("blue",
+          "darkorange")
+)
+
+
+# "Fasporträtt" (två pop. mot varandra där tiden blir att följa linjen)
+plot(
+  sol_LV$I,
+  sol_LV$S,
+  type = "l",
+  col = "darkgreen",
+  lwd = 3,
+  xlab = "Insects",
+  ylab = "Spiders"
+)
+
+
+
+## Fråga 10 ----
+LV_fun <- function(times, # Intervall
+                   y,     # Begynnelsevärden
+                   parms  # Andra värden
+) {
+  alfa <- parms["alfa"]
+  beta <- parms["beta"]
+  delta <- parms["delta"]
+  gamma <- parms["gamma"]
+  
+  I <- y["I"]
+  S <- y["S"]
+  
+  dIdt <- (alfa * I - beta * I * S)
+  dSdt <- (delta * I * S - gamma * S)
+  
+  result_vec <- c(
+    dIdt,
+    dSdt
+  )
+  
+  result_list <- list(result_vec)
+  return(result_list)
+}
+
+time_span_LV <- seq(
+  0,
+  30,
+  by = 0.1
+)
+
+init_LV <- c(
+  I = 200 * 0.01,
+  S = 5 * 0.50
+)
+
+params_LV <- c(
+  alfa = 2.5,
+  beta = 0.15,
+  delta = 0.02,
+  gamma = 1.5
+)
+
+sol_LV <- ode(
+  y = init_LV,           # Begynnelsevärden
+  times = time_span_LV,  # Intervall
+  func = LV_fun,         # Funktionen
+  parms = params_LV,     # Andra värden
+  method = "rk4"         # Runge-Kutta version 4
+)
+sol_LV <- as.data.frame(sol_LV)
+
+plot(
+  sol_LV$time,
+  sol_LV$I,
+  type = "l",
+  col = "blue",
+  xlab = "Time",
+  ylab = "Number of individuals"
+)
+lines(
+  sol_LV$time,
+  sol_LV$S,
+  col = "darkorange"
+)
+
+# "Fasporträtt" (två pop. mot varandra där tiden blir att följa linjen)
+plot(
+  sol_LV$I,
+  sol_LV$S,
+  type = "l",
+  col = "darkgreen",
+  lwd = 3,
+  xlab = "Insects",
+  ylab = "Spiders"
+)
+
