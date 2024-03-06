@@ -10,6 +10,9 @@ format:
     highlight-style: atom-one
     toc: true
     number-sections: true
+    self-contained: true
+    embed-resources: true
+    self-contained-math: true
 include-in-header: 
   text: |
     \usepackage{fvextra}
@@ -352,6 +355,22 @@ unique(penguins$species)
 
 # Stats
 
+### Tolkning av p-värde
+
+Drivna över bristningsgränsen av kursen har en student blivit galen och vandrar, med slö blick, vilset i stadsskogen. Studenten betraktar ett träd. Hur högt är trädet? Vilsen betraktar studenten ett annat träd och stapplar vidare. Vad är sannolikheten att genomsnittshöjden på de träd studenten slumpmässigt observerar skiljer sig från genomsnittshöjden på alla träd i stadsskogen? Kanske de skiljer sig från träden i fjällen?
+
+-   **H~0~** = Ingen skillnad mellan medelvärden
+
+-   **H~1~** = Skillnad mellan medelvärden
+
+p-värdet är sannolikheten att en stackars vilsen student slumpmässigt skulle betrakta dessa träd om det i verkligheten inte finns någon skillnad mellan observerade och skogens medelvärden (alltså om **H~0~** är sann).
+
+-   Om p-värde \> alfa, alltså p \> 0.05, säger vi att det inte finns en skillnad (acceptera **H~0~**).
+
+-   Om p-värde \< alfa, alltså p \< 0.05, säger vi att det finns en skillnad (acceptera **H~1~**).
+
+### Rapportera test
+
 Rapportera alltid testets namn, statistiken (t.ex. t-/F-värdet), frihetsgrader och p-värde, samt en mening som ger slutsatsen/tolkningen av testet. Andra relevanta saker kan också inkluderas, såsom konfidens intervall.
 
 Exempel: Förklarande mening (\[testets namn\], t(\[frihetsgrader\]) = \[värdet\], p = \[värdet\]).
@@ -359,6 +378,22 @@ Exempel: Förklarande mening (\[testets namn\], t(\[frihetsgrader\]) = \[värdet
 > Det fanns en skillnad mellan Grupp 1 och den förväntade vikten (mu = 3000 g) enligt internet (One sample t-test, t(150) = 18.776, p \< 2.2e-16).
 
 Tips från coachen, gör detta snyggare än jag...
+
+### Formel notation
+
+Många av funktionerna för de statistiska testen kan, eller måste, ges en formel. Formler har följande komponenter:
+
+-   *Respons*, en kontinuerlig variabel vi vill förutspå, värdet på y-axeln
+
+-   *Faktor*, en kategorisk variabel vilken delar in *Respons* i grupper (för regression är detta en kontinuerlig variabel som direkt orsakar *Respons*)
+
+-   '\~', skiljer *Respons* från *Faktor*, alltså ger Vänster- och Högerled (`Respons ~ Faktor`)
+
+-   '+', adderar en ytterligare *Faktor* (`Respons ~ Faktor_1 + Faktor_2`)
+
+-   '\*', adderar en ytterligare *Faktor* **och** interaktionen (`Respons ~ Faktor_1 * Faktor_2` )
+
+-   ':', adderar enbart interaktionen (`Respons ~ Faktor_1:Faktor_2`)
 
 ## Binomial fördelning
 
@@ -417,6 +452,8 @@ print(paste("p att få 15 eller fler 'Ja':",f15_20_igen))
 
 ## Skillnad mellan grupper
 
+### T-test: krav/antaganden
+
 ### T-test: ensidigt
 
 För att testa om en grupp med kontinuerlig data skiljer sig från ett känt eller teoretiskt väntevärde.
@@ -446,12 +483,16 @@ t.test(
   x = grupp_1, # En vektor
   y = grupp_2, # En annan vektor
 )
+```
 
-# Alternativt sätt att skriva koden är med formel
+Alternativt sätt att skriva koden är med formel.
+
+```{r}
 peng_groups <- penguins[ which(penguins$species == "Adelie" | penguins$species == "Gentoo"), ]
 
-t.test(
-  
+t.test( # Respons = mätdata & Faktor = två olika arter (alltså två grupper)
+  body_mass_g ~ species,
+  data = peng_groups
 )
 ```
 
@@ -463,7 +504,29 @@ Det fanns en skillnad mellan Grupp 1 och Grupp 2 (Welch two sample t-test, t(249
 
 First rule of Crayfish Fight Club is you do not talk about Crayfish Fight Club.
 
-Vi studerar kräftor och vill undersöka effekten av storleken på klorna
+Vi studerar kräftor och vill undersöka vilken effekt storleken på klorna har på vilken kräfta som vinner strider om resurser. För att göra detta snorklar vi någonstans tropiskt och letar efter kräftor som slåss. Efter några månader "hårt arbete" har vi samlat ihop följande data. Varje rad är storleken på klorna i cm med vinnare och förlorare i respektive kolumn.
+
+```{r}
+crayfish_fight_club <- data.frame(
+  winner = c(86, 84, 75, 93, 102, 87, 88, 91, 87, 74),
+  loser = c( 70, 79, 68, 85,  90, 89, 91, 82, 80, 69)
+)
+head(crayfish_fight_club)
+```
+
+Alltså består varje rad av mätningar på två individer där grupperingen är **beroende** på vem de jämförs med, och därför gör vi ett parat t-test.
+
+```{r}
+t.test(
+  crayfish_fight_club$winner,
+  crayfish_fight_club$loser,
+  paired = TRUE
+)
+```
+
+#### Resultat:
+
+Paired t-test, t(9) = 3.5266, p = 0.006448, Signifikant.
 
 ```{r}
 #| eval: false
