@@ -13,6 +13,7 @@ format:
     self-contained: true
     embed-resources: true
     self-contained-math: true
+    code-overflow: wrap
 include-in-header: 
   text: |
     \usepackage{fvextra}
@@ -396,7 +397,25 @@ Många av funktionerna för de statistiska testen kan, eller måste, ges en form
 
 -   ':', adderar enbart interaktionen (`Respons ~ Faktor_1:Faktor_2`)
 
+{{< pagebreak >}}
+
 ### Beslutsschema
+
+![Stats flowchart 1](Beslutsschema-1.png)
+
+{{< pagebreak >}}
+
+![Stats flowchart 2](Beslutsschema-2.png)
+
+{{< pagebreak >}}
+
+![Stats flowchart 3](Beslutsschema-3.png)
+
+{{< pagebreak >}}
+
+![Stats flowchart 4](Beslutsschema-4.png)
+
+{{< pagebreak >}}
 
 ## Binomial fördelning
 
