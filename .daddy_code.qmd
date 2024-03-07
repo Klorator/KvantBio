@@ -10,7 +10,6 @@ format:
     highlight-style: atom-one
     toc: true
     number-sections: true
-    self-contained: true
     embed-resources: true
     self-contained-math: true
     code-overflow: wrap
@@ -22,6 +21,8 @@ editor: visual
 execute: 
   echo: true
 ---
+
+{{< pagebreak >}}
 
 # Allmänt
 
@@ -355,6 +356,8 @@ unique(penguins$species)
 
 ## Plotting
 
+{{< pagebreak >}}
+
 # Stats
 
 ### Tolkning av p-värde
@@ -480,9 +483,11 @@ print(paste("p att få 15 eller fler 'Ja':",f15_20_igen))
 
 -   Data på intervall eller kvotskala (kontinuerlig)
 
--   Normalfördelad (parametrisk)
+-   Normalfördelad (parametrisk) inom varje grupp
 
 -   Lika varians (homogen varians, ej för Welch t-test)
+
+-   Inga outliers
 
 #### Ensidigt
 
@@ -563,11 +568,19 @@ Paired t-test, t(9) = 3.5266, p = 0.006448, Signifikant.
 För när data inte uppfyller krav för t-test eller vi vill titta på skillnader i median.
 
 ```{r}
+#| eval: false
 wilcox.test( # Motsvarar vanligt t-test för två grupper
   grupp_1,
   grupp_2
 )
 
+wilcox.test( # Med formel
+  body_mass_g ~ species,
+  data = peng_groups
+)
+```
+
+```{r}
 wilcox.test( # Motsvarar parat t-test för beroende data
   crayfish_fight_club$winner,
   crayfish_fight_club$loser,
@@ -575,13 +588,92 @@ wilcox.test( # Motsvarar parat t-test för beroende data
 )
 ```
 
-För denna kurs, ignorera `Warning: cannot compute exact p-value with ties`. Det betyder att det finns två av samma mätvärde vilket inte går att rangordna.
+##### Resultat:
+
+Ingen skillnad.
+
+För denna kurs, ignorera `Warning: cannot compute exact p-value with ties`. Det betyder att det finns två av samma mätvärde vilket inte går att rangordna. (Om data är `c(25, 26, 26, 27)` är det `(1,2,3,4)` eller `(1,3,2,4)`?)
+
+#### Bootstrap (icke parametriskt)
+
+För när data inte uppfyller krav för t-test men vi behöver ett konfidensintervall. Resurskrävande, alltså om du har mycket data tar det längre tid att köra funktionen. Ekvivalent med Wilcoxon men ger konfidensintervall.
+
+```{r}
+boot.t.test( # Med två vektorer
+  grupp_1,
+  grupp_2
+)
+```
 
 ```{r}
 #| eval: false
-t.test()
-boot.t.test()
-wilcox.test()
+boot.t.test( # Med formel
+  body_mass_g ~ species,
+  data = peng_groups
+)
+boot.t.test( # Paired/beroende data
+  crayfish_fight_club$winner,
+  crayfish_fight_club$loser,
+  paired = TRUE
+)
+```
+
+### ANOVA
+
+ANOVA undersöker skillnad mellan många grupper och faktorernas effekt på respons variabeln (liknande regression där kontinuerlig variabel kausalt påverkar respons).
+
+#### Krav/antaganden
+
+Anova är nästan ekvivalent till t-test,
+
+-   Data på intervall eller kvotskala (kontinuerlig)
+
+-   Normalfördelad (parametrisk) inom varje grupp
+
+-   Lika varians (homogen varians, ej för Welch t-test)
+
+-   Inga outliers
+
+-   **Förutsätter lika varians mellan grupper**
+
+-   **Kan hantera fler än två grupper samt fler än en faktor**
+
+#### Envägs ANOVA
+
+Envägs ANOVA innebär att vi använder en faktor (med flera grupper). Hur hittar man enkelt faktorer och grupper i ett dataset? En faktor är en kolumn med grupper. I `penguins` data frame är `penguins$species` en kolumn med grupper, alltså en faktor.
+
+```{r}
+unique(penguins$species) # Unika element i kolumnen,
+# alltså, faktorn 'species' har grupperna 'Adelie', 'Gentoo', 'Chinstrap'
+```
+
+ANOVA med funktionen `aov()`, `summary()` och `TukeyHSD()`.
+
+```{r}
+anova_aov <- aov( # Skapa modell
+  body_mass_g ~ species,
+  data = penguins
+)
+summary(anova_aov) # Kolla om det fanns en skillnad mellan någon av grupperna
+TukeyHSD(anova_aov) # Kolla mellan vilka grupper det fanns en skillnad
+
+plot(TukeyHSD(anova_aov)) # Plot
+```
+
+ANOVA med funktionen `lm()`, `anova()` och `summary()`.
+
+```{r}
+anova_lm <- lm( # Skapa modell
+  body_mass_g ~ species,
+  data = penguins
+)
+anova(anova_lm) # Kolla om det fanns en skillnad mellan någon av grupperna
+summary(anova_lm) # Kolla mellan vilka grupper det fanns en skillnad
+```
+
+```{r}
+#| eval: false
+
 
 chisq.test()
 fisher.test()
@@ -608,6 +700,8 @@ median()
 rowMeans()
 rowSums()
 ```
+
+{{< pagebreak >}}
 
 # Matte
 
@@ -699,6 +793,8 @@ lines( # Lägg till dS mot tid
   col = "darkorange"
 )
 ```
+
+{{< pagebreak >}}
 
 # KvantBio
 
