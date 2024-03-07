@@ -37,15 +37,18 @@ För att installera ett paket.
 # För att installera paketet som heter palmerpenguins
 install.packages("palmerpenguins")
 
-# För Stats
+# Stats
 install.packages("MKinfer")
 install.packages("lmboot")
 install.packages("boot.pval")
 
-# För Matte
+# Matte
 install.packages("pracma")
 install.packages("expm")
 install.packages("deSolve")
+
+# KvantBio
+install.packages("plotrix")
 ```
 
 För att använda funktioner i ett paket måste man ladda in paketet i R genom `library()`
@@ -67,8 +70,7 @@ library(expm)
 library(deSolve)
 
 # KvantBio
-
-
+library(plotrix)
 ```
 
 För att läsa in data från t.ex. en .csv eller .txt fil. Öppna filen och identifiera vilka symboler som **sep**arerar kolumner samt används som **dec**imaltecken.
@@ -624,15 +626,17 @@ ANOVA undersöker skillnad mellan många grupper och faktorernas effekt på resp
 
 #### Krav/antaganden
 
-Anova är nästan ekvivalent till t-test,
+Anova är nästan samma som t-test,
 
 -   Data på intervall eller kvotskala (kontinuerlig)
 
--   Normalfördelad (parametrisk) inom varje grupp
+-   Normalfördelad (parametrisk) inom varje grupp (**Bootstrap**)
 
 -   Lika varians (homogen varians, ej för Welch t-test)
 
 -   Inga outliers
+
+-   **Oberoende data** (vi kör inte parat/beroende i denna kurs)
 
 -   **Förutsätter lika varians mellan grupper**
 
@@ -660,7 +664,7 @@ TukeyHSD(anova_aov) # Kolla mellan vilka grupper det fanns en skillnad
 plot(TukeyHSD(anova_aov)) # Plot
 ```
 
-ANOVA med funktionen `lm()`, `anova()` och `summary()`.
+ANOVA med funktionen `lm()`, `anova()` och `summary()`. Detta ger problem med att göra post-hoc test (`TukeyHSD()`) för att hitta mellan vilka grupper skillnaden finns. Fördelen skulle vara att få ett intercept och möjligen bygga en matematisk modell.
 
 ```{r}
 anova_lm <- lm( # Skapa modell
@@ -671,23 +675,99 @@ anova(anova_lm) # Kolla om det fanns en skillnad mellan någon av grupperna
 summary(anova_lm) # Kolla mellan vilka grupper det fanns en skillnad
 ```
 
+#### Tvåvägs ANOVA
+
+Samma som envägs ANOVA men med två faktorer. Se [Formel notation].
+
+```{r}
+anova2_aov <- aov( # Skapa modell
+  body_mass_g ~ species * sex,
+  data = penguins
+)
+summary(anova2_aov) # Kolla om det fanns en skillnad mellan någon av grupperna
+TukeyHSD(anova2_aov) # Kolla mellan vilka grupper det fanns en skillnad
+
+plot(TukeyHSD(anova2_aov)) # Plot
+```
+
+#### Bootstrap (icke parametriskt)
+
+Om någon av grupperna inte är normalfördelade kan man använda bootstrap. Alla grupper ska fortfarande ha samma varians.
+
+ANOVA.boot() kan inte hantera NA, så se till att filtrera data frame.
+
+```{r}
+# Subset to remove NA
+peng_boot <- penguins[!is.na(penguins$body_mass_g), ]
+peng_boot <- peng_boot[!is.na(peng_boot$species), ]
+peng_boot <- peng_boot[!is.na(peng_boot$sex), ]
+
+anova_boot <- ANOVA.boot(
+  body_mass_g ~ species * sex,
+  data = peng_boot
+)
+anova_boot[c("terms","df","p-values")]
+```
+
+Detta är inte särskillt nice output format så vi undviker helst att använda `ANOVA.boot()`.
+
+## Regression
+
+Regression används då en kontinuerlig variabel kausalt orsakar en annan kontinuerlig variabel.
+
+### Krav/antaganden
+
+-   **Linjärt samband**
+
+-   Normalfördelad (parametrisk)
+
+-   Lika varians
+
+### Linjär regression
+
+Skapas med en formel liknande för ANOVA.
+
+Med det högst biologiska antagandet att längre fenor orsakar högre kroppsvikt (genom att pingvinerna simmar fortare och därmed kan äta mer, säger vi) enligt en linjär trend, väljer vi att göra linjär regression.
+
+```{r}
+plot( # Scatterplot för att kolla sambandet
+  penguins$flipper_length_mm,
+  penguins$body_mass_g,
+  pch = 16,
+  cex = 0.4,
+  col = "blue",
+  xlab = "Flipper length [mm]",
+  ylab = "Body mass [g]"
+)
+
+mass_by_flipper <- lm( # Skapa model
+  body_mass_g ~ flipper_length_mm,
+  data = penguins
+)
+summary(mass_by_flipper)
+```
+
+### Bootstrap
+
+Alternativt med `lm()` och sedan `boot_summary()`.
+
+```{r}
+boot.anova_lm <- lm( # Skapa model
+  body_mass_g ~ species * sex,   
+  data = peng_boot ) 
+boot_summary(boot.anova_lm)
+```
+
+## Predict
+
 ```{r}
 #| eval: false
-
-
 chisq.test()
 fisher.test()
 
 cor.test()
 cor()
 
-aov()
-ANOVA.boot()
-TukeyHSD()
-p.adjust()
-
-lm()
-boot_summary()
 predict()
 ```
 
