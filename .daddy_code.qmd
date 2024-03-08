@@ -802,17 +802,19 @@ anova_boot[c("terms","df","p-values")]
 
 Detta är inte särskillt nice output format så vi undviker helst att använda `ANOVA.boot()`.
 
-## Samvariation/korrelation
+## Kontinuerliga samband
+
+### Samvariation/korrelation
 
 När två kontinuerliga variabler ökar/minskar tillsammans (positiv korrelation) eller i motsatt riktning (negativ korrelation), möjligtvis till följd av en gemensam tredje (dold) variabel.
 
-### Krav/antaganden
+#### Krav/antaganden
 
 -   Två kontinuerliga variabler/mätdata
 
 -   Linjärt samband (kan göras linjär genom transformation om nödvändigt)
 
-### Pearson korrelation
+#### Pearson korrelation
 
 ```{r}
 plot( # Kolla alltid data
@@ -827,7 +829,7 @@ cor.test(
 
 p-värdet tolkas som vanligt, cor är r^2^-värdet som beskriver styrka och riktning av korrelationen.
 
-### Spearman (icke parametrisk)
+#### Spearman (icke parametrisk)
 
 ```{r}
 cor.test(
@@ -839,11 +841,11 @@ cor.test(
 
 För denna kurs, ignorera `Warning: cannot compute exact p-value with ties`. Det betyder att det finns två av samma mätvärde vilket inte går att rangordna. (Om data är `c(25, 26, 26, 27)` är det `(1,2,3,4)` eller `(1,3,2,4)`?)
 
-## Regression
+### Regression
 
 Regression används då en kontinuerlig variabel kausalt orsakar en annan kontinuerlig variabel.
 
-### Krav/antaganden
+#### Krav/antaganden
 
 -   **Linjärt samband**
 
@@ -851,7 +853,7 @@ Regression används då en kontinuerlig variabel kausalt orsakar en annan kontin
 
 -   Lika varians
 
-### Linjär regression
+#### Linjär regression
 
 Skapas med en formel liknande för ANOVA.
 
@@ -875,7 +877,7 @@ mass_by_flipper <- lm( # Skapa model
 summary(mass_by_flipper)
 ```
 
-### Bootstrap
+#### Bootstrap
 
 Alternativt med `lm()` och sedan `boot_summary()`.
 
@@ -886,7 +888,7 @@ boot.anova_lm <- lm( # Skapa model
 boot_summary(boot.anova_lm)
 ```
 
-### Predict
+#### Predict
 
 Om längden på fenorna orsakar kroppsmassa kan vi använda modellen för att förutse vikten på en pingvin baserat på fenornas längd.
 
@@ -921,26 +923,135 @@ points(
 )
 ```
 
-## Chi-square
+## Fördelning av frekvens data
 
-Det enda testet på kursen som hanterar frekvenser/räknedata. Till ära av Tobbes doktorsavhandling används här data om Gemsbock och Red hartbeest och deras observerade fördelning på fyra områden.
+### Chi-square (X^2^-test)
+
+Det enda testet på kursen som hanterar frekvenser/räknedata. Principiellt behövs tre saker, en faktor med grupper som blir kolumner, en faktor med grupper som blir rader, individer/föremål att räkna.
+
+Till ära av Tobbes doktorsavhandling används här data om Gemsbock och Red hartbeest och deras observerade fördelning på fyra områden.
 
 ```{r}
 bockar <- rbind(
-  Gemsbock = c(FR = 5, CGA = 7, WMA = 12, NP = 67),
-  Red_hartbeest = c(6,8,54,13)
+  Gemsbock =      c(FR = 5, CGA = 7, WMA = 12, NP = 67),
+  Red_hartbeest = c(     6,       8,       54,      13)
 )
+
 bockar
 ```
 
-```{r}
+#### Krav/antaganden
 
+-   Frekvens data (nominal skala)
+
+-   Väntevärdet/expected i varje cell ska vara minst 5 (Fishers exact test)
+
+#### Anpassning
+
+Kollar om en rad data "kan anpassas" efter en fördelning, vanligen lika många i varje kategori. Så om data ser ut såhär,
+
+```{r}
+bockar["Gemsbock", , drop = FALSE] # Det extra ', drop = FALSE' gör att vi behåller namnet på raden (som annars försvinner mystiskt när matrisen har bara en rad). 
+# Detta kan ignoreras och skulle då vara 'bockar["Gemsbock", ]'.
+
+bockar_anpassning <- chisq.test(
+  bockar["Gemsbock", ]
+)
+bockar_anpassning # Visa resultatet
+bockar_anpassning$expected # Visa väntevärden
 ```
 
+Alternativt, anpassning mot en specifik fördelning.
+
 ```{r}
-#| eval: false
-chisq.test()
-fisher.test()
+bockar_anpassning <- chisq.test(
+  bockar["Gemsbock", ],
+  p = c(0.10, 0.15, 0.35, 0.40) # Totalt sa dessa bli 1
+)
+bockar_anpassning # Visa resultatet
+bockar_anpassning$expected # Visa väntevärden
+```
+
+#### Oberoende
+
+Testa slumpmässiga observationer från två olika faktorer samtidigt för att se om de kommer från samma fördelning. Innebär att alla kolumner och alla rader kan ha olika summor. Så om data ser ut såhär,
+
+```{r}
+# Skapa ny kolumn med summan av varje rad
+bockar_sums <- cbind(
+  bockar,
+  Row_sum = rowSums(bockar)
+)
+# Skapa ny rad med summan av varje kolumn
+bockar_sums <- rbind(
+  bockar_sums,
+  Col_sum = colSums(bockar_sums)
+)
+bockar_sums
+```
+
+Varken alla rader eller alla kolumner har samma summor, alltså gör vi ett oberoende test.
+
+```{r}
+bockar_oberoende <- chisq.test(
+  bockar
+)
+bockar_oberoende
+bockar_oberoende$expected
+```
+
+#### Homogenitet
+
+Testa slumpmässiga observationer från **en** faktor och kontrollera den andra. Innebär att **antingen** alla rader **eller** kolumner har samma summa (medan den andra varierar).
+
+För detta behöver vi ny data. Ett stort företag vill undersöka om antalet vaccinerade anställda skiljer sig mellan avdelningarna. För att kontrollera för de olika avdelningarna slumpades 100 anställda från varje avdelning och frågade om de var vaccinerade eller inte.
+
+```{r}
+uppsala_site <- rbind( # Data
+  vaccinerad = c(RnD = 99, HR = 45, Lön = 63, IT = 76),
+  ej_vaccinerade = c(   1,      55,       37,      24)
+)
+
+uppsala_site
+```
+
+Vi kan utforska företagets data lite mer genom att lägga till rad och kolumn summor.
+
+```{r}
+# Skapa ny kolumn med summan av varje rad
+uppsala_sums <- cbind(
+  uppsala_site, 
+  Row_sum = rowSums(uppsala_site)
+)
+# Skapa ny rad med summan av varje kolumn
+uppsala_sums <- rbind(
+  uppsala_sums, 
+  Col_sum = colSums(uppsala_sums)
+)
+uppsala_sums
+```
+
+Detta säger oss att den faktorn är kontrollerad, alltså gör vi ett Homogenitetstest.
+
+```{r}
+vaccin_homogen <- chisq.test(
+  uppsala_site
+)
+
+vaccin_homogen
+vaccin_homogen$expected
+```
+
+### Fisher's exact (icke parametrisk)
+
+Ifall en eller flera celler med väntevärden/expected är \< 5 kan man använda Fisher's exact test.
+
+```{r}
+uppsala_fisher <- fisher.test(
+  uppsala_site
+)
+
+uppsala_fisher # Inga expected values
 ```
 
 ```{r}
@@ -958,7 +1069,7 @@ rowSums()
 
 # Matte
 
-## Lösa differentialekvationer
+## Differentialekvationer
 
 ```{r}
 # Funktion med ekvationssystemet att lösa
