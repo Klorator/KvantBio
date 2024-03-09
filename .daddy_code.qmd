@@ -426,7 +426,199 @@ if (50^2 < 100) { # Blir FALSE
 
 ## Plotting
 
-Error plot med `plotCI()`
+Här följer plotfunktioner med många möjliga argument. Vissa argument visas flera gånger som alternativ.
+
+För att kontrollera hur många plots att visa på samma gång, använd.
+
+```{r}
+
+```
+
+### Tomt plotfönster
+
+```{r}
+plot(
+  x = NULL,
+  y = NULL,
+  
+  xlim = c(0, 250),
+  ylim = c(0, 500),
+  
+  xlab = "x-axis",
+  ylab = "y-axis",
+  main = "Empty plot"
+)
+```
+
+### Scatterplot
+
+Om x = kontinuerlig & y = kontinuerlig ger detta ett punktdiagram eller linjediagram.
+
+De flesta argument fungerar likadant/liknande för andra typer av plots.
+
+```{r}
+plot(
+  # Värden för axlarna
+  x = penguins$bill_depth_mm,
+  y = penguins$body_mass_g,
+  
+  # Annotering
+  xlab = "Bill depth [mm]",
+  ylab = "Body mass [g]",
+  main = "Hefty penguins!",
+  sub = "An analysis by island",
+#  ann = FALSE, # alt. ta bort alla vanliga annoteringar.
+  
+#  xaxt = "n",  # x-axis text = 'n' (none)
+#  yaxt = "n",    # Tar bort axel markörerna
+  
+  # Linjer & punkter
+  type = "p",   # 'l' = line, 's' = stairs, 'p' = point, 
+                  # 'b' = both (line & pont), 'o' = both (overplotted),
+                  # 'h' = histogram liknande, 'n' = none.
+  pch = 16,     # 15 = ifylld kvadrat, 16 = ifylld prick,
+                  # 17 = ifylld triangel, 18 = ifylld diamant.
+  cex = 1,      # Storlek på punkt.
+
+#  lwd = 3,     # Storlek på linje.
+#  lty = 1,     # "blank", "solid", "dashed", "dotted", 
+                  # "dotdash", "longdash", twodash".
+
+# col = "blue",  # Färg
+  col = penguins$island, # Färg baserat på faktor
+# col = alpha("blue", 0.30) # Färg (blå) & transparens (30%)
+)
+
+# Lägg till en linje från 'a' till 'b'.
+abline(
+#  a = intercept,
+#  b = slope,
+  h = 4000, # y-värde för horizontella linjer
+  v = 14,   # x-värde för vertikala linjer
+#  reg = lm_objekt, # Regressionsmodell, se sektion 2.4.2.4 Predict
+  col = "purple"
+)
+
+# För att lägga till en legend
+legend(
+#  x = 20, y = 6000, # x & y koordinater för legenden.
+  
+  x = "topright",    # Kan ges "top", "topleft", "topright",
+                       # "bottom", "bottomleft", "bottomright".
+  inset = 0.05,      # Avstånd till ytterkanterna som en % av plot storleken. 
+  
+  legend = c("Island 1", "Island 2", "Island 3"), # Namn i legenden.
+  pch = 16,  # Sätt olika punkter med c(15, 16, 17). (Krävs för färger!)
+  col = 1:3, # Eftersom faktorn har tre grupper. 
+               # Kan även vara c("blue","green","orange").
+  
+#  lty = c(1, 2, 3), # Sätt olika linje typer,
+#  fill = 1:3,       # Färg, men utan att ange form/linje.
+
+  title = "Legend", # Legend title
+  bty = "o",        # 'o' = box, 'n' = no box, eller '7', 'L', 'U', 'C'.
+)
+```
+
+### Boxplot
+
+Om x = faktor & y = kontinuerlig ger detta en boxplot/låddiagram.
+
+```{r}
+plot(
+  x = penguins$species,
+  y = penguins$flipper_length_mm,
+  
+  xlab = "Species",
+  ylab = "Flipper length [mm]",
+  main = "Flipper length by species",
+  
+  col = c("skyblue", "darkgreen", "orange")
+)
+```
+
+### Barplot
+
+Om x = faktor & inget y ger detta en barplot/stapeldiagram.
+
+```{r}
+plot(
+  x = penguins$species,
+  
+  xlab = "Species",
+  ylab = "Frekvens/antal",
+  
+  col = c("skyblue", "darkgreen", "orange")
+)
+```
+
+### Error plot med `plotCI()`
+
+Används för att illustrera medelvärdet (en punkt) $\pm$ standardavvikelse eller standard error of the mean (SEM, se 2.1 Enkel statistik).
+
+```{r}
+# Data för att plotta
+peng_mean <- aggregate(
+  flipper_length_mm ~ species,
+  data = penguins,
+  FUN = mean
+)
+peng_sd <- aggregate(
+  flipper_length_mm ~ species,
+  data = penguins,
+  FUN = sd
+)
+
+# Plot
+plotCI(
+  x = c(2,3,4), # x-koordinater att placera punkter på
+  y = peng_mean$flipper_length_mm, # y-koordinater att placera punkter på
+  
+  xlab = "Species",
+  ylab = "Flipper length [mm]",
+  
+  # Upper interval, alltså övre gränsen för sträcken, är lika med
+    # medelvärdet + standardavvikelsen
+  ui = peng_mean$flipper_length_mm + peng_sd$flipper_length_mm,
+  # Lower interval, alltså den nedre gränsen, är lika med
+    # medelvärdet - standardavvikelsen
+  li = peng_mean$flipper_length_mm - peng_sd$flipper_length_mm,
+  
+  xlim = c(1.75,4.25), # För att ge lite extra plats på sidorna
+  
+  xaxt = "n", # Ta bort siffrorna på x-axeln
+  
+  pch = 16,
+  col = c("skyblue", "darkgreen", "orange")
+)
+axis(
+  side = 1, # vilken sida/axel att lägga till (1 = botten, 2 = vänster, osv.)
+  at = c(2,3,4), # Vid vilka x-koordinater att placera text
+  labels = peng_mean$species # Lägg till arterna på x-axeln
+)
+```
+
+### Plot av funktion
+
+```{r}
+# Definiera en funktion som en funktion med bara ett argument.
+curve_fun <- function(x) {
+  10^(0.36*x+1.945)
+}
+
+curve(
+  10^(0.10*S+1.745), # Matematiska funktionen att rita
+  xname="S",         # Vad 'x' heter om man ger den matematiska funktionen direkt
+  xlim=c(0,100),     # Intervallet
+  col = "blue"
+)
+curve(
+  curve_fun,         # Namn på funktionen med funktionen
+  xlim = c(0,100),
+  col = "darkorange",
+  add = TRUE         # Lägg till linjen i existerande graf
+)
+```
 
 {{< pagebreak >}}
 
@@ -492,7 +684,53 @@ Många av funktionerna för de statistiska testen kan, eller måste, ges en form
 
 {{< pagebreak >}}
 
-## Binomial fördelning
+## Enkel statistik
+
+Några enkla/grundläggande statistik funktioner.
+
+```{r}
+mean(penguins$bill_length_mm, na.rm = TRUE)   # Medelvärde
+median(penguins$bill_length_mm, na.rm = TRUE) # Median
+sum(penguins$bill_length_mm, na.rm = TRUE)    # Summa av vektor
+sd(penguins$bill_length_mm, na.rm = TRUE)     # Standardavvikelse
+
+# Funktioner som ger vektorer med svar. Fungerar på både matriser & data frames!
+# N.B. stor bokstav i mitten! Finns andra funktioner med liknande namn.
+rowSums(M)  # ger en (kolumn) vektor med summan för varje rad.
+colSums(M)  # ger en (rad) vektor med summan för varje kolumn.
+rowMeans(M) # Samma, men för medelvärde.
+colMeans(M) # Samma, men för medelvärde.
+```
+
+```{r}
+# Aggregate är lite speciell. Den grupperar rader efter en faktor och applicerar en annan funktion på varje grupp.
+aggregate(
+  bill_length_mm ~ island,
+  data = penguins,
+  FUN = mean, # Använd 'mean' eller 'median'
+)
+```
+
+Standard error of the mean (SEM) finns det ingen egen funktion för, men vi kan skapa en. Formeln är $SEM = \frac{Sd}{\sqrt{n}}$ , där Sd = standardavvikelse och n = antal observationer. SEM beskriver hur exakt/pålitligt medelvärdet är om det används som det sanna medelvärdet för populationen.
+
+```{r}
+SEM <- function(x, na.rm = FALSE) {
+  # Om argumentet na.rm = TRUE, ta bort NA från x
+  if (na.rm) {
+    x <- na.omit(x)
+  }
+  
+  # Beräkna SEM
+  SEM <- sd(x)/sqrt(length(x))
+  return(SEM)
+}
+
+SEM(penguins$bill_length_mm, na.rm = TRUE)
+```
+
+## Sannolikhet
+
+### Binomial fördelning
 
 Min binomiala studie:
 
@@ -502,7 +740,7 @@ Min binomiala studie:
 
 -   37 % sannolikhet för Ja för varje oberoende försök
 
-För att beräkna sannolikheten för utfall med binomial fördelning används `dbinom()` för att beräkna sannolikheten för exakt x antal gynsamma utfall,
+För utfall med binomial fördelning används `dbinom()` för att beräkna sannolikheten för exakt x antal gynsamma utfall.
 
 ```{r}
 f5 <- dbinom(
@@ -758,6 +996,11 @@ summary(anova2_aov) # Kolla om det fanns en skillnad mellan någon av grupperna
 TukeyHSD(anova2_aov) # Kolla mellan vilka grupper det fanns en skillnad
 
 plot(TukeyHSD(anova2_aov)) # Plot
+
+# Interaktions plot
+interaction.plot(
+  x
+)
 ```
 
 #### Kruskal-Wallis (icke parametrisk)
@@ -901,6 +1144,7 @@ measured_flipper_length <- data.frame(
   flipper_length_mm = c(205, 221, 179)
 )
 
+# De värden vi gissar med hjälp av modellen
 estimated_weight <- predict(
   object = mass_by_flipper, # Modellen
   newdata = measured_flipper_length) # nya x-värden
@@ -915,11 +1159,16 @@ plot(
   col = alpha("blue", 0.2)
 )
 points(
-  x = measured_flipper_length$flipper_length_mm,
-  y = estimated_weight,
+  x = measured_flipper_length$flipper_length_mm, # newdata
+  y = estimated_weight, # Gissade värden
   
   pch = 16,
   col = "red"
+)
+abline( # Lägg till linjen från modellen.
+  reg = mass_by_flipper,
+  col = "red",
+  lwd = 1
 )
 ```
 
@@ -1054,20 +1303,25 @@ uppsala_fisher <- fisher.test(
 uppsala_fisher # Inga expected values
 ```
 
-```{r}
-#| eval: false
-mean()
-sum()
-median()
-
-aggregate()
-rowMeans()
-rowSums()
-```
-
 {{< pagebreak >}}
 
 # Matte
+
+## Matematiska beräkningar
+
+```{r}
+#| eval: false
+1 + 1   # addition
+1 - 1   # subtraktion
+5 * 4   # multiplikation
+6 / 2   # division
+5^2     # upphöjt med
+
+sqrt(25)  # roten ur, (positiv)
+exp(3)    # e^3
+log(7)    # log(7) med basen e
+log10(7)  # log(7) med basen 10
+```
 
 ## Differentialekvationer
 
@@ -1138,8 +1392,8 @@ DE_sol <- ode(
 DE_sol <- as.data.frame(DE_sol)
 
 
-# Plotta dI respektive dS mot tid
-plot( # Plot fönster & dI mot tid
+# Plotta dB respektive dP mot tid
+plot( # Plot fönster & dB mot tid
   DE_sol$time,
   DE_sol$B,
   type = "l",
@@ -1150,7 +1404,7 @@ plot( # Plot fönster & dI mot tid
   ylab = "Värde på dIdt & dSdt",
   main = "Numerisk lösning för system av differentialekvationer"
 )
-lines( # Lägg till dS mot tid
+lines( # Lägg till dP mot tid
   DE_sol$time,
   DE_sol$P,
   
@@ -1161,6 +1415,132 @@ lines( # Lägg till dS mot tid
 {{< pagebreak >}}
 
 # KvantBio
+
+## Fibonacci
+
+```{r}
+n <- c(1,2)
+for (i in 3:25) {
+  n[i] <- n[i-1] + n[i-2]
+}
+n
+```
+
+## Allometri & energiförbrukning
+
+$$
+K = P + M + E
+$$
+
+Bioenergetisk modell där K = konsumtion, P = produktion/ökning i massa, M = metabolism, E = exkretion.
+
+$$
+log_{10}(O_2) = 0.36 \cdot \frac{S}{TL} + 1.945
+$$
+
+Modell för citronhajars metabolism baserat på sambandet mellan simhastighet och syreförbrukning (som väger 1kg).
+
+## Individuell tillväxt (von Bertalanffys tillväxtekvation)
+
+$$
+L(t) = L_{\infty} + (L_0 - L_{\infty}) \cdot e^{-kt}
+$$
+
+Där L_inf är maxlängd vid oändlig tid, L_noll är längden vid t = 0 , k är en tillväxtfaktor och t är tid/ålder.
+
+```{r}
+L_av_t <- function(t) { # Kräver insättning av siffror!!!
+  L_av_t <- L_inf + (L_noll - L_inf) * exp(-k*t)
+}
+```
+
+```{r}
+Hitta_t <- function() {
+  
+}
+```
+
+## Hållbart uttag
+
+Hur tillväxer en population och vid vilken storlek kan man plocka ut så många individer som möjligt och samtidigt få en stabil population?
+
+```{r}
+# Rekryteringsfunktion, n individer detta år ger n+x individer nästa år
+recruitment <- function(n) {
+  2.17 * sqrt(n) * log(n+1)
+}
+# Plot
+curve(
+  recruitment,
+  xlim = c(0,120),
+  col = "blue",
+  xlab = "pop. detta tidssteg",
+  ylab = "pop. nästa tidssteg"
+)
+curve(
+  1*x,
+  add = TRUE,
+  col = "darkorange"
+)
+```
+
+```{r}
+# Skördekurva
+harvest <- function(n) {
+  recruitment(n) - n
+}
+
+# Plot
+curve(
+  harvest,
+  xlim = c(0,120),
+  xlab = "pop. detta tidssteg",
+  ylab = "Hållbart uttag",
+  col = "darkgreen"
+)
+abline(
+  h = 0
+)
+```
+
+```{r}
+#| warning: false
+# Hitta x-värde för maxpunkt, alltså pop. storlek för max hållbart uttag.
+
+# Derivata av skördefunktionen
+harvest_deriv <- function(n) {
+  fderiv(harvest, n)
+}
+
+# Plot (indikerar intervallet för uniroot())
+curve(
+  harvest_deriv,
+  xlim = c(0,120),
+  xlab = "pop. detta tidssteg",
+  ylab = "Skördefunktionens derivata",
+  col = "purple"
+)
+abline(
+  h = 0
+)
+
+# Hitta nollpunk numeriskt = pop. storlek för max hållbart uttag
+harvest_deriv_root <- uniroot(
+  harvest_deriv,
+  interval = c(20,60)
+)
+```
+
+```{r}
+# Insättning av nollpunkt i skördefunktion ger max hållbart uttag
+harvest(harvest_deriv_root$root)
+```
+
+## Diskret logistisk tillväxt
+
+$$
+x_{n+1} = x_n + r \cdot x_n \cdot (1- \frac{x_n}{k})
+$$
 
 ## Lotka-Volterra byte-predator modell
 
