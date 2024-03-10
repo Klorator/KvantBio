@@ -6,10 +6,12 @@ format:
     highlight-style: atom-one
     toc: true
     number-sections: true
+    number-depth: 4
   html: 
     highlight-style: atom-one
     toc: true
     number-sections: true
+    number-depth: 4
     embed-resources: true
     self-contained-math: true
     code-overflow: wrap
@@ -537,6 +539,16 @@ plot(
 )
 ```
 
+```{r}
+boxplot(
+  flipper_length_mm ~ species * sex,
+  data = penguins,
+  col = c("blue","skyblue",
+          "darkgreen","green",
+          "darkorange","orange")
+)
+```
+
 ### Barplot
 
 Om x = faktor & inget y ger detta en barplot/stapeldiagram.
@@ -549,6 +561,19 @@ plot(
   ylab = "Frekvens/antal",
   
   col = c("skyblue", "darkgreen", "orange")
+)
+```
+
+### Histogram
+
+```{r}
+hist(
+  penguins$flipper_length_mm,
+  main = "Histogram för flipper length",
+  xlab = "Flipper length [mm]",
+  
+#  breaks = 99,   # Hur många staplar
+#  col = "blue",  # Färg
 )
 ```
 
@@ -999,7 +1024,9 @@ plot(TukeyHSD(anova2_aov)) # Plot
 
 # Interaktions plot
 interaction.plot(
-  x
+  x.factor = penguins$sex,         # x-axeln
+  trace.factor = penguins$species, # linjerna
+  response = penguins$body_mass_g, # y-axeln
 )
 ```
 
@@ -1215,7 +1242,7 @@ Alternativt, anpassning mot en specifik fördelning.
 ```{r}
 bockar_anpassning <- chisq.test(
   bockar["Gemsbock", ],
-  p = c(0.10, 0.15, 0.35, 0.40) # Totalt sa dessa bli 1
+  p = c(0.10, 0.15, 0.35, 0.40) # Totalt ska dessa bli 1
 )
 bockar_anpassning # Visa resultatet
 bockar_anpassning$expected # Visa väntevärden
@@ -1467,7 +1494,8 @@ Hur tillväxer en population och vid vilken storlek kan man plocka ut så många
 ```{r}
 # Rekryteringsfunktion, n individer detta år ger n+x individer nästa år
 recruitment <- function(n) {
-  2.17 * sqrt(n) * log(n+1)
+  recruit <- 2.17 * sqrt(n) * log(n+1)
+  return(recruit)
 }
 # Plot
 curve(
@@ -1487,7 +1515,8 @@ curve(
 ```{r}
 # Skördekurva
 harvest <- function(n) {
-  recruitment(n) - n
+  harvest <- recruitment(n) - n
+  return(harvest)
 }
 
 # Plot
@@ -1509,7 +1538,8 @@ abline(
 
 # Derivata av skördefunktionen
 harvest_deriv <- function(n) {
-  fderiv(harvest, n)
+  harvest_deriv <- fderiv(harvest, n)
+  return(harvest_deriv)
 }
 
 # Plot (indikerar intervallet för uniroot())
@@ -1542,6 +1572,189 @@ $$
 x_{n+1} = x_n + r \cdot x_n \cdot (1- \frac{x_n}{k})
 $$
 
+Funktion för diskret logistisk tillväxt.
+
+```{r}
+dlt <- function(n, r, k) {
+  n_ny <- n + r*n*(1-n/k)
+  return(n_ny)
+}
+```
+
+### Modellera en population
+
+Definiera värden på parametrar.
+
+```{r}
+r <- 0.36 # perkapitareproduktion (egenvärde från Leslie-matris)
+k <- 600  # Bärkraft
+
+sluttid <- 30
+t <- 1:(sluttid+1)
+```
+
+En populationsutveckling med konstant r-värde.
+
+```{r}
+n <- c(4) # Startvärde & vektor att lagra resultat i
+
+for (i in 1:sluttid) { # Loop för pop. utveckling
+  n[i+1] <- dlt(n = n[i],
+                r = r,
+                k = k)
+}
+
+plot(
+  x = t,
+  y = n,
+  ylim = c(0,k),
+  
+  type = "l",
+  lwd = 2,
+  
+  xlab = "Time",
+  ylab = "Individer"
+)
+```
+
+Samma, men med varierande r-värde.
+
+```{r}
+# r <- 0.36 # perkapitareproduktion (egenvärde från Leslie-matris)
+k <- 600  # Bärkraft
+
+sluttid <- 30
+t <- 1:(sluttid+1)
+
+n <- c(4) # Startvärde & vektor att lagra resultat i
+
+for (i in 1:sluttid) { # Loop för pop. utveckling
+  n[i+1] <- dlt(n = n[i],
+                r = rnorm(n = 1,
+                          mean = 0.36,
+                          sd = 0.2),
+                k = k)
+}
+
+plot(
+  x = t,
+  y = n,
+  ylim = c(0,k),
+  
+  type = "l",
+  lwd = 2,
+  
+  xlab = "Time",
+  ylab = "Individer"
+)
+```
+
+### Modellera många populationer & beräkna utdöende risk
+
+Definiera värden på parametrar.
+
+```{r}
+# r defineras i for-loop
+k <- 1000 # Bärkraft
+
+sluttid <- 20
+t <- 1:(sluttid+1)
+
+collapse <- 10 # Färre individer = pop. dör ut
+```
+
+Skapa många linjer för hypotetiska populationers öden.
+
+```{r}
+plot( # Skapa tom plot
+  NULL,
+  xlim = c(0, sluttid+1),
+  ylim = c(0, 200),
+  type = "l",
+  xlab = "Time",
+  ylab = "Individer"
+)
+
+n <- c(50) # Startvärde & vektor att lagra resultat i
+pop_collapse <- 0 # Räknare för hur många populationer har dött ut
+attempts <- 10
+
+for (i in 1:attempts) { # Loop för upprepade försök/linjer
+  
+  for (j in 1:sluttid) { # Loop för en linje/population
+    n[j+1] <- dlt(n = n[j],
+                  r = rnorm(n = 1, # slumpad reproduktion
+                            mean = 0,
+                            sd = 0.25),
+                  k = k)
+  }
+  
+  if (min(n) < collapse) { # Kolla om pop. collapsade
+    pop_collapse <- pop_collapse +1 # Addera 1 till räknare
+    print(paste("Försök",i,"dog ut. Totalt",pop_collapse,"collapsade populationer."))
+  }
+  
+  lines( # Addera linje för ett försök
+    x = t,
+    y = n,
+    lwd = 1,
+    col = "blue"
+  )
+  
+}
+```
+
+För att beräkna utdöenderisk i procent.
+
+```{r}
+extiction_rate <- (pop_collapse / attempts) *100
+print(paste("Utdöenderisken är",extiction_rate,"%"))
+```
+
+## Lesliematriser
+
+För användning av en livstabell översätts den till en Leslie/Lefkovitch matris.
+
+![](Livstabell caretta caretta.png)
+
+En Leslie-matris använder åldersklasser där ingen kan "stanna" i klassen, alltså är diagonalen 0.
+
+En Lefkovitch-matris använder ontogenetiska stadier där en individ kan antingen "stanna" i samma klass eller "gå vidare" till nästa klass, alltså kan diagonalen vara \>0.
+
+![](Leslie-Lefkovitch matte.png)
+
+![](Leslie-Lefkovitch förklaring.png)
+
+```{r}
+caretta_matris <- rbind( # En Lefkovitch matris
+  r1 = c(c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 127, c6 = 4, c7 = 80),
+  r2 = c(0.6747,  0.737,      0,      0,        0,      0,       0),
+  r3 = c(     0, 0.0486,  0.661,      0,        0,      0,       0),
+  r4 = c(     0,      0, 0.0147, 0.6907,        0,      0,       0),
+  r5 = c(     0,      0,      0, 0.0518,        0,      0,       0),
+  r6 = c(     0,      0,      0,      0,   0.8091,      0,       0),
+  r7 = c(     0,      0,      0,      0,        0, 0.8091,  0.8091)
+)
+caretta_matris
+```
+
+För att få ut egenvärdet (r-värdet) och egenvektorn (stabil stadiefördelning). Om $\lambda$ är 0.90 innebär det att populationen minskar med 10% (förändrings faktor för populationen). Den relativa fördelningen ($\frac{egenvektor}{sum(egenvektor)} \cdot 100$ ) indikerar hur många procent av den totala populationen bör finnas i varje klass. Kan användas som `p = relativ_dist` i `chisq.test()` för att göra ett anpassningstest med en observerad population.
+
+```{r}
+caretta_eigen <- eigen(caretta_matris)
+
+# Egentligen det största egenvärdet, men det bör vara första.
+Re(caretta_eigen$values[1])
+
+# Samma index för egenvektor som egenvärdet.
+Re(caretta_eigen$vectors[,1])
+
+# Relativ fördelning i procent
+caretta_dist <- Re(caretta_eigen$vectors[,1])
+caretta_dist_procent <- (caretta_dist/sum(caretta_dist))*100
+caretta_dist_procent
+```
+
 ## Lotka-Volterra byte-predator modell
 
 En specifik model som bygger på att lösa ett ekvationssystem av differentialekvationer.
@@ -1559,6 +1772,7 @@ LV_fun <- function(times, # Intervall
   beta <- parms["beta"]
   delta <- parms["delta"]
   gamma <- parms["gamma"]
+#  K <- parms["K"] # alt. där K = bärkraft
   
   # Begynnelsevärden (från y)
   B <- y["B"]
@@ -1566,6 +1780,8 @@ LV_fun <- function(times, # Intervall
   
   # Differentialekvationen att lösa numeriskt
   dBdt <- (alfa * B - beta * B * P)
+#  dBdt <- (alpha * B(1 - B/K) - beta * B * P) # alt. där K = bärkraft
+  
   dPdt <- (delta * B * P - gamma * P)
   
   # Spara & returnera resultatet
@@ -1596,6 +1812,7 @@ params_LV <- c(
   beta = 0.15,   # Byten som äts
   delta = 0.02,  # Tillväxt predator
   gamma = 1.5    # Död predator
+#  K = 500 # alt. där K = bärkraft
 )
 
 # Lösa ekvationerna numeriskt
@@ -1629,8 +1846,8 @@ lines(
 )
 legend(
   "topright",
-  legend = c("Insects [millions]", 
-             "Spiders [thousands]"),
+  legend = c("Byten", 
+             "Predatorer"),
   
   lty = c(1, 1),
   col = c("blue",
@@ -1646,8 +1863,8 @@ plot(
   
   col = "darkgreen",
   
-  xlab = "Insects",
-  ylab = "Spiders",
+  xlab = "Byten",
+  ylab = "Predatorer",
   main = "Fasporträtt"
 )
 ```
