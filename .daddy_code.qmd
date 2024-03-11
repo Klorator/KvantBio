@@ -1,12 +1,7 @@
 ---
-title: ".daddy_code"
+title: ".daddy_code v1.0"
 author: "Rasmus Hammar"
 format:
-  pdf:
-    highlight-style: atom-one
-    toc: true
-    number-sections: true
-    number-depth: 4
   html: 
     highlight-style: atom-one
     toc: true
@@ -15,6 +10,16 @@ format:
     embed-resources: true
     self-contained-math: true
     code-overflow: wrap
+  docx: 
+    highlight-style: atom-one
+    toc: true
+    number-sections: true
+    number-depth: 4
+  pdf:
+    highlight-style: atom-one
+    toc: true
+    number-sections: true
+    number-depth: 4
 include-in-header: 
   text: |
     \usepackage{fvextra}
@@ -373,6 +378,18 @@ Få alla unika element i en vektor
 
 ```{r}
 unique(penguins$species)
+```
+
+Konvertera/tvinga (eng. coerce) objekt till en viss typ.
+
+```{r}
+#| eval: false
+as.numeric()    # Bra ifall en kolumn är text men ska vara siffror
+as.character()
+as.factor()     # Kan vara viktig för ANOVA om grupperna är 1,2,3,4...
+
+as.data.frame() # Kan tvinga en matris till data frame
+as.matrix()     # Kan tvinga en data frame till matris
 ```
 
 ## Kontrollstrukturer
@@ -751,6 +768,16 @@ SEM <- function(x, na.rm = FALSE) {
 }
 
 SEM(penguins$bill_length_mm, na.rm = TRUE)
+```
+
+## Transformation
+
+Om data inte ser nice ut, prova att transformera data (för paired/beroende transformera differensen). För denna kurs prova logaritmering.
+
+```{r}
+#| eval: false
+log()   # Basen e
+log10() # Basen 10
 ```
 
 ## Sannolikhet
@@ -1570,7 +1597,11 @@ for (i in 3:25) {
 n
 ```
 
-## Allometri & energiförbrukning
+## Hantera modeller
+
+Kunna använda modeller och lösa för saknade parametrar. Översätt de matematiska funktionerna till funktioner i R. Funktionen `uniroot()` är användbar för att hitta nollställen.
+
+### Allometri & energiförbrukning
 
 $$
 K = P + M + E
@@ -1582,9 +1613,9 @@ $$
 log_{10}(O_2) = 0.36 \cdot \frac{S}{TL} + 1.945
 $$
 
-Modell för citronhajars metabolism baserat på sambandet mellan simhastighet och syreförbrukning (som väger 1kg).
+Modell för citronhajars metabolism baserat på sambandet mellan simhastighet och syreförbrukning (för hajar som väger 1kg).
 
-## Individuell tillväxt (von Bertalanffys tillväxtekvation)
+### Individuell tillväxt (von Bertalanffys tillväxtekvation)
 
 $$
 L(t) = L_{\infty} + (L_0 - L_{\infty}) \cdot e^{-kt}
@@ -1592,17 +1623,48 @@ $$
 
 Där L_inf är maxlängd vid oändlig tid, L_noll är längden vid t = 0 , k är en tillväxtfaktor och t är tid/ålder.
 
-```{r}
-L_av_t <- function(t) { 
-  # Kräver insättning av siffror!!!
-  L_av_t <- L_inf + (L_noll - L_inf) * exp(-k*t)
-}
-```
+För att hitta längden vid givet t.
 
 ```{r}
-Hitta_t <- function() {
-  
+# Parametrar
+L_inf <- 85
+k <- 0.00082
+L_noll <- 30
+
+# Funktion av t
+growth_av_t <- function(t) {
+  L_t <- L_inf + (L_noll - L_inf) * exp(-k * t)
+  return(L_t)
 }
+growth_av_t(t = 10)
+```
+
+För att hitta L_inf (eller annan okänd från funktionen) kan vi möblera om till
+
+$$
+0 = L_{\infty} + (L_0 - L_{\infty}) \cdot e^{-kt} - L_t
+$$
+
+och använda `uniroot()`.
+
+```{r}
+# Parametrar
+k <- 0.00082
+L_noll <- 30
+L_t <- 95
+t <- 2000
+
+# Funktion av L_inf
+growth_av_L_inf <- function(L_inf) {
+  noll_punkt <- L_inf + (L_noll - L_inf) * exp(-k * t) - L_t
+  return(noll_punkt)
+}
+
+# Hitta nollpunkten med uniroot()
+uniroot(
+  f = growth_av_L_inf,
+  interval = c(0,200)
+)$root
 ```
 
 ## Hållbart uttag
