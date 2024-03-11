@@ -755,6 +755,38 @@ SEM(penguins$bill_length_mm, na.rm = TRUE)
 
 ## Sannolikhet
 
+### Slumpade tal
+
+Slumpa ett tal från normalfördelning. Ungefär 96 % av alla observationer i en normalfördelad population ligger inom $\pm$ två standardavvikelser.
+
+```{r}
+rnorm(
+  n = 5,    # Antal tal
+  mean = 0, # Väntevärde för fördelningen
+  sd = 1    # Standard avvikelse
+)
+```
+
+Slumpade tal från binomialfördelning. Ger n tal där varje tal är hur många gynnsamma utfall det blev, baserat på totalt antal försök och sannolikheten.
+
+```{r}
+rbinom(
+  n = 5,     # Antal tal
+  size = 10, # Totalt antal försök
+  prob = 0.5 # Sannolikhet för gynnsamt utfall
+)
+```
+
+Slumpade tal från en uniform fördelning (samma sannolikhet för för varje tal).
+
+```{r}
+runif(
+  n = 5,   # Antal tal
+  min = 0, # Nedre intervall
+  max = 10 # Övre intervall
+)
+```
+
 ### Binomial fördelning
 
 Min binomiala studie:
@@ -824,6 +856,21 @@ print(paste("p att få 15 eller fler 'Ja':",f15_20_igen))
 
 -   Inga outliers
 
+```{r}
+group_1 <- penguins$body_mass_g[penguins$species == "Adelie"]
+
+par(mfrow = c(1,2)) # Ändrar hur många "rutor/celler" för 
+# plots det finns enligt rad x column. Bra vana att alltid 
+# ändra tillbaka till standard c(1,1) efteråt. 
+
+hist(group_1)
+
+qqnorm(group_1)
+qqline(group_1, col = "red")
+
+par(mfrow = c(1,1)) # Ändra tillbaka inställningarna.
+```
+
 #### Ensidigt
 
 För att testa om en grupp med kontinuerlig data skiljer sig från ett känt eller teoretiskt väntevärde.
@@ -884,7 +931,7 @@ crayfish_fight_club <- data.frame(
 head(crayfish_fight_club)
 ```
 
-Alltså består varje rad av mätningar på två individer där grupperingen är **beroende** på vem de jämförs med, och därför gör vi ett parat t-test. (Det känns inte rimligt att jämföra vinnaren på rad tre (75 cm) med förloraren på rad fyra (85 cm) eftersom de inte stred med varandra, vilket är vad vi hade gjort om vi behandlat data som oberoende, alltså `paired = FALSE`.)
+Alltså består varje rad av mätningar på två individer där grupperingen är **beroende** på vem de jämförs med, och därför gör vi ett parat t-test. (Det känns inte rimligt att jämföra vinnaren på rad tre (75 cm) med förloraren på rad fyra (85 cm) eftersom de inte stred med varandra, vilket är vad vi hade gjort om vi behandlat data som oberoende, alltså `paired = FALSE`.) Notera att för parad/beroende data måste **differensen** vara normalfördelad.
 
 ```{r}
 t.test(
@@ -974,6 +1021,23 @@ Anova är nästan samma som t-test,
 -   **Förutsätter lika varians mellan grupper**
 
 -   **Kan hantera fler än två grupper samt fler än en faktor**
+
+```{r}
+# Skapa modellen, sedan diagnostik.
+diagnostic_model <- aov(
+  body_mass_g ~ species,
+  data = penguins
+)
+
+par(mfrow = c(1,2))
+
+plot(diagnostic_model, which = 1) # Lika varians om 
+# spridningen/"längden" på varje stapel med punkter är lika.
+
+plot(diagnostic_model, which = 2) # QQ-plot för normalfördelning.
+
+par(mfrow = c(1,1))
+```
 
 #### Envägs ANOVA
 
@@ -1084,16 +1148,23 @@ När två kontinuerliga variabler ökar/minskar tillsammans (positiv korrelation
 
 -   Linjärt samband (kan göras linjär genom transformation om nödvändigt)
 
+```{r}
+plot( # Ögonmåtta att sambandet inte är uppenbarligen icke-linjärt
+  penguins$flipper_length_mm,
+  penguins$body_mass_g
+)
+```
+
 #### Pearson korrelation
 
 ```{r}
 plot( # Kolla alltid data
-  penguins$bill_length_mm,
-  penguins$bill_depth_mm
+  penguins$flipper_length_mm,
+  penguins$body_mass_g
 )
 cor.test(
-  penguins$bill_length_mm,
-  penguins$bill_depth_mm
+  penguins$flipper_length_mm,
+  penguins$body_mass_g
 )
 ```
 
@@ -1103,8 +1174,8 @@ p-värdet tolkas som vanligt, cor är r^2^-värdet som beskriver styrka och rikt
 
 ```{r}
 cor.test(
-  penguins$bill_length_mm,
-  penguins$bill_depth_mm,
+  penguins$flipper_length_mm,
+  penguins$body_mass_g,
   method = "spearman" # Specificera spearman
 )
 ```
@@ -1122,6 +1193,41 @@ Regression används då en kontinuerlig variabel kausalt orsakar en annan kontin
 -   Normalfördelad (parametrisk)
 
 -   Lika varians
+
+```{r}
+par(mfrow = c(1,2))
+
+plot( # Ögonmåtta om det finns en linjär trend.
+  x = penguins$flipper_length_mm,
+  y = penguins$body_mass_g
+)
+
+# Skapa modellen, sedan diagnostik.
+diagnostic_model <- aov(
+  body_mass_g ~ flipper_length_mm,
+  data = penguins
+)
+
+plot( # Plot med linjen från modellen som hjälp
+  x = penguins$flipper_length_mm,
+  y = penguins$body_mass_g
+)
+abline(diagnostic_model,
+       col = "red")
+
+par(mfrow = c(1,1))
+```
+
+```{r}
+par(mfrow = c(1,2))
+
+plot(diagnostic_model, which = 1) # Lika varians om 
+# spridningen av punkter är uniform & röda linjen är platt.
+
+plot(diagnostic_model, which = 2) # QQ-plot för normalfördelning.
+
+par(mfrow = c(1,1))
+```
 
 #### Linjär regression
 
@@ -1221,6 +1327,17 @@ bockar
 -   Frekvens data (nominal skala)
 
 -   Väntevärdet/expected i varje cell ska vara minst 5 (Fishers exact test)
+
+```{r}
+low_expected <- rbind(
+  c(2,3,4),
+  c(4,5,6)
+)
+low_expected_test <- chisq.test(
+  low_expected
+)
+low_expected_test$expected
+```
 
 #### Anpassning
 
@@ -1476,7 +1593,8 @@ $$
 Där L_inf är maxlängd vid oändlig tid, L_noll är längden vid t = 0 , k är en tillväxtfaktor och t är tid/ålder.
 
 ```{r}
-L_av_t <- function(t) { # Kräver insättning av siffror!!!
+L_av_t <- function(t) { 
+  # Kräver insättning av siffror!!!
   L_av_t <- L_inf + (L_noll - L_inf) * exp(-k*t)
 }
 ```
@@ -1715,15 +1833,15 @@ print(paste("Utdöenderisken är",extiction_rate,"%"))
 
 För användning av en livstabell översätts den till en Leslie/Lefkovitch matris.
 
-![](Livstabell caretta caretta.png)
+![](Livstabell%20caretta%20caretta.png)
 
 En Leslie-matris använder åldersklasser där ingen kan "stanna" i klassen, alltså är diagonalen 0.
 
 En Lefkovitch-matris använder ontogenetiska stadier där en individ kan antingen "stanna" i samma klass eller "gå vidare" till nästa klass, alltså kan diagonalen vara \>0.
 
-![](Leslie-Lefkovitch matte.png)
+![](Leslie-Lefkovitch%20matte.png)
 
-![](Leslie-Lefkovitch förklaring.png)
+![](Leslie-Lefkovitch%20förklaring.png)
 
 ```{r}
 caretta_matris <- rbind( # En Lefkovitch matris
