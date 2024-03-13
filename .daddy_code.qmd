@@ -1715,15 +1715,15 @@ print(paste("Utdöenderisken är",extiction_rate,"%"))
 
 För användning av en livstabell översätts den till en Leslie/Lefkovitch matris.
 
-![](Livstabell caretta caretta.png)
+![](Livstabell%20caretta%20caretta.png)
 
 En Leslie-matris använder åldersklasser där ingen kan "stanna" i klassen, alltså är diagonalen 0.
 
 En Lefkovitch-matris använder ontogenetiska stadier där en individ kan antingen "stanna" i samma klass eller "gå vidare" till nästa klass, alltså kan diagonalen vara \>0.
 
-![](Leslie-Lefkovitch matte.png)
+![](Leslie-Lefkovitch%20matte.png)
 
-![](Leslie-Lefkovitch förklaring.png)
+![](Leslie-Lefkovitch%20förklaring.png)
 
 ```{r}
 caretta_matris <- rbind( # En Lefkovitch matris

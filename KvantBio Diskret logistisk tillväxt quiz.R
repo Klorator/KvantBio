@@ -192,7 +192,7 @@ t <- 1:(sluttid+1)
 
 n <- c()
 n[1] <- 50 # startvärde, individer
-
+# 
 collapse <- 10 # färre individer = pop. ded
 
 
