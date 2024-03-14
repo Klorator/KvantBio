@@ -1,5 +1,5 @@
 ---
-title: ".daddy_code v2.0"
+title: ".daddy_code v2.1"
 author: "Rasmus Hammar, Hjalte Sveidqvist"
 format:
   html: 
@@ -1287,10 +1287,16 @@ summary(mass_by_flipper)
 Alternativt med `lm()` och sedan `boot_summary()`.
 
 ```{r}
-boot.anova_lm <- lm( # Skapa model
-  body_mass_g ~ species * sex,   
-  data = peng_boot ) 
-boot_summary(boot.anova_lm)
+boot_mass_by_flipper <- lm( # Skapa model
+  body_mass_g ~ flipper_length_mm,   
+  data = peng_boot, # Inga NA!
+  method = "residual" # Default, kräver lika varians 
+  # och att respons & mätfel är slumpmässiga 
+  # (men inte x-variabeln).
+#  method = "case" # Kräver lika varians och att 
+  # alla tre är slumpmässiga.
+) 
+boot.pval::boot_summary(boot_mass_by_flipper)
 ```
 
 #### Predict
@@ -1309,7 +1315,10 @@ measured_flipper_length <- data.frame(
 # De värden vi gissar med hjälp av modellen
 estimated_weight <- predict(
   object = mass_by_flipper, # Modellen
-  newdata = measured_flipper_length) # nya x-värden
+  newdata = measured_flipper_length, # nya x-värden
+  interval = "prediction" # Prediktionsintervall för en ny observation
+#  interval = "confidence" # Konfidensintervall för förväntade värden
+) 
 ```
 
 ```{r}
