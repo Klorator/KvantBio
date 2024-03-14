@@ -1288,14 +1288,16 @@ peng_boot <- peng_boot[!is.na(peng_boot$flipper_length_mm), ]
 
 boot_mass_by_flipper <- lm( # Skapa model
   body_mass_g ~ flipper_length_mm,   
-  data = peng_boot, # Inga NA!
+  data = peng_boot # Inga NA!
+) 
+boot.pval::boot_summary(
+  boot_mass_by_flipper,
   method = "residual" # Default, kräver lika varians 
   # och att respons & mätfel är slumpmässiga 
   # (men inte x-variabeln).
 #  method = "case" # Kräver lika varians och att 
   # alla tre är slumpmässiga.
-) 
-boot.pval::boot_summary(boot_mass_by_flipper)
+)
 ```
 
 #### Predict
