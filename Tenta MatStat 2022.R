@@ -1,5 +1,9 @@
 # MatStat tenta 2022
 
+# Matte ----
+
+
+
 # Statistik ----
 
 ## Fråga 2 ----
@@ -29,5 +33,6 @@ model_diagnostic(nekt_lm)
 
 # Gör bootstrap!
 nekt_boot <- boot.pval::boot_summary(nekt_lm)
+nekt_boot
 
 print(paste("Anpassad linje är: y =",nekt_boot$Estimate[2],"* x +",nekt_boot$Estimate[1]))

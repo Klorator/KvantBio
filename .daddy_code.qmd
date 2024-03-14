@@ -10,11 +10,6 @@ format:
     embed-resources: true
     self-contained-math: true
     code-overflow: wrap
-  docx: 
-    highlight-style: atom-one
-    toc: true
-    number-sections: true
-    number-depth: 4
   pdf:
     highlight-style: atom-one
     toc: true
@@ -1158,7 +1153,9 @@ peng_boot <- peng_boot[!is.na(peng_boot$sex), ]
 
 anova_boot <- ANOVA.boot(
   body_mass_g ~ species * sex,
-  data = peng_boot
+  data = peng_boot,
+  type = "residual" # Default, 
+#  type = "wild"
 )
 anova_boot[c("terms","df","p-values")]
 ```
@@ -1287,6 +1284,8 @@ summary(mass_by_flipper)
 Alternativt med `lm()` och sedan `boot_summary()`.
 
 ```{r}
+peng_boot <- peng_boot[!is.na(peng_boot$flipper_length_mm), ]
+
 boot_mass_by_flipper <- lm( # Skapa model
   body_mass_g ~ flipper_length_mm,   
   data = peng_boot, # Inga NA!
@@ -1331,7 +1330,7 @@ plot(
 )
 points(
   x = measured_flipper_length$flipper_length_mm, # newdata
-  y = estimated_weight, # Gissade värden
+  y = estimated_weight[ ,1], # Gissade värden
   
   pch = 16,
   col = "red"
