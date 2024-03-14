@@ -1,6 +1,6 @@
 ---
-title: ".daddy_code v1.0"
-author: "Rasmus Hammar"
+title: ".daddy_code v2.0"
+author: "Rasmus Hammar, Hjalte Sveidqvist"
 format:
   html: 
     highlight-style: atom-one
@@ -27,6 +27,8 @@ include-in-header:
 editor: visual
 execute: 
   echo: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 {{< pagebreak >}}
@@ -1494,6 +1496,251 @@ log(7)    # log(7) med basen e
 log10(7)  # log(7) med basen 10
 ```
 
+##### Matriser
+
+```{r}
+A <- rbind(
+  c(1,2),
+  c(3,4)
+)
+B <- rbind(
+  c(5,6),
+  c(7,8)
+)
+C <- rbind(
+ c(19,22),
+ c(43,50)
+)
+```
+
+```{r}
+A %*% B  # Matrismultiplikation
+A %^% 5  # Upphöjt med, kräver att paketet 'expm' är laddat med library()
+solve(A, C) # För ekvationen A %*% B = C ger solve(A,C) svaret B
+solve(A)    # Med en matris antas A %*% A-invers = I alltså ges A-invers
+```
+
+```{r}
+eigen_values_vectors <- eigen(A) # Egenvärden och egenvektorer i lista
+eigen_value <- eigen_values_vectors$values[1]    # Dominant egenvärde
+eigen_vector <- eigen_values_vectors$vectors[,1] # Dess egenvektor
+```
+
+## Differensekvationer
+
+Betrakta ekv. $x_{n+2} = 4x_{n}$ med begynnelsevilkor x~0~ = 5; x~1~ = 6.
+
+a.  Hitta en explicit formel
+
+    Detta kan vi inte lösa med R.
+
+b.  Beräkna x~7~
+
+```{r}
+x <- c()
+x[1] <- 5
+x[2] <- 6
+
+for (i in 1:10) {
+  x[i+2] <- 0*x[i+1] + 4*x[i]
+}
+x[7]
+```
+
+Alternativt skrivsätt som ger samma sak.
+
+```{r}
+x <- c(5,6)
+
+for (i in 3:12) {
+  x[i] <- 0*x[i-1] + 4*x[i-2]
+}
+x[7]
+```
+
+## Kritiska punkter
+
+Betrakta funktionen $f(x)=x^2e^{1-x^2}$
+
+a.  Visa att derivatan är $f'(x)=2x(1-x^2)e^{1-x^2}$
+
+    Detta kan vi inte göra (bra) i R.
+
+b.  Bestäm kritiska punkter och avgör deras typ
+
+    Kritiska punkter ges då $f'(x)=0$ så vi definerar funktionerna.
+
+    ```{r}
+    f_av_x <- function(x) {  # Funktion av funktion
+      x^2*exp(1-x^2)
+    }
+    f_deriv <- function(x) { # Derivata av funktion
+      fderiv(f_av_x, x)
+    }
+    ```
+
+    Skapar en plot för att grafiskt hitta nollpunktena.
+
+    ```{r}
+    plot(  # För att grafiskt hitta intervallen för nollställen
+      f_deriv,
+      xlim = c(-3,3),
+      ylim = c(-2,2),
+      col = "red"
+    )
+    abline(h = 0) # Linje för noll
+    abline(v = -2, lty = 2) # Markera nedre intervall
+    abline(v = 2, lty = 2)  # Markera övre intervall
+    ```
+
+    Använder `uniroot()` för att hitta exakta nollställen.
+
+    ```{r}
+    x_1 <- uniroot(f_deriv, 
+                   interval = c(-2, -0.5)
+                   )$root
+    x_2 <- uniroot(f_deriv, 
+                   interval = c(-0.5, 0.5)
+                   )$root
+    x_3 <- uniroot(f_deriv, 
+                   interval = c(0.5, 2)
+                   )$root
+
+    print(paste("Lösningarna är",x_1,";",x_2,";",x_3))
+    ```
+
+    Här måste man tänka till och avgöra om dessa tal egentligen ska avrundas till fina heltal eller omvandlas till bråk.
+
+    Teckentabell används för att avgöra dess typ.
+
+c.  Funktionens största/minsta värde på intervaller \[-2,2\]
+
+    Sätt in x-värden för punkter av intresse och jämför.
+
+d.  Bestäm ekvationen för tangenten till $y=f(x)$ i punkten x = 2
+
+    ```{r}
+    x <- 2
+    slope <- f_deriv(x)
+    intercept <- f_av_x(x) - slope * x
+
+    print(paste("Tangentens ekv. är: f(x) =",slope,"*x +",intercept))
+    ```
+
+## Matriser & diagonalisering
+
+Betrakta matrisen $A=\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$
+
+a.  Bestäm egenvärdena till A
+
+    ```{r}
+    A <- rbind(
+      c(2,1),
+      c(1,2)
+    )
+
+    A_eigen <- eigen(A)
+    A_eigen$values
+    ```
+
+b.  Bestäm egenvektorerna till A
+
+    ```{r}
+    A_eigen$vectors
+    ```
+
+c.  Diagonalisera A, d.v.s. hitta en diagonalmatris D och en inverterbar matris C, så att $A=CDC^{-1}$
+
+    ```{r}
+    D <- rbind(
+      c(A_eigen$values[1], 0),
+      c(0, A_eigen$values[2])
+    )
+    C <- rbind(
+      c(A_eigen$vectors[1,1], A_eigen$vectors[1,2]),
+      c(A_eigen$vectors[2,1], A_eigen$vectors[2,2])
+    )
+    C_invers <- solve(C)
+
+    C %*% D %*% C_invers # = A
+
+    C_invers %*% A %*% C # = D
+    ```
+
+d.  Beräkna A^8^ med hjälp av svaret i c.
+
+    ```{r}
+    n <- 8
+    C %*% (D %^% n) %*% C_invers # = A %^% n
+    ```
+
+## Diskreta dynamiska system
+
+Betrakta det diskreta dynamiska systemet $x_{n+1}=\frac{5x_n^2}{x_n^2+6}$
+
+a.  Bestäm systemets övergångsfunktion
+
+    Övergångs funktion $f(x)=\frac{5x^2}{x^2+6}$
+
+    ```{r}
+    discrete_fun <- function(x) {
+      (5*x^2)/(x^2+6)
+    }
+    ```
+
+b.  Bestäm systemets tre jämviktspunkter
+
+    Lös $f(x)=x$ med `uniroot()`
+
+    ```{r}
+    discrete_fun_Eq <- function(x) {
+      discrete_fun(x) - x
+    }
+    plot(
+      discrete_fun_Eq, 
+      ylim = c(-0.5,0.5), 
+      xlim = c(-1,5),
+      col = "red"
+    )
+    abline(h = 0)
+
+    x_1 <- uniroot(discrete_fun_Eq, 
+                   interval = c(-0.5, 0.5)
+                   )$root
+    x_2 <- uniroot(discrete_fun_Eq, 
+                   interval = c(1.5, 2.5)
+                   )$root
+    x_3 <- uniroot(discrete_fun_Eq, 
+                   interval = c(2.5, 3.5)
+                   )$root
+
+    print(paste(x_1,";",x_2,";",x_3))
+    ```
+
+    Avgör själv om dessa rötter måste avrundas eller omvandlas till bråk.
+
+c.  Avgör om de är stabila/instabila
+
+    Beroende på om derivatan är större/mindre än ett blir jämviktspunkten ➜ instabil \< 1 \< stabil
+
+    ```{r}
+    discrete_deriv <- function(x) {
+      fderiv(discrete_fun, x)
+    }
+
+    check_stability <- function(x) {
+      if (abs(x) > 1) {
+        print(paste(x, "är stabil"))
+      } else {
+        print(paste(x,"är instabil"))
+      }
+    }
+
+    check_stability(x_1)
+    check_stability(x_2)
+    check_stability(x_3)
+    ```
+
 ## Differentialekvationer
 
 ```{r}
@@ -2004,8 +2251,11 @@ sol_LV <- ode(
   method = "rk4"         # Runge-Kutta version 4
 )
 sol_LV <- as.data.frame(sol_LV)
+```
 
+Plotta grafen.
 
+```{r}
 # Plotta antal insekter [milljoner] respektive spindlar [tusen] mot tid
 plot(
   sol_LV$time,
