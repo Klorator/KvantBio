@@ -1,0 +1,534 @@
+---
+title: "Herbivoristudier"
+author: "Rasmus Hammar"
+format: 
+  html:
+    toc: true
+editor: visual
+---
+
+```{r}
+#| echo: false
+#| output: false
+
+library(tidyverse)
+library(readxl)
+library(kableExtra) # For styling?
+```
+
+# **1. Fältstudie – betestryck i olika miljöer**
+
+**Rasmus Hammar**
+
+Uppgift nr. 1
+
+Frågeställning: Föredrar älg, rådjur och hare olika skogstyper?
+
+På fem platser i ett naturreservat där det har uppstått en öppning i skogen pga en storm observerar du antalet älgar, rådjur och harar som du ser under 3 timmar på kvällen. Platserna skiljer sig i att skogens återväxt består av olika trädarter. Du vill veta om vissa trädarter är mer attraktiva för vissa djurarter. Data är antal djur.
+
+```{r}
+#| echo: false
+
+df.1 <- read_excel(
+  path = file.path("EkoPop Herbivori-9uppg.xlsx"),
+  sheet = "uppg1"
+)
+df.1 <- df.1 %>% 
+  column_to_rownames("Herbivor")
+```
+
+**Statistisk metod**
+
+Jag vill testa om det finns en skillnad i antal djur av en viss art gentemot vilken trädart som dominerar bland återväxten. Genom att använda ett Chi-2 oberoende test undersöks om fördelningen av antal djur är jämn.
+
+H~0~: Det finns ingen skillnad i fördelningen av djur mellan olika trädtyper (ingen skillnad mot förväntade värden).
+
+H~1~: Det finns en skillnad mellan observerade och förväntade antal djur mellan de olika trädarterna.
+
+Analys i R:
+
+```{r}
+#| echo: true
+
+chisq.1 <- chisq.test(df.1)
+```
+
+**Resultat**
+
+Chi-2 testet indikerar att det finns en skillnad på fördelningen av djur mellan områden med olika trädarter (X^2^(8) = 42.973, p = 8.889e-7). Genom att jämföra observerade (Tabell 1) och förväntade värden (Tabell 2) ser vi att älgar observerades oftare än förväntat där skogens återväxt dominerades av tall eller gran, men mer sällan för ek eller hassel. Rådjur observerades oftare för björk men mer sällan för gran eller hassel. Hare observerades oftare för ek eller hassel men mer sällan för björk, tall eller gran.
+
+```{r}
+#| echo: false
+kable(chisq.1$observed,
+      caption = "Tabell 1: Observerade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner).")
+```
+
+```{r}
+#| echo: false
+kable(chisq.1$expected,
+      caption = "Tabell 2: Förväntade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner).")
+```
+
+Antagandet för Chi-2 test, att ingen cell har förväntat värde under fem, är uppfyllt.
+
+**Tolkning:**
+
+Jag fann att de tre djurens indikerade preferenser inte överlappade med varandra vilken kan tyda på att de föredrar vissa skogstyper över andra. Samtidigt fanns det vissa trädarter där det inte förekomm någon skillnad mellan observerade kontra förväntade antal, vilket skulle kunna indikera antingen en svagare preferens eller ingen preferens.
+
+{{< pagebreak >}}
+
+## Uppgift 2
+
+**\[Ditt namn\]**
+
+\[Uppgift nr. X\]
+
+**Statistisk metod**
+
+*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+
+Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+
+*Formulering av de formella statistiska hypoteser som testas. Exempel:*
+
+H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
+
+H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+
+Model i R:
+
+```{r}
+```
+
+**Resultat**
+
+*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+
+Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+
+Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+
+Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+
+Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+
+Estimat                       Std. error                        t-värde                              P
+
+Intercept         51.518086                 1.732180                          29.74                  \<0.0001
+
+Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
+
+Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+
+**Tolkning:**
+
+*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+
+Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+
+*Om man jämför grupper kan man skriva:*
+
+Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+
+Och så lägger man till några biologiska slutsatser.
+
+{{\<pagebreak\>}}
+
+## Uppgift 3
+
+**\[Ditt namn\]**
+
+\[Uppgift nr. X\]
+
+**Statistisk metod**
+
+*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+
+Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+
+*Formulering av de formella statistiska hypoteser som testas. Exempel:*
+
+H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
+
+H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+
+Model i R:
+
+```{r}
+```
+
+**Resultat**
+
+*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+
+Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+
+Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+
+Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+
+Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+
+Estimat                       Std. error                        t-värde                              P
+
+Intercept         51.518086                 1.732180                          29.74                  \<0.0001
+
+Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
+
+Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+
+**Tolkning:**
+
+*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+
+Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+
+*Om man jämför grupper kan man skriva:*
+
+Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+
+Och så lägger man till några biologiska slutsatser.
+
+{{\<pagebreak\>}}
+
+## Uppgift 4
+
+**\[Ditt namn\]**
+
+\[Uppgift nr. X\]
+
+**Statistisk metod**
+
+*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+
+Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+
+*Formulering av de formella statistiska hypoteser som testas. Exempel:*
+
+H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
+
+H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+
+Model i R:
+
+```{r}
+```
+
+**Resultat**
+
+*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+
+Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+
+Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+
+Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+
+Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+
+Estimat                       Std. error                        t-värde                              P
+
+Intercept         51.518086                 1.732180                          29.74                  \<0.0001
+
+Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
+
+Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+
+**Tolkning:**
+
+*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+
+Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+
+*Om man jämför grupper kan man skriva:*
+
+Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+
+Och så lägger man till några biologiska slutsatser.
+
+{{\<pagebreak\>}}
+
+## Uppgift 5
+
+**\[Ditt namn\]**
+
+\[Uppgift nr. X\]
+
+**Statistisk metod**
+
+*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+
+Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+
+*Formulering av de formella statistiska hypoteser som testas. Exempel:*
+
+H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
+
+H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+
+Model i R:
+
+```{r}
+```
+
+**Resultat**
+
+*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+
+Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+
+Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+
+Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+
+Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+
+Estimat                       Std. error                        t-värde                              P
+
+Intercept         51.518086                 1.732180                          29.74                  \<0.0001
+
+Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
+
+Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+
+**Tolkning:**
+
+*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+
+Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+
+*Om man jämför grupper kan man skriva:*
+
+Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+
+Och så lägger man till några biologiska slutsatser.
+
+{{\<pagebreak\>}}
+
+## Uppgift 6
+
+**\[Ditt namn\]**
+
+\[Uppgift nr. X\]
+
+**Statistisk metod**
+
+*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+
+Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+
+*Formulering av de formella statistiska hypoteser som testas. Exempel:*
+
+H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
+
+H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+
+Model i R:
+
+```{r}
+```
+
+**Resultat**
+
+*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+
+Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+
+Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+
+Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+
+Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+
+Estimat                       Std. error                        t-värde                              P
+
+Intercept         51.518086                 1.732180                          29.74                  \<0.0001
+
+Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
+
+Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+
+**Tolkning:**
+
+*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+
+Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+
+*Om man jämför grupper kan man skriva:*
+
+Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+
+Och så lägger man till några biologiska slutsatser.
+
+{{\<pagebreak\>}}
+
+## Uppgift 7
+
+**\[Ditt namn\]**
+
+\[Uppgift nr. X\]
+
+**Statistisk metod**
+
+*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+
+Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+
+*Formulering av de formella statistiska hypoteser som testas. Exempel:*
+
+H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
+
+H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+
+Model i R:
+
+```{r}
+```
+
+**Resultat**
+
+*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+
+Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+
+Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+
+Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+
+Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+
+Estimat                       Std. error                        t-värde                              P
+
+Intercept         51.518086                 1.732180                          29.74                  \<0.0001
+
+Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
+
+Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+
+**Tolkning:**
+
+*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+
+Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+
+*Om man jämför grupper kan man skriva:*
+
+Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+
+Och så lägger man till några biologiska slutsatser.
+
+{{\<pagebreak\>}}
+
+## Uppgift 8
+
+**\[Ditt namn\]**
+
+\[Uppgift nr. X\]
+
+**Statistisk metod**
+
+*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+
+Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+
+*Formulering av de formella statistiska hypoteser som testas. Exempel:*
+
+H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
+
+H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+
+Model i R:
+
+```{r}
+```
+
+**Resultat**
+
+*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+
+Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+
+Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+
+Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+
+Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+
+Estimat                       Std. error                        t-värde                              P
+
+Intercept         51.518086                 1.732180                          29.74                  \<0.0001
+
+Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
+
+Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+
+**Tolkning:**
+
+*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+
+Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+
+*Om man jämför grupper kan man skriva:*
+
+Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+
+Och så lägger man till några biologiska slutsatser.
+
+{{\<pagebreak\>}}
+
+## Uppgift 9
+
+**\[Ditt namn\]**
+
+\[Uppgift nr. X\]
+
+**Statistisk metod**
+
+*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+
+Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+
+*Formulering av de formella statistiska hypoteser som testas. Exempel:*
+
+H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
+
+H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+
+Model i R:
+
+```{r}
+```
+
+**Resultat**
+
+*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+
+Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+
+Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+
+Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+
+Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+
+Estimat                       Std. error                        t-värde                              P
+
+Intercept         51.518086                 1.732180                          29.74                  \<0.0001
+
+Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
+
+Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+
+**Tolkning:**
+
+*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+
+Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+
+*Om man jämför grupper kan man skriva:*
+
+Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+
+Och så lägger man till några biologiska slutsatser.
+
+{{\<pagebreak\>}}
