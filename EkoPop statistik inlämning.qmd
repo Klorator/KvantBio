@@ -77,62 +77,98 @@ Jag fann att de tre djurens indikerade preferenser inte överlappade med varandr
 
 {{< pagebreak >}}
 
-## Uppgift 2
+# **2. Laboratorieexperiment – effekt av bete på trädtillväxten**
 
-**\[Ditt namn\]**
+**Rasmus Hammar**
 
-\[Uppgift nr. X\]
+Uppgift nr. 2
+
+Frågeställning: Hur påverkar olika typer av herbivori trädens tillväxt?
+
+I växthus simulerar du betning av däggdjur genom att klippa av toppskotten och betning av insekter genom att klippa av 50% av bladen på 2-åriga björkar. Före experimentet och efter 5 månader mäter du trädhöjd (i cm).
+
+```{r}
+#| echo: false
+
+df.2 <- read_excel(
+  path = file.path("EkoPop Herbivori-9uppg.xlsx"),
+  sheet = "uppg2"
+)
+```
 
 **Statistisk metod**
 
-*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+Eftersom jag vill undersöka skillnaden i tillväxt mellan grupper (behandling) används differensen som respons i en envägs ANOVA.
 
-Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+H~0~: Det finns ingen skillnad i medelvärde av tillväxt mellan de olika behandlingarna.
 
-*Formulering av de formella statistiska hypoteser som testas. Exempel:*
-
-H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
-
-H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+H~1~: Medelvärdet av tillväxt skiljer sig mellan behandlingarna.
 
 Model i R:
 
 ```{r}
+#| echo: true
+
+df.2 <- df.2 %>% 
+  mutate(difference_cm = `höjd_efter_cm` - `höjd_före_cm`)
+
+anova.2 <- aov(
+  sqrt(difference_cm) ~ behandling,
+  data = df.2
+)
+
+anova.2_tukey <- TukeyHSD(anova.2)
 ```
 
 **Resultat**
 
-*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+Efter en kvadratrotstransformation uppfyller ANOVA modellen antaganden om lika varians och normalfördelning (se @fig-1). Analysen av behandling (F(2) = 21.01, p = 3.14e-6) indikerade att medelvärdet för minst en av behandlingarna skiljer sig. Ett post-hoc test med Tukey HSD (Tabell 3) indikerar att det finns en skillnad mellan alla grupper.
 
-Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+::: {#fig-1}
+```{r}
+#| echo: false
 
-Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+par(mfrow = c(1,2))
+plot(anova.2, which = 1)
+plot(anova.2, which = 2)
+par(mfrow = c(1,1))
+```
 
-Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+Model diagnostik för envägs ANOVA. Variansen av residualer inom och mellan grupper (vänster) är ungefär lika och Kvantil-Kvantil plot av residualer (höger) visar på normalfördelning.
+:::
 
-Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+```{r}
+#| echo: false
 
-Estimat                       Std. error                        t-värde                              P
-
-Intercept         51.518086                 1.732180                          29.74                  \<0.0001
-
-Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
-
-Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+kable(anova.2_tukey$behandling,
+      caption = "Tabell 3: Resultat från Tukey HSD post-hoc test.")
+```
 
 **Tolkning:**
 
-*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+Jag fann att alla behandlingar skiljde sig från varandra. Minst tillväxt hade behandlingen med klippta blad med ett genomsnittlig tillväxt på 24.1 cm, sedan ingen behandling med 49 cm och störst tillväxt var Klippt toppskott med 76.4 cm (se @fig-2).
 
-Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+**Biologisk slutsats?!**
 
-*Om man jämför grupper kan man skriva:*
+::: {#fig-2}
+```{r}
+#| echo: false
+ggplot(df.2) +
+  aes(x = behandling,
+      y = difference_cm,
+      fill = behandling) +
+  geom_boxplot() +
+  theme_classic() +
+  scale_fill_brewer(palette = "Dark2") +
+  labs(x = "Behandling",
+       y = "Tillväxt [cm]") +
+  guides(fill = "none")
+```
 
-Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+Boxplot av tillväxten uppdelad efter behandling. Medelvärde för behandling Ingen 49 cm, Klippt blad 24.1 cm och Klippt toppskott 76.4 cm.
+:::
 
-Och så lägger man till några biologiska slutsatser.
-
-{{\<pagebreak\>}}
+{{< pagebreak >}}
 
 ## Uppgift 3
 
