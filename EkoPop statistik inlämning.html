@@ -81,16 +81,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#fältstudie-betestryck-i-olika-miljöer" id="toc-fältstudie-betestryck-i-olika-miljöer" class="nav-link active" data-scroll-target="#fältstudie-betestryck-i-olika-miljöer"><strong>1. Fältstudie – betestryck i olika miljöer</strong></a></li>
-  <li><a href="#laboratorieexperiment-effekt-av-bete-på-trädtillväxten" id="toc-laboratorieexperiment-effekt-av-bete-på-trädtillväxten" class="nav-link" data-scroll-target="#laboratorieexperiment-effekt-av-bete-på-trädtillväxten"><strong>2. Laboratorieexperiment – effekt av bete på trädtillväxten</strong></a>
-  <ul class="collapse">
-  <li><a href="#uppgift-3" id="toc-uppgift-3" class="nav-link" data-scroll-target="#uppgift-3">Uppgift 3</a></li>
-  <li><a href="#uppgift-4" id="toc-uppgift-4" class="nav-link" data-scroll-target="#uppgift-4">Uppgift 4</a></li>
-  <li><a href="#uppgift-5" id="toc-uppgift-5" class="nav-link" data-scroll-target="#uppgift-5">Uppgift 5</a></li>
-  <li><a href="#uppgift-6" id="toc-uppgift-6" class="nav-link" data-scroll-target="#uppgift-6">Uppgift 6</a></li>
+  <li><a href="#laboratorieexperiment-effekt-av-bete-på-trädtillväxten" id="toc-laboratorieexperiment-effekt-av-bete-på-trädtillväxten" class="nav-link" data-scroll-target="#laboratorieexperiment-effekt-av-bete-på-trädtillväxten"><strong>2. Laboratorieexperiment – effekt av bete på trädtillväxten</strong></a></li>
+  <li><a href="#fältexperiment-effekt-av-bete-av-hare-och-rådjur" id="toc-fältexperiment-effekt-av-bete-av-hare-och-rådjur" class="nav-link" data-scroll-target="#fältexperiment-effekt-av-bete-av-hare-och-rådjur"><strong>3. Fältexperiment – effekt av bete av hare och rådjur</strong></a></li>
+  <li><a href="#fältstudie-insektsförekomst-i-träd-av-olika-ålder" id="toc-fältstudie-insektsförekomst-i-träd-av-olika-ålder" class="nav-link" data-scroll-target="#fältstudie-insektsförekomst-i-träd-av-olika-ålder">4. Fältstudie – insektsförekomst i träd av olika ålder</a></li>
+  <li><a href="#laboratorieexperiment-relation-mellan-bladens-längd-och-bredd" id="toc-laboratorieexperiment-relation-mellan-bladens-längd-och-bredd" class="nav-link" data-scroll-target="#laboratorieexperiment-relation-mellan-bladens-längd-och-bredd"><strong>5. Laboratorieexperiment – relation mellan bladens längd och bredd</strong></a></li>
+  <li><a href="#fältexperiment-försvarssubstanser-hos-träden" id="toc-fältexperiment-försvarssubstanser-hos-träden" class="nav-link" data-scroll-target="#fältexperiment-försvarssubstanser-hos-träden"><strong>6. Fältexperiment – försvarssubstanser hos träden</strong></a></li>
   <li><a href="#uppgift-7" id="toc-uppgift-7" class="nav-link" data-scroll-target="#uppgift-7">Uppgift 7</a></li>
   <li><a href="#uppgift-8" id="toc-uppgift-8" class="nav-link" data-scroll-target="#uppgift-8">Uppgift 8</a></li>
   <li><a href="#uppgift-9" id="toc-uppgift-9" class="nav-link" data-scroll-target="#uppgift-9">Uppgift 9</a></li>
-  </ul></li>
   </ul>
 </nav>
 </div>
@@ -134,11 +132,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>chisq<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(df<span class="fl">.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Resultat</strong></p>
-<p>Chi-2 testet indikerar att det finns en skillnad på fördelningen av djur mellan områden med olika trädarter (X<sup>2</sup>(8) = 42.973, p = 8.889e-7). Genom att jämföra observerade (Tabell 1) och förväntade värden (Tabell 2) ser vi att älgar observerades oftare än förväntat där skogens återväxt dominerades av tall eller gran, men mer sällan för ek eller hassel. Rådjur observerades oftare för björk men mer sällan för gran eller hassel. Hare observerades oftare för ek eller hassel men mer sällan för björk, tall eller gran.</p>
+<p>Antagandet för Chi-2 test, att ingen cell har förväntat värde under fem, är uppfyllt. Analysen indikerar att det finns en skillnad på fördelningen av djur mellan områden med olika trädarter (X<sup>2</sup>(8) = 42.973, p = 8.889e-7). Genom att jämföra observerade (<a href="#tbl-1.1">Tabell&nbsp;1</a>) och förväntade värden (<a href="#tbl-1.2">Tabell&nbsp;2</a>) ser vi att älgar observerades oftare än förväntat där skogens återväxt dominerades av tall eller gran, men mer sällan för ek eller hassel. Rådjur observerades oftare för björk men mer sällan för gran eller hassel. Hare observerades oftare för ek eller hassel men mer sällan för björk, tall eller gran.</p>
 <div class="cell">
 <div class="cell-output-display">
+<div id="tbl-1.1" class="anchored">
 <table class="table table-sm table-striped small">
-<caption>Tabell 1: Observerade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner).</caption>
+<caption>Tabell&nbsp;1: Observerade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner).</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;"></th>
@@ -178,10 +177,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+</div>
 <div class="cell">
 <div class="cell-output-display">
+<div id="tbl-1.2" class="anchored">
 <table class="table table-sm table-striped small">
-<caption>Tabell 2: Förväntade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner).</caption>
+<caption>Tabell&nbsp;2: Förväntade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner).</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;"></th>
@@ -221,7 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>Antagandet för Chi-2 test, att ingen cell har förväntat värde under fem, är uppfyllt.</p>
+</div>
 <p><strong>Tolkning:</strong></p>
 <p>Jag fann att de tre djurens indikerade preferenser inte överlappade med varandra vilken kan tyda på att de föredrar vissa skogstyper över andra. Samtidigt fanns det vissa trädarter där det inte förekomm någon skillnad mellan observerade kontra förväntade antal, vilket skulle kunna indikera antingen en svagare preferens eller ingen preferens.</p>
 <div style="page-break-after: always;"></div>
@@ -249,21 +250,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.2</span>_tukey <span class="ot">&lt;-</span> <span class="fu">TukeyHSD</span>(anova<span class="fl">.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Resultat</strong></p>
-<p>Efter en kvadratrotstransformation uppfyller ANOVA modellen antaganden om lika varians och normalfördelning (se <a href="#fig-1">Figure&nbsp;1</a>). Analysen av behandling (F(2) = 21.01, p = 3.14e-6) indikerade att medelvärdet för minst en av behandlingarna skiljer sig. Ett post-hoc test med Tukey HSD (Tabell 3) indikerar att det finns en skillnad mellan alla grupper.</p>
-<div id="fig-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<p>Efter en kvadratrotstransformation uppfyller ANOVA modellen antaganden om lika varians och normalfördelning (<a href="#fig-2.1">Figur&nbsp;1</a>). Analysen av behandling (F(2) = 21.01, p = 3.14e-6) indikerade att medelvärdet för minst en av behandlingarna skiljer sig och förklarar 60.9 % av variationen. Ett post-hoc test med Tukey HSD (<a href="#tbl-2.1">Tabell&nbsp;3</a>) indikerar att det finns en skillnad mellan alla grupper.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="EkoPop-statistik-inlämning_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-<figcaption class="figure-caption">Figure&nbsp;1: Model diagnostik för envägs ANOVA. Variansen av residualer inom och mellan grupper (vänster) är ungefär lika och Kvantil-Kvantil plot av residualer (höger) visar på normalfördelning.</figcaption>
+<div id="fig-2.1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-2.1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;1: Modell diagnostik för envägs ANOVA. Variansen av residualer inom och mellan grupper (vänster) är ungefär lika och Kvantil-Kvantil plot av residualer (höger) visar på normalfördelning.</figcaption>
 </figure>
 </div>
+</div>
+</div>
 <div class="cell">
 <div class="cell-output-display">
+<div id="tbl-2.1" class="anchored">
 <table class="table table-sm table-striped small">
-<caption>Tabell 3: Resultat från Tukey HSD post-hoc test.</caption>
+<caption>Tabell&nbsp;3: Resultat från Tukey HSD post-hoc test.</caption>
 <colgroup>
 <col style="width: 40%">
 <col style="width: 14%">
@@ -306,22 +308,201 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+</div>
 <p><strong>Tolkning:</strong></p>
-<p>Jag fann att alla behandlingar skiljde sig från varandra. Minst tillväxt hade behandlingen med klippta blad med ett genomsnittlig tillväxt på 24.1 cm, sedan ingen behandling med 49 cm och störst tillväxt var Klippt toppskott med 76.4 cm (se <a href="#fig-2">Figure&nbsp;2</a>).</p>
-<p><strong>Biologisk slutsats?!</strong></p>
-<div id="fig-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<p>Jag fann att alla behandlingar skiljde sig från varandra. Minst tillväxt hade behandlingen med klippta blad med ett genomsnittlig tillväxt på 24.1 cm, sedan ingen behandling med 49 cm och störst tillväxt var Klippt toppskott med 76.4 cm (<a href="#fig-2.2">Figur&nbsp;2</a>). Behandlingen av att klippa toppskott leder till högre tillväxt. I naturen kan detta motsvaras av förekomsten av större herbivorer och den ökade tillväxten kan anses gynnsam i exempelvis en skogsodling.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="EkoPop-statistik-inlämning_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</div>
-</div>
-<figcaption class="figure-caption">Figure&nbsp;2: Boxplot av tillväxten uppdelad efter behandling. Medelvärde för behandling Ingen 49 cm, Klippt blad 24.1 cm och Klippt toppskott 76.4 cm.</figcaption>
+<div id="fig-2.2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-2.2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;2: Genomsnittlig tillväxt med standardavvikelse, uppdelad efter behandling.</figcaption>
 </figure>
 </div>
+</div>
+</div>
 <div style="page-break-after: always;"></div>
-<section id="uppgift-3" class="level2">
-<h2 class="anchored" data-anchor-id="uppgift-3">Uppgift 3</h2>
+</section>
+<section id="fältexperiment-effekt-av-bete-av-hare-och-rådjur" class="level1">
+<h1><strong>3. Fältexperiment – effekt av bete av hare och rådjur</strong></h1>
+<p><strong>Rasmus Hammar</strong></p>
+<p>Uppgift nr. 3</p>
+<p>Frågeställning: Vilken effekt har bete av hare och rådjur?</p>
+<p>Din handledare har redan för fem år sedan konstruerat ett fältexperiment för att undersöka effekt av bete av olika djurslag. Hon har stängt ut djuren (hare, rådjur) med hjälp av stängsel. Ni skördar blad från 5-åriga björkar och väger biomassan (i gram torrvikt).</p>
+<p>Du vill undersöka om bete av hare och bete av rådjur har någon effekt, och om det finns någon interaktion mellan harbete och rådjursbete.</p>
+<p><strong>Statistisk metod</strong></p>
+<p>Jag gör en tvåvägs ANOVA för att undersöka hur bladmassan påverkas av förekomsten av hare, rådjur och interaktionen.</p>
+<p>H<sub>0</sub>: Ingen skillnad i biomassans medelvärde beroende på förekomst av betning av hare och/eller rådjur.</p>
+<p>H<sub>1</sub>: Skillnad i biomassans medelvärde beroende på förekomsten av hare och/eller rådjur.</p>
+<p>Model i R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  blad_g <span class="sc">~</span> Hare <span class="sc">*</span> <span class="st">`</span><span class="at">Rådjur</span><span class="st">`</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.3</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Resultat</strong></p>
+<p>Residualanalysen (<a href="#fig-3.1">Figur&nbsp;3</a>) indikerar att antaganden om lika varians och normalfördelning är uppfyllda.</p>
+<p>Analysen indikerar att förekomsten av hare leder till skillnad i medelvärde (F(1) = 24.816, p = 7.17e-5). Ett Tukey HSD post-hoc test visade att skillnaden förekom då förekomst av hare jämfördes med frånvaro av hare (<a href="#tbl-3.1">Tabell&nbsp;4</a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-3.1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-3.1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;3: Residualanalys av variation (vänster) och normalfördelning (höger).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-3.1" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Tabell&nbsp;4: Tukey HSD post-hoc test.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Hare:Rådjur</th>
+<th style="text-align: right;">diff</th>
+<th style="text-align: right;">lwr</th>
+<th style="text-align: right;">upr</th>
+<th style="text-align: right;">p adj</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Nej:Ja-Ja:Ja</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">10.17371</td>
+<td style="text-align: right;">119.82629</td>
+<td style="text-align: right;">0.0166128</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ja:Nej-Ja:Ja</td>
+<td style="text-align: right;">-5</td>
+<td style="text-align: right;">-59.82629</td>
+<td style="text-align: right;">49.82629</td>
+<td style="text-align: right;">0.9939766</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nej:Nej-Ja:Ja</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">13.17371</td>
+<td style="text-align: right;">122.82629</td>
+<td style="text-align: right;">0.0118594</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ja:Nej-Nej:Ja</td>
+<td style="text-align: right;">-70</td>
+<td style="text-align: right;">-124.82629</td>
+<td style="text-align: right;">-15.17371</td>
+<td style="text-align: right;">0.0094520</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nej:Nej-Nej:Ja</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">-51.82629</td>
+<td style="text-align: right;">57.82629</td>
+<td style="text-align: right;">0.9986755</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nej:Nej-Ja:Nej</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">18.17371</td>
+<td style="text-align: right;">127.82629</td>
+<td style="text-align: right;">0.0067073</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Tolkning:</strong></p>
+<p>Harar är den avgörande faktorn och är mer destruktiva för tillväxten av bladmassa hos mindre björkar.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="fältstudie-insektsförekomst-i-träd-av-olika-ålder" class="level1">
+<h1>4. Fältstudie – insektsförekomst i träd av olika ålder</h1>
+<p><strong>[Rasmus Hammar]</strong></p>
+<p>[Uppgift nr. 4]</p>
+<p>Frågeställning: Finns det olika mängd insekter i träd av olika ålder?</p>
+<p>Du hänger insektsfällor i 20 i ekträd av olika åldrar. Mätvärden är torrvikt av insekter i fällorna under en månad sammanlagt.</p>
+<p><strong>Statistisk metod</strong></p>
+<p>Jag valde att göra ett Pearson’s korrelation test.</p>
+<p>H<sub>0</sub>: Det finns ingen korrelation mellan trädens ålder och mängden insekter.</p>
+<p>H<sub>1</sub>: Det finns en korrelation mellan trädens ålder och mängden insekter.</p>
+<p>Model i R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>corr<span class="fl">.4</span> <span class="ot">&lt;-</span> <span class="fu">cor.test</span>( <span class="co"># transformation?</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(df<span class="fl">.4</span><span class="sc">$</span>ålder_år), <span class="fu">log</span>(df<span class="fl">.4</span><span class="sc">$</span>insekter_mg)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Resultat</strong></p>
+<p>Analysen indikerade en positiv korrelation (r = 0.948, p = 2.29e-10).</p>
+<p>!! Kolla normalfördelning !!</p>
+<p><strong>Tolkning:</strong></p>
+<p>Analysen indikerar att det finns fler insekter i äldre träd. Det är därför gynnsamt för den biologiska mångfalden och exempelvis pollination att bevara gamla träd.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="laboratorieexperiment-relation-mellan-bladens-längd-och-bredd" class="level1">
+<h1><strong>5. Laboratorieexperiment – relation mellan bladens längd och bredd</strong></h1>
+<p><strong>[Rasmus Hammar]</strong></p>
+<p>[Uppgift nr. 5]</p>
+<p>Fågeställning: Räcker det med att mäta bladlängd för att uppskatta bladarea?</p>
+<p>Du mäter längden och bredden av trädens blad under dina växthusexperiment. Egentligen är du intresserad av bladarean som ett mått på trädens totala produktion av fotosyntetiska delar. Att mäta arean är krångligt, men man brukar anta att den är proportionell mot bladlängd x bladbredd. Om det finns ett bra samband mellan bladens längd och bredd så skulle det i dina fortsatta studier gå bra att bara mäta bladlängd för att kunna prediktera bladbredden och ändå få ett bra mått på bladarea.</p>
+<p><strong>Statistisk metod</strong></p>
+<p>Jag genomför en linjär regression för att undersöka sambandet hur bladlängd påverkar bladbredd.</p>
+<p>H<sub>0</sub>: Det finns inget samband mellan blandlängd och bladbredd (linjens lutning = 0).</p>
+<p>H<sub>1</sub>: Det finns ett samband mellan blandlängd och bladbredd.</p>
+<p>Model i R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lm<span class="fl">.5</span> <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  bladbredd_mm <span class="sc">~</span> bladlängd_mm,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.5</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Resultat</strong></p>
+<p>Residualanalysen (Figur 5) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Analysen visar att det finns ett positivt samband mellan bladlängden och bladbredden (R<sup>2</sup>(18) = 0.550, p = 0.00018) med !! function !!.</p>
+<p><strong>Tolkning:</strong></p>
+<p>Det finns ett samband som kan användas för att prediktera bladbredd, och därmed bladarea, utifrom bladlängd. Dock var sambandet inte särskilt starkt vilket innebär att det inte är den säkraste metoden.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="fältexperiment-försvarssubstanser-hos-träden" class="level1">
+<h1><strong>6. Fältexperiment – försvarssubstanser hos träden</strong></h1>
+<p><strong>[Rasmus Hammar]</strong></p>
+<p>[Uppgift nr. 6]</p>
+<p>Frågeställning: Leder insektsbete till att träden bildar försvarssubstanser?</p>
+<p>Du vill undersöka om 5-åriga ekträd som betas starkt av insekter har ett större försvar än 5-åriga ekträd som inte utsätts för ett starkt betningstryck. I ett område med många insekter väljer du ut tio trädpar. Det är träd som står nära varandra och som är lika stora och gamla. I varje par behandlar du det ena trädet med insekticid och skyddar det med insektsnät i maj (’Behandlat’ = låg/ingen betning). Det andra trädet i paret behandlar du inte alls (’Referens’ = högt betningstryck). I slutet av augusti mäter du mängden tanniner i ekbladen. Data är medelvärden för 50 blad per träd.</p>
+<p><strong>Statistisk metod</strong></p>
+<p>Jag väljer att göra ett parat t-test då referens- och behandlingsträd är specifikt utvalda i par. På grund av det begränsade antalet observationer är det svårt att avgöra om data är normalfördelad; ett parametriskt test valdes.</p>
+<p>H<sub>0</sub>: Det finns ingen skillnad i medelvärden mellan referens- och behandlade träd.</p>
+<p>H<sub>1</sub>: Det finns en skillnad i medelvärde mellan referens- och behandlade träd.</p>
+<p>Model i R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ttest<span class="fl">.6</span> <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  df<span class="fl">.6</span><span class="sc">$</span><span class="st">`</span><span class="at">tanninkonc_ref_mg/g</span><span class="st">`</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  df<span class="fl">.6</span><span class="sc">$</span><span class="st">`</span><span class="at">tanninkonc_beh_mg/g</span><span class="st">`</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">paired =</span> T</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Resultat</strong></p>
+<p>Analysen indikerade att det finns en skillnad i mängd tanniner mellan referens- och behandlade träd (t(9) = 2.506, p = 0.034).</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><strong>Tolkning:</strong></p>
+<p>Analysen visar att träd som utsätt för högre betning producerar högre koncentrationer tanniner som försvarsmekanism. Dock behövs fler observationer för att säkerställa resultaten. Experimentdesign var bra för att kontrollera påverkan av jordmån/miljö.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="uppgift-7" class="level1">
+<h1>Uppgift 7</h1>
 <p><strong>[Ditt namn]</strong></p>
 <p>[Uppgift nr. X]</p>
 <p><strong>Statistisk metod</strong></p>
@@ -349,8 +530,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Och så lägger man till några biologiska slutsatser.</p>
 <p>{{&lt;pagebreak&gt;}}</p>
 </section>
-<section id="uppgift-4" class="level2">
-<h2 class="anchored" data-anchor-id="uppgift-4">Uppgift 4</h2>
+<section id="uppgift-8" class="level1">
+<h1>Uppgift 8</h1>
 <p><strong>[Ditt namn]</strong></p>
 <p>[Uppgift nr. X]</p>
 <p><strong>Statistisk metod</strong></p>
@@ -378,8 +559,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Och så lägger man till några biologiska slutsatser.</p>
 <p>{{&lt;pagebreak&gt;}}</p>
 </section>
-<section id="uppgift-5" class="level2">
-<h2 class="anchored" data-anchor-id="uppgift-5">Uppgift 5</h2>
+<section id="uppgift-9" class="level1">
+<h1>Uppgift 9</h1>
 <p><strong>[Ditt namn]</strong></p>
 <p>[Uppgift nr. X]</p>
 <p><strong>Statistisk metod</strong></p>
@@ -406,123 +587,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.</p>
 <p>Och så lägger man till några biologiska slutsatser.</p>
 <p>{{&lt;pagebreak&gt;}}</p>
-</section>
-<section id="uppgift-6" class="level2">
-<h2 class="anchored" data-anchor-id="uppgift-6">Uppgift 6</h2>
-<p><strong>[Ditt namn]</strong></p>
-<p>[Uppgift nr. X]</p>
-<p><strong>Statistisk metod</strong></p>
-<p><em>Val av statistiskt test med motivering baserat på den biologiska hypotesen.</em> <em>Exempel:</em></p>
-<p>Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.</p>
-<p><em>Formulering av de formella statistiska hypoteser som testas. Exempel:</em></p>
-<p>H<sub>0</sub>: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).</p>
-<p>H<sub>1</sub>: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.</p>
-<p>Model i R:</p>
-<p><strong>Resultat</strong></p>
-<p><em>Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt <u>diagram</u> som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även <u>residualanalysen</u>, men <u>inte rådata</u>! Exempel:</em></p>
-<p>Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).</p>
-<p>Eftersom P &lt; 0,05 (R<sup>2</sup> = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:</p>
-<p>Koncentration (µmol kg<sup>-1</sup>) = 51,5 – 0,051 ´ Avstånd (m).</p>
-<p>Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.</p>
-<p>Estimat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Std. error &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t-värde&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P</p>
-<p>Intercept&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 51.518086&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.732180&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29.74&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0.0001</p>
-<p>Avstånd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -0.051&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.0029&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -17.50&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0.0001</p>
-<p>Fig. 1. Residualplot &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-<p><strong>Tolkning:</strong></p>
-<p><em>Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser. &nbsp;Här brukar man inte referera till H<sub>0</sub>, utan bara ta med de resultat som man behöver. Exempel:</em></p>
-<p>Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg<sup>-1</sup> när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.</p>
-<p><em>Om man jämför grupper kan man skriva:</em></p>
-<p>Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.</p>
-<p>Och så lägger man till några biologiska slutsatser.</p>
-<p>{{&lt;pagebreak&gt;}}</p>
-</section>
-<section id="uppgift-7" class="level2">
-<h2 class="anchored" data-anchor-id="uppgift-7">Uppgift 7</h2>
-<p><strong>[Ditt namn]</strong></p>
-<p>[Uppgift nr. X]</p>
-<p><strong>Statistisk metod</strong></p>
-<p><em>Val av statistiskt test med motivering baserat på den biologiska hypotesen.</em> <em>Exempel:</em></p>
-<p>Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.</p>
-<p><em>Formulering av de formella statistiska hypoteser som testas. Exempel:</em></p>
-<p>H<sub>0</sub>: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).</p>
-<p>H<sub>1</sub>: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.</p>
-<p>Model i R:</p>
-<p><strong>Resultat</strong></p>
-<p><em>Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt <u>diagram</u> som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även <u>residualanalysen</u>, men <u>inte rådata</u>! Exempel:</em></p>
-<p>Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).</p>
-<p>Eftersom P &lt; 0,05 (R<sup>2</sup> = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:</p>
-<p>Koncentration (µmol kg<sup>-1</sup>) = 51,5 – 0,051 ´ Avstånd (m).</p>
-<p>Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.</p>
-<p>Estimat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Std. error &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t-värde&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P</p>
-<p>Intercept&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 51.518086&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.732180&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29.74&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0.0001</p>
-<p>Avstånd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -0.051&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.0029&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -17.50&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0.0001</p>
-<p>Fig. 1. Residualplot &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-<p><strong>Tolkning:</strong></p>
-<p><em>Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser. &nbsp;Här brukar man inte referera till H<sub>0</sub>, utan bara ta med de resultat som man behöver. Exempel:</em></p>
-<p>Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg<sup>-1</sup> när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.</p>
-<p><em>Om man jämför grupper kan man skriva:</em></p>
-<p>Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.</p>
-<p>Och så lägger man till några biologiska slutsatser.</p>
-<p>{{&lt;pagebreak&gt;}}</p>
-</section>
-<section id="uppgift-8" class="level2">
-<h2 class="anchored" data-anchor-id="uppgift-8">Uppgift 8</h2>
-<p><strong>[Ditt namn]</strong></p>
-<p>[Uppgift nr. X]</p>
-<p><strong>Statistisk metod</strong></p>
-<p><em>Val av statistiskt test med motivering baserat på den biologiska hypotesen.</em> <em>Exempel:</em></p>
-<p>Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.</p>
-<p><em>Formulering av de formella statistiska hypoteser som testas. Exempel:</em></p>
-<p>H<sub>0</sub>: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).</p>
-<p>H<sub>1</sub>: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.</p>
-<p>Model i R:</p>
-<p><strong>Resultat</strong></p>
-<p><em>Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt <u>diagram</u> som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även <u>residualanalysen</u>, men <u>inte rådata</u>! Exempel:</em></p>
-<p>Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).</p>
-<p>Eftersom P &lt; 0,05 (R<sup>2</sup> = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:</p>
-<p>Koncentration (µmol kg<sup>-1</sup>) = 51,5 – 0,051 ´ Avstånd (m).</p>
-<p>Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.</p>
-<p>Estimat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Std. error &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t-värde&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P</p>
-<p>Intercept&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 51.518086&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.732180&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29.74&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0.0001</p>
-<p>Avstånd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -0.051&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.0029&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -17.50&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0.0001</p>
-<p>Fig. 1. Residualplot &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-<p><strong>Tolkning:</strong></p>
-<p><em>Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser. &nbsp;Här brukar man inte referera till H<sub>0</sub>, utan bara ta med de resultat som man behöver. Exempel:</em></p>
-<p>Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg<sup>-1</sup> när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.</p>
-<p><em>Om man jämför grupper kan man skriva:</em></p>
-<p>Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.</p>
-<p>Och så lägger man till några biologiska slutsatser.</p>
-<p>{{&lt;pagebreak&gt;}}</p>
-</section>
-<section id="uppgift-9" class="level2">
-<h2 class="anchored" data-anchor-id="uppgift-9">Uppgift 9</h2>
-<p><strong>[Ditt namn]</strong></p>
-<p>[Uppgift nr. X]</p>
-<p><strong>Statistisk metod</strong></p>
-<p><em>Val av statistiskt test med motivering baserat på den biologiska hypotesen.</em> <em>Exempel:</em></p>
-<p>Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.</p>
-<p><em>Formulering av de formella statistiska hypoteser som testas. Exempel:</em></p>
-<p>H<sub>0</sub>: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).</p>
-<p>H<sub>1</sub>: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.</p>
-<p>Model i R:</p>
-<p><strong>Resultat</strong></p>
-<p><em>Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt <u>diagram</u> som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även <u>residualanalysen</u>, men <u>inte rådata</u>! Exempel:</em></p>
-<p>Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).</p>
-<p>Eftersom P &lt; 0,05 (R<sup>2</sup> = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:</p>
-<p>Koncentration (µmol kg<sup>-1</sup>) = 51,5 – 0,051 ´ Avstånd (m).</p>
-<p>Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.</p>
-<p>Estimat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Std. error &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t-värde&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P</p>
-<p>Intercept&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 51.518086&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.732180&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29.74&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0.0001</p>
-<p>Avstånd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -0.051&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.0029&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -17.50&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0.0001</p>
-<p>Fig. 1. Residualplot &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-<p><strong>Tolkning:</strong></p>
-<p><em>Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser. &nbsp;Här brukar man inte referera till H<sub>0</sub>, utan bara ta med de resultat som man behöver. Exempel:</em></p>
-<p>Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg<sup>-1</sup> när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.</p>
-<p><em>Om man jämför grupper kan man skriva:</em></p>
-<p>Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.</p>
-<p>Och så lägger man till några biologiska slutsatser.</p>
-<p>{{&lt;pagebreak&gt;}}</p>
-</section>
 </section>
 
 </main>

@@ -1,14 +1,19 @@
 ---
 title: "Herbivoristudier"
 author: "Rasmus Hammar"
+crossref: 
+  fig-title: "Figur"
+  fig-prefix: "Figur"
+  tbl-title: "Tabell"
+  tbl-prefix: "Tabell"
 format: 
   html:
     toc: true
+    echo: false
 editor: visual
 ---
 
 ```{r}
-#| echo: false
 #| output: false
 
 library(tidyverse)
@@ -27,8 +32,6 @@ Frågeställning: Föredrar älg, rådjur och hare olika skogstyper?
 På fem platser i ett naturreservat där det har uppstått en öppning i skogen pga en storm observerar du antalet älgar, rådjur och harar som du ser under 3 timmar på kvällen. Platserna skiljer sig i att skogens återväxt består av olika trädarter. Du vill veta om vissa trädarter är mer attraktiva för vissa djurarter. Data är antal djur.
 
 ```{r}
-#| echo: false
-
 df.1 <- read_excel(
   path = file.path("EkoPop Herbivori-9uppg.xlsx"),
   sheet = "uppg1"
@@ -55,21 +58,21 @@ chisq.1 <- chisq.test(df.1)
 
 **Resultat**
 
-Chi-2 testet indikerar att det finns en skillnad på fördelningen av djur mellan områden med olika trädarter (X^2^(8) = 42.973, p = 8.889e-7). Genom att jämföra observerade (Tabell 1) och förväntade värden (Tabell 2) ser vi att älgar observerades oftare än förväntat där skogens återväxt dominerades av tall eller gran, men mer sällan för ek eller hassel. Rådjur observerades oftare för björk men mer sällan för gran eller hassel. Hare observerades oftare för ek eller hassel men mer sällan för björk, tall eller gran.
+Antagandet för Chi-2 test, att ingen cell har förväntat värde under fem, är uppfyllt. Analysen indikerar att det finns en skillnad på fördelningen av djur mellan områden med olika trädarter (X^2^(8) = 42.973, p = 8.889e-7). Genom att jämföra observerade (@tbl-1.1) och förväntade värden (@tbl-1.2) ser vi att älgar observerades oftare än förväntat där skogens återväxt dominerades av tall eller gran, men mer sällan för ek eller hassel. Rådjur observerades oftare för björk men mer sällan för gran eller hassel. Hare observerades oftare för ek eller hassel men mer sällan för björk, tall eller gran.
 
 ```{r}
-#| echo: false
-kable(chisq.1$observed,
-      caption = "Tabell 1: Observerade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner).")
+#| label: tbl-1.1
+#| tbl-cap: "Observerade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner)."
+
+kable(chisq.1$observed)
 ```
 
 ```{r}
-#| echo: false
-kable(chisq.1$expected,
-      caption = "Tabell 2: Förväntade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner).")
-```
+#| label: tbl-1.2
+#| tbl-cap: "Förväntade antal djur (rader) i områden av återväxt dominerad av trädarter (kolumner)."
 
-Antagandet för Chi-2 test, att ingen cell har förväntat värde under fem, är uppfyllt.
+kable(chisq.1$expected)
+```
 
 **Tolkning:**
 
@@ -88,8 +91,6 @@ Frågeställning: Hur påverkar olika typer av herbivori trädens tillväxt?
 I växthus simulerar du betning av däggdjur genom att klippa av toppskotten och betning av insekter genom att klippa av 50% av bladen på 2-åriga björkar. Före experimentet och efter 5 månader mäter du trädhöjd (i cm).
 
 ```{r}
-#| echo: false
-
 df.2 <- read_excel(
   path = file.path("EkoPop Herbivori-9uppg.xlsx"),
   sheet = "uppg2"
@@ -122,11 +123,11 @@ anova.2_tukey <- TukeyHSD(anova.2)
 
 **Resultat**
 
-Efter en kvadratrotstransformation uppfyller ANOVA modellen antaganden om lika varians och normalfördelning (se @fig-1). Analysen av behandling (F(2) = 21.01, p = 3.14e-6) indikerade att medelvärdet för minst en av behandlingarna skiljer sig och förklarar 60.9 % av variationen. Ett post-hoc test med Tukey HSD (Tabell 3) indikerar att det finns en skillnad mellan alla grupper.
+Efter en kvadratrotstransformation uppfyller ANOVA modellen antaganden om lika varians och normalfördelning (@fig-2.1). Analysen av behandling (F(2) = 21.01, p = 3.14e-6) indikerade att medelvärdet för minst en av behandlingarna skiljer sig och förklarar 60.9 % av variationen. Ett post-hoc test med Tukey HSD (@tbl-2.1) indikerar att det finns en skillnad mellan alla grupper.
 
-::: {#fig-1}
 ```{r}
-#| echo: false
+#| label: fig-2.1
+#| fig-cap: "Modell diagnostik för envägs ANOVA. Variansen av residualer inom och mellan grupper (vänster) är ungefär lika och Kvantil-Kvantil plot av residualer (höger) visar på normalfördelning."
 
 par(mfrow = c(1,2))
 plot(anova.2, which = 1)
@@ -134,45 +135,48 @@ plot(anova.2, which = 2)
 par(mfrow = c(1,1))
 ```
 
-Model diagnostik för envägs ANOVA. Variansen av residualer inom och mellan grupper (vänster) är ungefär lika och Kvantil-Kvantil plot av residualer (höger) visar på normalfördelning.
-:::
-
 ```{r}
-#| echo: false
+#| label: tbl-2.1
+#| tbl-cap: "Resultat från Tukey HSD post-hoc test."
 
-kable(anova.2_tukey$behandling,
-      caption = "Tabell 3: Resultat från Tukey HSD post-hoc test.")
+kable(anova.2_tukey$behandling)
 ```
 
 **Tolkning:**
 
-Jag fann att alla behandlingar skiljde sig från varandra. Minst tillväxt hade behandlingen med klippta blad med ett genomsnittlig tillväxt på 24.1 cm, sedan ingen behandling med 49 cm och störst tillväxt var Klippt toppskott med 76.4 cm (se @fig-2). Behandlingen av att klippa toppskott leder till högre tillväxt. I naturen kan detta motsvaras av förekomsten av större herbivorer och den ökade tillväxten kan anses gynnsam i exempelvis en skogsodling.
+Jag fann att alla behandlingar skiljde sig från varandra. Minst tillväxt hade behandlingen med klippta blad med ett genomsnittlig tillväxt på 24.1 cm, sedan ingen behandling med 49 cm och störst tillväxt var Klippt toppskott med 76.4 cm (@fig-2.2). Behandlingen av att klippa toppskott leder till högre tillväxt. I naturen kan detta motsvaras av förekomsten av större herbivorer och den ökade tillväxten kan anses gynnsam i exempelvis en skogsodling.
 
-::: {#fig-2}
 ```{r}
-#| echo: false
-ggplot(df.2) +
+#| label: fig-2.2
+#| fig-cap: "Genomsnittlig tillväxt med standardavvikelse, uppdelad efter behandling."
+
+df.2_bar <- df.2 %>% 
+  summarise(avg = mean(difference_cm), 
+            sd = sd(difference_cm), 
+            .by = behandling)
+
+ggplot(df.2_bar) +
   aes(x = behandling,
-      y = difference_cm,
+      y = avg,
       fill = behandling) +
-  geom_bar() +
-#  theme_classic() +
+  geom_col() +
+  geom_errorbar(aes(ymin = avg - sd,
+                    ymax = avg + sd),
+                width = .2) +
+  theme_classic() +
   scale_fill_brewer(palette = "Dark2") +
   labs(x = "Behandling",
        y = "Tillväxt [cm]") +
   guides(fill = "none")
 ```
 
-Boxplot av tillväxten uppdelad efter behandling. Medelvärde för behandling Ingen 49 cm, Klippt blad 24.1 cm och Klippt toppskott 76.4 cm.
-:::
-
 {{< pagebreak >}}
 
-## **3. Fältexperiment – effekt av bete av hare och rådjur**
+# **3. Fältexperiment – effekt av bete av hare och rådjur**
 
-**\[Rasmus Hammar\]**
+**Rasmus Hammar**
 
-\[Uppgift nr. 3\]
+Uppgift nr. 3
 
 Frågeställning: Vilken effekt har bete av hare och rådjur?
 
@@ -181,8 +185,6 @@ Din handledare har redan för fem år sedan konstruerat ett fältexperiment för
 Du vill undersöka om bete av hare och bete av rådjur har någon effekt, och om det finns någon interaktion mellan harbete och rådjursbete.
 
 ```{r}
-#| echo: false
-
 df.3 <- read_excel(
   path = file.path("EkoPop Herbivori-9uppg.xlsx"),
   sheet = "uppg3.2"
@@ -206,17 +208,17 @@ anova.3 <- aov(
   blad_g ~ Hare * `Rådjur`,
   data = df.3
 )
-
 ```
 
 **Resultat**
 
-Residualanalysen (Figur 3) indikerar att antaganden om lika varians och normalfördelning är uppfyllda.
+Residualanalysen (@fig-3.1) indikerar att antaganden om lika varians och normalfördelning är uppfyllda.
 
-Analysen indikerar att förekomsten av hare leder till skillnad i medelvärde (F(1) = 24.816, p = 7.17e-5). Ett Tukey HSD post-hoc test visade att skillnaden förekom då förekomst av hare jämfördes med frånvaro av hare (Tabell 4).
+Analysen indikerar att förekomsten av hare leder till skillnad i medelvärde (F(1) = 24.816, p = 7.17e-5). Ett Tukey HSD post-hoc test visade att skillnaden förekom då förekomst av hare jämfördes med frånvaro av hare (@tbl-3.1).
 
 ```{r}
-#| echo: true
+#| label: fig-3.1
+#| fig-cap: "Residualanalys av variation (vänster) och normalfördelning (höger)."
 
 par(mfrow = c(1,2))
 plot(anova.3, which = 1)
@@ -225,12 +227,23 @@ par(mfrow = c(1,1))
 ```
 
 ```{r}
-summary(anova.3)
+#summary(anova.3)
 
 anova.3_tukey <- TukeyHSD(anova.3)
-anova.3_tukey
 
-plot(anova.3_tukey)
+#plot(anova.3_tukey)
+```
+
+```{r}
+#| label: tbl-3.1
+#| tbl-cap: "Tukey HSD post-hoc test. "
+
+anova.3_tukey_df <- anova.3_tukey[["Hare:Rådjur"]] %>% 
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  rename(`Hare:Rådjur` = rowname)
+
+kable(anova.3_tukey_df)
 ```
 
 **Tolkning:**
@@ -239,19 +252,17 @@ Harar är den avgörande faktorn och är mer destruktiva för tillväxten av bla
 
 {{< pagebreak >}}
 
-## 4. Fältstudie – insektsförekomst i träd av olika ålder
+# 4. Fältstudie – insektsförekomst i träd av olika ålder
 
-**\[Rasmus Hammar\]**
+**Rasmus Hammar**
 
-\[Uppgift nr. 4\]
+Uppgift nr. 4
 
 Frågeställning: Finns det olika mängd insekter i träd av olika ålder?
 
 Du hänger insektsfällor i 20 i ekträd av olika åldrar. Mätvärden är torrvikt av insekter i fällorna under en månad sammanlagt.
 
 ```{r}
-#| echo: false
-
 df.4 <- read_excel(
   path = file.path("EkoPop Herbivori-9uppg.xlsx"),
   sheet = "uppg4"
@@ -292,7 +303,7 @@ Analysen indikerar att det finns fler insekter i äldre träd. Det är därför 
 
 {{< pagebreak >}}
 
-## **5. Laboratorieexperiment – relation mellan bladens längd och bredd**
+# **5. Laboratorieexperiment – relation mellan bladens längd och bredd**
 
 **\[Rasmus Hammar\]**
 
@@ -303,8 +314,6 @@ Fågeställning: Räcker det med att mäta bladlängd för att uppskatta bladare
 Du mäter längden och bredden av trädens blad under dina växthusexperiment. Egentligen är du intresserad av bladarean som ett mått på trädens totala produktion av fotosyntetiska delar. Att mäta arean är krångligt, men man brukar anta att den är proportionell mot bladlängd x bladbredd. Om det finns ett bra samband mellan bladens längd och bredd så skulle det i dina fortsatta studier gå bra att bara mäta bladlängd för att kunna prediktera bladbredden och ändå få ett bra mått på bladarea.
 
 ```{r}
-#| echo: false
-
 df.5 <- read_excel(
   path = file.path("EkoPop Herbivori-9uppg.xlsx"),
   sheet = "uppg5"
@@ -335,8 +344,6 @@ lm.5 <- lm(
 Residualanalysen (Figur 5) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning.
 
 ```{r}
-#| echo: true
-
 par(mfrow = c(1,2))
 plot(lm.5, which = 1)
 plot(lm.5, which = 2)
@@ -351,7 +358,7 @@ Det finns ett samband som kan användas för att prediktera bladbredd, och därm
 
 {{< pagebreak >}}
 
-## **6. Fältexperiment – försvarssubstanser hos träden**
+# **6. Fältexperiment – försvarssubstanser hos träden**
 
 **\[Rasmus Hammar\]**
 
@@ -362,8 +369,6 @@ Frågeställning: Leder insektsbete till att träden bildar försvarssubstanser?
 Du vill undersöka om 5-åriga ekträd som betas starkt av insekter har ett större försvar än 5-åriga ekträd som inte utsätts för ett starkt betningstryck. I ett område med många insekter väljer du ut tio trädpar. Det är träd som står nära varandra och som är lika stora och gamla. I varje par behandlar du det ena trädet med insekticid och skyddar det med insektsnät i maj (’Behandlat’ = låg/ingen betning). Det andra trädet i paret behandlar du inte alls (’Referens’ = högt betningstryck). I slutet av augusti mäter du mängden tanniner i ekbladen. Data är medelvärden för 50 blad per träd.
 
 ```{r}
-#| echo: false
-
 df.6 <- read_excel(
   path = file.path("EkoPop Herbivori-9uppg.xlsx"),
   sheet = "uppg6"
@@ -395,8 +400,6 @@ ttest.6 <- t.test(
 Analysen indikerade att det finns en skillnad i mängd tanniner mellan referens- och behandlade träd (t(9) = 2.506, p = 0.034).
 
 ```{r}
-#| echo: false
-
 # scatterplot
 plot(
   df.6$`tanninkonc_ref_mg/g`,
@@ -416,7 +419,7 @@ Analysen visar att träd som utsätt för högre betning producerar högre konce
 
 {{< pagebreak >}}
 
-## Uppgift 7
+# Uppgift 7
 
 **\[Ditt namn\]**
 
@@ -473,7 +476,7 @@ Och så lägger man till några biologiska slutsatser.
 
 {{\<pagebreak\>}}
 
-## Uppgift 8
+# Uppgift 8
 
 **\[Ditt namn\]**
 
@@ -530,7 +533,7 @@ Och så lägger man till några biologiska slutsatser.
 
 {{\<pagebreak\>}}
 
-## Uppgift 9
+# Uppgift 9
 
 **\[Ditt namn\]**
 
