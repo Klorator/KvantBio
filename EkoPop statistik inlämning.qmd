@@ -122,7 +122,7 @@ anova.2_tukey <- TukeyHSD(anova.2)
 
 **Resultat**
 
-Efter en kvadratrotstransformation uppfyller ANOVA modellen antaganden om lika varians och normalfördelning (se @fig-1). Analysen av behandling (F(2) = 21.01, p = 3.14e-6) indikerade att medelvärdet för minst en av behandlingarna skiljer sig. Ett post-hoc test med Tukey HSD (Tabell 3) indikerar att det finns en skillnad mellan alla grupper.
+Efter en kvadratrotstransformation uppfyller ANOVA modellen antaganden om lika varians och normalfördelning (se @fig-1). Analysen av behandling (F(2) = 21.01, p = 3.14e-6) indikerade att medelvärdet för minst en av behandlingarna skiljer sig och förklarar 60.9 % av variationen. Ett post-hoc test med Tukey HSD (Tabell 3) indikerar att det finns en skillnad mellan alla grupper.
 
 ::: {#fig-1}
 ```{r}
@@ -146,9 +146,7 @@ kable(anova.2_tukey$behandling,
 
 **Tolkning:**
 
-Jag fann att alla behandlingar skiljde sig från varandra. Minst tillväxt hade behandlingen med klippta blad med ett genomsnittlig tillväxt på 24.1 cm, sedan ingen behandling med 49 cm och störst tillväxt var Klippt toppskott med 76.4 cm (se @fig-2).
-
-**Biologisk slutsats?!**
+Jag fann att alla behandlingar skiljde sig från varandra. Minst tillväxt hade behandlingen med klippta blad med ett genomsnittlig tillväxt på 24.1 cm, sedan ingen behandling med 49 cm och störst tillväxt var Klippt toppskott med 76.4 cm (se @fig-2). Behandlingen av att klippa toppskott leder till högre tillväxt. I naturen kan detta motsvaras av förekomsten av större herbivorer och den ökade tillväxten kan anses gynnsam i exempelvis en skogsodling.
 
 ::: {#fig-2}
 ```{r}
@@ -157,8 +155,8 @@ ggplot(df.2) +
   aes(x = behandling,
       y = difference_cm,
       fill = behandling) +
-  geom_boxplot() +
-  theme_classic() +
+  geom_bar() +
+#  theme_classic() +
   scale_fill_brewer(palette = "Dark2") +
   labs(x = "Behandling",
        y = "Tillväxt [cm]") +
@@ -170,233 +168,253 @@ Boxplot av tillväxten uppdelad efter behandling. Medelvärde för behandling In
 
 {{< pagebreak >}}
 
-## Uppgift 3
+## **3. Fältexperiment – effekt av bete av hare och rådjur**
 
-**\[Ditt namn\]**
+**\[Rasmus Hammar\]**
 
-\[Uppgift nr. X\]
+\[Uppgift nr. 3\]
+
+Frågeställning: Vilken effekt har bete av hare och rådjur?
+
+Din handledare har redan för fem år sedan konstruerat ett fältexperiment för att undersöka effekt av bete av olika djurslag. Hon har stängt ut djuren (hare, rådjur) med hjälp av stängsel. Ni skördar blad från 5-åriga björkar och väger biomassan (i gram torrvikt).
+
+Du vill undersöka om bete av hare och bete av rådjur har någon effekt, och om det finns någon interaktion mellan harbete och rådjursbete.
+
+```{r}
+#| echo: false
+
+df.3 <- read_excel(
+  path = file.path("EkoPop Herbivori-9uppg.xlsx"),
+  sheet = "uppg3.2"
+)
+```
 
 **Statistisk metod**
 
-*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+Jag gör en tvåvägs ANOVA för att undersöka hur bladmassan påverkas av förekomsten av hare, rådjur och interaktionen.
 
-Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+H~0~: Ingen skillnad i biomassans medelvärde beroende på förekomst av betning av hare och/eller rådjur.
 
-*Formulering av de formella statistiska hypoteser som testas. Exempel:*
-
-H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
-
-H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+H~1~: Skillnad i biomassans medelvärde beroende på förekomsten av hare och/eller rådjur.
 
 Model i R:
 
 ```{r}
+#| echo: true
+
+anova.3 <- aov(
+  blad_g ~ Hare * `Rådjur`,
+  data = df.3
+)
+
 ```
 
 **Resultat**
 
-*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+Residualanalysen (Figur 3) indikerar att antaganden om lika varians och normalfördelning är uppfyllda.
 
-Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+Analysen indikerar att förekomsten av hare leder till skillnad i medelvärde (F(1) = 24.816, p = 7.17e-5). Ett Tukey HSD post-hoc test visade att skillnaden förekom då förekomst av hare jämfördes med frånvaro av hare (Tabell 4).
 
-Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+```{r}
+#| echo: true
 
-Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
+par(mfrow = c(1,2))
+plot(anova.3, which = 1)
+plot(anova.3, which = 2)
+par(mfrow = c(1,1))
+```
 
-Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
+```{r}
+summary(anova.3)
 
-Estimat                       Std. error                        t-värde                              P
+anova.3_tukey <- TukeyHSD(anova.3)
+anova.3_tukey
 
-Intercept         51.518086                 1.732180                          29.74                  \<0.0001
-
-Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
-
-Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+plot(anova.3_tukey)
+```
 
 **Tolkning:**
 
-*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+Harar är den avgörande faktorn och är mer destruktiva för tillväxten av bladmassa hos mindre björkar.
 
-Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+{{< pagebreak >}}
 
-*Om man jämför grupper kan man skriva:*
+## 4. Fältstudie – insektsförekomst i träd av olika ålder
 
-Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+**\[Rasmus Hammar\]**
 
-Och så lägger man till några biologiska slutsatser.
+\[Uppgift nr. 4\]
 
-{{\<pagebreak\>}}
+Frågeställning: Finns det olika mängd insekter i träd av olika ålder?
 
-## Uppgift 4
+Du hänger insektsfällor i 20 i ekträd av olika åldrar. Mätvärden är torrvikt av insekter i fällorna under en månad sammanlagt.
 
-**\[Ditt namn\]**
+```{r}
+#| echo: false
 
-\[Uppgift nr. X\]
+df.4 <- read_excel(
+  path = file.path("EkoPop Herbivori-9uppg.xlsx"),
+  sheet = "uppg4"
+)
+```
 
 **Statistisk metod**
 
-*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+Jag valde att göra ett Pearson's korrelation test.
 
-Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+H~0~: Det finns ingen korrelation mellan trädens ålder och mängden insekter.
 
-*Formulering av de formella statistiska hypoteser som testas. Exempel:*
-
-H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
-
-H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+H~1~: Det finns en korrelation mellan trädens ålder och mängden insekter.
 
 Model i R:
 
 ```{r}
+#| echo: true
+
+corr.4 <- cor.test( # transformation?
+  log(df.4$ålder_år), log(df.4$insekter_mg)
+)
 ```
 
 **Resultat**
 
-*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+Analysen indikerade en positiv korrelation (r = 0.948, p = 2.29e-10).
 
-Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+!! Kolla normalfördelning !!
 
-Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
-
-Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
-
-Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
-
-Estimat                       Std. error                        t-värde                              P
-
-Intercept         51.518086                 1.732180                          29.74                  \<0.0001
-
-Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
-
-Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+```{r}
+# scatterplot figur 4
+```
 
 **Tolkning:**
 
-*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+Analysen indikerar att det finns fler insekter i äldre träd. Det är därför gynnsamt för den biologiska mångfalden och exempelvis pollination att bevara gamla träd.
 
-Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+{{< pagebreak >}}
 
-*Om man jämför grupper kan man skriva:*
+## **5. Laboratorieexperiment – relation mellan bladens längd och bredd**
 
-Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+**\[Rasmus Hammar\]**
 
-Och så lägger man till några biologiska slutsatser.
+\[Uppgift nr. 5\]
 
-{{\<pagebreak\>}}
+Fågeställning: Räcker det med att mäta bladlängd för att uppskatta bladarea?
 
-## Uppgift 5
+Du mäter längden och bredden av trädens blad under dina växthusexperiment. Egentligen är du intresserad av bladarean som ett mått på trädens totala produktion av fotosyntetiska delar. Att mäta arean är krångligt, men man brukar anta att den är proportionell mot bladlängd x bladbredd. Om det finns ett bra samband mellan bladens längd och bredd så skulle det i dina fortsatta studier gå bra att bara mäta bladlängd för att kunna prediktera bladbredden och ändå få ett bra mått på bladarea.
 
-**\[Ditt namn\]**
+```{r}
+#| echo: false
 
-\[Uppgift nr. X\]
+df.5 <- read_excel(
+  path = file.path("EkoPop Herbivori-9uppg.xlsx"),
+  sheet = "uppg5"
+)
+```
 
 **Statistisk metod**
 
-*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+Jag genomför en linjär regression för att undersöka sambandet hur bladlängd påverkar bladbredd.
 
-Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+H~0~: Det finns inget samband mellan blandlängd och bladbredd (linjens lutning = 0).
 
-*Formulering av de formella statistiska hypoteser som testas. Exempel:*
-
-H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
-
-H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+H~1~: Det finns ett samband mellan blandlängd och bladbredd.
 
 Model i R:
 
 ```{r}
+#| echo: true
+
+lm.5 <- lm(
+  bladbredd_mm ~ bladlängd_mm,
+  data = df.5
+)
 ```
 
 **Resultat**
 
-*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+Residualanalysen (Figur 5) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning.
 
-Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+```{r}
+#| echo: true
 
-Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
+par(mfrow = c(1,2))
+plot(lm.5, which = 1)
+plot(lm.5, which = 2)
+par(mfrow = c(1,1))
+```
 
-Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
-
-Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
-
-Estimat                       Std. error                        t-värde                              P
-
-Intercept         51.518086                 1.732180                          29.74                  \<0.0001
-
-Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
-
-Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+Analysen visar att det finns ett positivt samband mellan bladlängden och bladbredden (R^2^(18) = 0.550, p = 0.00018) med !! function !!.
 
 **Tolkning:**
 
-*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+Det finns ett samband som kan användas för att prediktera bladbredd, och därmed bladarea, utifrom bladlängd. Dock var sambandet inte särskilt starkt vilket innebär att det inte är den säkraste metoden.
 
-Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
+{{< pagebreak >}}
 
-*Om man jämför grupper kan man skriva:*
+## **6. Fältexperiment – försvarssubstanser hos träden**
 
-Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
+**\[Rasmus Hammar\]**
 
-Och så lägger man till några biologiska slutsatser.
+\[Uppgift nr. 6\]
 
-{{\<pagebreak\>}}
+Frågeställning: Leder insektsbete till att träden bildar försvarssubstanser?
 
-## Uppgift 6
+Du vill undersöka om 5-åriga ekträd som betas starkt av insekter har ett större försvar än 5-åriga ekträd som inte utsätts för ett starkt betningstryck. I ett område med många insekter väljer du ut tio trädpar. Det är träd som står nära varandra och som är lika stora och gamla. I varje par behandlar du det ena trädet med insekticid och skyddar det med insektsnät i maj (’Behandlat’ = låg/ingen betning). Det andra trädet i paret behandlar du inte alls (’Referens’ = högt betningstryck). I slutet av augusti mäter du mängden tanniner i ekbladen. Data är medelvärden för 50 blad per träd.
 
-**\[Ditt namn\]**
+```{r}
+#| echo: false
 
-\[Uppgift nr. X\]
+df.6 <- read_excel(
+  path = file.path("EkoPop Herbivori-9uppg.xlsx"),
+  sheet = "uppg6"
+)
+```
 
 **Statistisk metod**
 
-*Val av statistiskt test med motivering baserat på den biologiska hypotesen.* *Exempel:*
+Jag väljer att göra ett parat t-test då referens- och behandlingsträd är specifikt utvalda i par. På grund av det begränsade antalet observationer är det svårt att avgöra om data är normalfördelad; ett parametriskt test valdes.
 
-Jag vill testa om det finns samband mellan avstånd från en fabrik och Cadmium-halt i blåstång. Jag har en prediktor (avstånd till fabrik) och en respons (koncentration av Cadmium), så att jag kan fastställa om halterna är högre nära fabriken. Denna data analyseras lämpligen med en regressionsanalys.
+H~0~: Det finns ingen skillnad i medelvärden mellan referens- och behandlade träd.
 
-*Formulering av de formella statistiska hypoteser som testas. Exempel:*
-
-H~0~: Det finns inget samband mellan avstånd från fabriken och Cd-halten (linjens lutning = 0).
-
-H~1~: Det finns ett samband mellan avstånd från fabriken av Cd-halten i blåstång.
+H~1~: Det finns en skillnad i medelvärde mellan referens- och behandlade träd.
 
 Model i R:
 
 ```{r}
+#| echo: true
+
+ttest.6 <- t.test(
+  df.6$`tanninkonc_ref_mg/g`,
+  df.6$`tanninkonc_beh_mg/g`,
+  paired = T
+)
 ```
 
 **Resultat**
 
-*Redovisa resultaten av din analys, dvs det statistiska testet. Plocka bort den onödiga informationen och skriv resultatet så att läsaren förstår vad som analyserats, antingen i löpande text eller som tabell. Illustrera resultaten och testet i lämpligt [diagram]{.underline} som sammanfattar och visar på spridning på något sätt (punkter, staplar). Gärna även [residualanalysen]{.underline}, men [inte rådata]{.underline}! Exempel:*
+Analysen indikerade att det finns en skillnad i mängd tanniner mellan referens- och behandlade träd (t(9) = 2.506, p = 0.034).
 
-Residualanalysen visar att förutsättningar för regression är uppfyllda (Figur 1).
+```{r}
+#| echo: false
 
-Eftersom P \< 0,05 (R^2^ = 0,91; n = 33) förkastas nollhypotesen och vi antar därför att det finns ett signifikant linjärt samband mellan avstånd och Cd-halt (Tabell 1). Sambandet var negativt vilket betyder att halterna kadmium minskade med ett ökande avstånd (Figur 2). Sambandet beskrivs av ekvationen:
-
-Koncentration (µmol kg^-1^) = 51,5 – 0,051 ´ Avstånd (m).
-
-Tabell 1. Resultat av regressionsanalysen mellan Cd koncentration i blåstång och avstånd från utsläppsplats.
-
-Estimat                       Std. error                        t-värde                              P
-
-Intercept         51.518086                 1.732180                          29.74                  \<0.0001
-
-Avstånd                  -0.051                     0.0029                         -17.50                  \<0.0001
-
-Fig. 1. Residualplot                                                          Fig. 2. Samband mellan Cd-concentration och avstånd från utsläppspunkt.        
+# scatterplot
+plot(
+  df.6$`tanninkonc_ref_mg/g`,
+  df.6$`tanninkonc_beh_mg/g`,
+  pch = 16,
+  col = "steelblue"
+)
+# ref abline
+abline(1:500,1:500,
+       lty = 2,
+       col = "red")
+```
 
 **Tolkning:**
 
-*Presentera resultatet på det sätt man gör i en uppsats, och dra biologiska slutsatser.  Här brukar man inte referera till H~0~, utan bara ta med de resultat som man behöver. Exempel:*
+Analysen visar att träd som utsätt för högre betning producerar högre koncentrationer tanniner som försvarsmekanism. Dock behövs fler observationer för att säkerställa resultaten. Experimentdesign var bra för att kontrollera påverkan av jordmån/miljö.
 
-Jag fann ett signifikant samband mellan avstånd från utsläppspunkten och Cd-halten i blåstång. Cd-halten minskade med 5,1 µmol kg^-1^ när avståndet ökade med 100 m. Avståndet från fabriken förklarade 91% av all den variation i Cadmium som jag fann i mina prover.
-
-*Om man jämför grupper kan man skriva:*
-
-Gruppernas medellängd skiljde sig signifikant; grupp A hade medelvärdet x cm och grupp B y cm.
-
-Och så lägger man till några biologiska slutsatser.
-
-{{\<pagebreak\>}}
+{{< pagebreak >}}
 
 ## Uppgift 7
 
