@@ -160,15 +160,14 @@ ggplot(df.2_bar) +
   aes(x = behandling,
       y = avg,
       fill = behandling) +
-  geom_col() +
+  geom_col(show.legend = F) +
   geom_errorbar(aes(ymin = avg - sd,
                     ymax = avg + sd),
                 width = .2) +
   theme_classic() +
   scale_fill_brewer(palette = "Dark2") +
   labs(x = "Behandling",
-       y = "Tillväxt [cm]") +
-  guides(fill = "none")
+       y = "Tillväxt [cm]")
 ```
 
 {{< pagebreak >}}
@@ -228,11 +227,7 @@ par(mfrow = c(1,1))
 ```
 
 ```{r}
-#summary(anova.3)
-
 anova.3_tukey <- TukeyHSD(anova.3)
-
-#plot(anova.3_tukey)
 ```
 
 ```{r}
@@ -361,7 +356,7 @@ lm.5 <- lm(
 
 **Resultat**
 
-Residualanalysen (@fig-5.1) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning, men identifierar även en potentiell outlier (punkt 10). Analysen visar att det finns ett positivt samband mellan bladlängden och bladbredden (R^2^(18) = 0.550, p = 0.00018) enligt $bladbredd = 0.3268 \cdot bladlängd + 7.8341$ (@fig-5.2).
+Residualanalysen (@fig-5.1) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning, men identifierar även en potentiell outlier (punkt 10). Analysen visar att det finns ett positivt samband mellan bladlängden och bladbredden (R^2^(18) = 0.550, p = 0.00018) enligt $bladbredd = (0.3268 \pm 2 \cdot 0.0697) \cdot bladlängd + 7.8341$ (@fig-5.2).
 
 ```{r}
 #| label: fig-5.1
@@ -375,12 +370,17 @@ par(mfrow = c(1,1))
 
 ```{r}
 #| label: fig-5.2
-#| fig-cap: "Scatterplot med linjär regression. Träd nr 10 markerad som möjlig outlier men har låg påverkan på lutningen."
+#| fig-cap: "Scatterplot med linjär regression och 95 % konfidens intervall. Träd nr 10 markerad som möjlig outlier men har låg påverkan på lutningen."
 
 ggplot(df.5) +
   aes(x = `bladlängd_mm`,
       y = bladbredd_mm) +
   theme_classic() +
+  geom_smooth(method = lm,
+              col = "red",
+              linewidth = .5,
+              fill = "lightgray",
+              se = T) +
   geom_point(shape = 19,
              col = "steelblue",
              show.legend = F) +
@@ -389,14 +389,8 @@ ggplot(df.5) +
                 y = bladbredd_mm,
                 label = `träd_nr`),
             nudge_x = 2) +
-  geom_abline(intercept = lm.5[["coefficients"]][["(Intercept)"]],
-              slope = lm.5[["coefficients"]][["bladlängd_mm"]],
-              col = "red",
-              lty = 1,
-              show.legend = F) +
   labs(x = "Bladlängd [mm]",
        y = "Bladbredd [mm]")
-
 ```
 
 **Tolkning:**
@@ -514,18 +508,51 @@ df.7$Klippning <- as.factor(df.7$Klippning)
 
 **Statistisk metod**
 
-H~0~:
+Jag gör en envägs ANOVA och behandlar den procentuella klippningen som grupper. Det skulle kunna utföras en linjär regression men i detta läge föredras ANOVA.
 
-H~1~:
+H~0~: Ingen skillnad i höjdtillväxt baserat på uppäten bladyta.
+
+H~1~: Skillnad i höjdtillväxt baserat på uppäten bladyta.
 
 Model i R:
 
 ```{r}
+anova.7 <- aov(
+  Trädhöjd_cm ~ Klippning,
+  data = df.7
+)
 ```
 
 **Resultat**
 
-**Tolkning:**
+Residualanalysen (@fig-7.1) visade på lika varians och normalfördelning. Analysen indikerade en skillnad i höjdtillväxt (F(3) = 3.947, p = 0.0113) beroende på nivå av klippning.
+
+```{r}
+#| label: tbl-7.1
+#| tbl-cap: ""
+
+df.7_mean <- df.7 %>% 
+  group_by(Klippning) %>% 
+  summarise(tree_mean = mean(Trädhöjd_cm))
+kable(df.7_mean)
+```
+
+```{r}
+#| label: fig-7.1
+#| fig-cap: ""
+
+# residualanalys
+ggplot(df.7_mean)
+```
+
+```{r}
+# scatterplot?
+ggplot(df.7)
+```
+
+**Tolkning**
+
+Större del av uppäten bladyta leder till lägre höjdtillväxt (@tbl-7.1).
 
 {{< pagebreak >}}
 
@@ -535,24 +562,68 @@ Model i R:
 
 Uppgift nr. 8
 
-```{r}
+Frågeställning: Vilken effekt har olika typer av bete på körsbärsträdträd?
 
+Du använder dig av 15 plantor av fem olika varieteter/sorter och utsätter dessa för olika simulerade betesbehandlingar för att testa effekten av detta på tillväxt av blad. Vid början av studien (juni) och efter fyra månader (oktober) mäter du den totala bladytan för varje träd (i dm^2^).
+
+```{r}
+df.8 <- read_excel(
+  data_path,
+  sheet = "uppg8"
+)
 ```
 
 **Statistisk metod**
 
-H~0~:
+Jag väljer en tvåvägs ANOVA för att undersöka påverkan av två faktorer (Sort och Behandling) på tillväxten (differensen av bladyta). På grund av det låga antalet observationer utelämnas interaktionen från analysen.
 
-H~1~:
+H~0~: Ingen skillnad i tillväxt av bladyta baserat på sort och/eller behandling.
+
+H~1~: Skillnad i tillväxt av bladyta baserat på sort och/eller behandling.
 
 Model i R:
 
 ```{r}
+#| echo: true
+
+df.8 <- df.8 %>% 
+  mutate(bladyta_diff = bladyta_okt - bladyta_juni,
+         bladyta_diff = sqrt(bladyta_diff))
+
+anova.8 <- aov(
+  bladyta_diff ~ Sort + Behandling,
+  data = df.8
+)
 ```
 
 **Resultat**
 
-**Tolkning:**
+Efter en kvadratrotstransformering ser residualanalysen (@fig-8.1) fortfarande inte bra ut men beslutar att det är tillräckligt med tanke på det bristande antalet observationer. Analysen visar att tillväxten av bladyta skiljer sig baserat på både Sort (F(4) = 99.16, p = 7.52e-7) och Behandling (F(2) = 24.31, p = 0.00039) var för sig.
+
+```{r}
+#| label: fig-8.1
+#| fig-cap: ""
+
+# residualanalys
+par(mfrow = c(1,2))
+plot(anova.8, which = 1)
+plot(anova.8, which = 2)
+par(mfrow = c(1,1))
+```
+
+```{r}
+#| label: fig-8.2
+#| fig-cap: ""
+
+# barplot of means with facet?
+ggplot(df.8)
+```
+
+**Tolkning**
+
+Eftersom vi har få mätvärden, och varje behandling utfördes på enbart en individ per Sort, är analysen, särskillt av interaktionen, problematisk/ej pålitlig.
+
+Vi ser att Sorten Merton hade lägst tillväxt i bladyta jämfört med andra sorter. Stella hade däremot högst tillväxt. Behandlingen som verkade vara mest effektiv var klippning av toppskotten.
 
 {{< pagebreak >}}
 
