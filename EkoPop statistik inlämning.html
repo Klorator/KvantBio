@@ -472,7 +472,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Resultat</strong></p>
-<p>Residualanalysen (<a href="#fig-5.1">Figur&nbsp;5</a>) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning, men identifierar även en potentiell outlier (punkt 10). Analysen visar att det finns ett positivt samband mellan bladlängden och bladbredden (R<sup>2</sup>(18) = 0.550, p = 0.00018) enligt <span class="math inline">\(bladbredd = 0.3268 \cdot bladlängd + 7.8341\)</span> (<a href="#fig-5.2">Figur&nbsp;6</a>).</p>
+<p>Residualanalysen (<a href="#fig-5.1">Figur&nbsp;5</a>) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning, men identifierar även en potentiell outlier (punkt 10). Analysen visar att det finns ett positivt samband mellan bladlängden och bladbredden (R<sup>2</sup>(18) = 0.550, p = 0.00018) enligt <span class="math inline">\(bladbredd = (0.3268 \pm 2 \cdot 0.0697) \cdot bladlängd + 7.8341\)</span> (<a href="#fig-5.2">Figur&nbsp;6</a>).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-5.1" class="quarto-figure quarto-figure-center anchored">
@@ -484,11 +484,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
 <div class="cell-output-display">
 <div id="fig-5.2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-5.2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;6: Scatterplot med linjär regression. Träd nr 10 markerad som möjlig outlier men har låg påverkan på lutningen.</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;6: Scatterplot med linjär regression och 95 % konfidens intervall. Träd nr 10 markerad som möjlig outlier men har låg påverkan på lutningen.</figcaption>
 </figure>
 </div>
 </div>
@@ -509,11 +512,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>H<sub>1</sub>: Det finns en skillnad i medelvärde mellan referens- och behandlade träd.</p>
 <p>Model i R:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ttest<span class="fl">.6</span> <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  df<span class="fl">.6</span><span class="sc">$</span><span class="st">`</span><span class="at">tanninkonc_ref_mg/g</span><span class="st">`</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  df<span class="fl">.6</span><span class="sc">$</span><span class="st">`</span><span class="at">tanninkonc_beh_mg/g</span><span class="st">`</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">paired =</span> T</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ttest<span class="fl">.6</span> <span class="ot">&lt;-</span> <span class="fu">t.test</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  df<span class="fl">.6</span><span class="sc">$</span><span class="st">`</span><span class="at">tanninkonc_ref_mg/g</span><span class="st">`</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  df<span class="fl">.6</span><span class="sc">$</span><span class="st">`</span><span class="at">tanninkonc_beh_mg/g</span><span class="st">`</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">paired =</span> T</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Resultat</strong></p>
 <p>Analysen indikerade att det finns en skillnad i mängd tanniner mellan referens- och behandlade träd (t(9) = 2.506, p = 0.034) där behandlade träd hade lägre koncentration (<a href="#fig-6.1">Figur&nbsp;7</a> &amp; <a href="#fig-6.2">Figur&nbsp;8</a>).</p>
@@ -548,23 +551,82 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Frågeställning: Har träd som fått större del av bladytan uppäten en lägre höjdtillväxt?</p>
 <p>I växthus simulerar du olika grader av betning av insekter genom att klippa av delar av bladen på 2-åriga björkar. Efter 5 månader mäter du trädens höjd.</p>
 <p><strong>Statistisk metod</strong></p>
-<p>H<sub>0</sub>:</p>
-<p>H<sub>1</sub>:</p>
+<p>Jag gör en envägs ANOVA och behandlar den procentuella klippningen som grupper. Det skulle kunna utföras en linjär regression men i detta läge föredras ANOVA.</p>
+<p>H<sub>0</sub>: Ingen skillnad i höjdtillväxt baserat på uppäten bladyta.</p>
+<p>H<sub>1</sub>: Skillnad i höjdtillväxt baserat på uppäten bladyta.</p>
 <p>Model i R:</p>
 <p><strong>Resultat</strong></p>
-<p><strong>Tolkning:</strong></p>
+<p>Residualanalysen (<a href="#fig-7.1">Figur&nbsp;9</a>) visade på lika varians och normalfördelning. Analysen indikerade en skillnad i höjdtillväxt (F(3) = 3.947, p = 0.0113) beroende på nivå av klippning (<a href="#fig-7.2">Figur&nbsp;10</a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-7.1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-7.1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;9: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-7.2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-7.2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;10: Genomsnittlig tillväxt i trädhöjd med standardavvikelse.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Tolkning</strong></p>
+<p>Större del av uppäten bladyta leder till lägre höjdtillväxt.</p>
 <div style="page-break-after: always;"></div>
 </section>
 <section id="laboratorieexperiment-beteseffekt-på-olika-sorters-körsbärsträdträd" class="level1">
 <h1><strong>8. Laboratorieexperiment – beteseffekt på olika sorters körsbärsträdträd</strong></h1>
 <p><strong>Rasmus Hammar</strong></p>
 <p>Uppgift nr. 8</p>
+<p>Frågeställning: Vilken effekt har olika typer av bete på körsbärsträdträd?</p>
+<p>Du använder dig av 15 plantor av fem olika varieteter/sorter och utsätter dessa för olika simulerade betesbehandlingar för att testa effekten av detta på tillväxt av blad. Vid början av studien (juni) och efter fyra månader (oktober) mäter du den totala bladytan för varje träd (i dm<sup>2</sup>).</p>
 <p><strong>Statistisk metod</strong></p>
-<p>H<sub>0</sub>:</p>
-<p>H<sub>1</sub>:</p>
+<p>Jag väljer en tvåvägs ANOVA för att undersöka påverkan av två faktorer (Sort och Behandling) på tillväxten (differensen av bladyta). På grund av det låga antalet observationer utelämnas interaktionen från analysen.</p>
+<p>H<sub>0</sub>: Ingen skillnad i tillväxt av bladyta baserat på sort och/eller behandling.</p>
+<p>H<sub>1</sub>: Skillnad i tillväxt av bladyta baserat på sort och/eller behandling.</p>
 <p>Model i R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df<span class="fl">.8</span> <span class="ot">&lt;-</span> df<span class="fl">.8</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bladyta_diff =</span> bladyta_okt <span class="sc">-</span> bladyta_juni,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">bladyta_diff =</span> <span class="fu">sqrt</span>(bladyta_diff))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.8</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  bladyta_diff <span class="sc">~</span> Sort <span class="sc">+</span> Behandling,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.8</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p><strong>Resultat</strong></p>
-<p><strong>Tolkning:</strong></p>
+<p>Efter en kvadratrotstransformering ser residualanalysen (<a href="#fig-8.1">Figur&nbsp;11</a>) fortfarande inte bra ut men beslutar att det är tillräckligt med tanke på det bristande antalet observationer. Analysen visar att tillväxten av bladyta skiljer sig baserat på både Sort (F(4) = 99.16, p = 7.52e-7) och Behandling (F(2) = 24.31, p = 0.00039) var för sig.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-8.1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-8.1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;11: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-8.2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-8.2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;12: Genomsnittlig bladyta uppdelat efter sort. Ingen standardavvikelse till följd av brist på observationer.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Tolkning</strong></p>
+<p>Eftersom vi har få mätvärden, och varje behandling utfördes på enbart en individ per Sort, är analysen, särskillt av interaktionen, problematisk/ej pålitlig.</p>
+<p>Vi ser att Sorten Merton hade lägst tillväxt i bladyta jämfört med andra sorter. Stella hade däremot högst tillväxt. Behandlingen som verkade vara mest effektiv var klippning av toppskotten.</p>
 <div style="page-break-after: always;"></div>
 </section>
 <section id="laboratorieexperiment-kombinerad-effekt-av-bete-och-gödsling" class="level1">

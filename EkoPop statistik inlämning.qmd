@@ -525,34 +525,46 @@ anova.7 <- aov(
 
 **Resultat**
 
-Residualanalysen (@fig-7.1) visade på lika varians och normalfördelning. Analysen indikerade en skillnad i höjdtillväxt (F(3) = 3.947, p = 0.0113) beroende på nivå av klippning.
-
-```{r}
-#| label: tbl-7.1
-#| tbl-cap: ""
-
-df.7_mean <- df.7 %>% 
-  group_by(Klippning) %>% 
-  summarise(tree_mean = mean(Trädhöjd_cm))
-kable(df.7_mean)
-```
+Residualanalysen (@fig-7.1) visade på lika varians och normalfördelning. Analysen indikerade en skillnad i höjdtillväxt (F(3) = 3.947, p = 0.0113) beroende på nivå av klippning (@fig-7.2).
 
 ```{r}
 #| label: fig-7.1
-#| fig-cap: ""
+#| fig-cap: "Residualanalys av varians (vänster) och normalfördelning (höger)."
 
-# residualanalys
-ggplot(df.7_mean)
+par(mfrow = c(1,2))
+plot(anova.7, which = 1)
+plot(anova.7, which = 2)
+par(mfrow = c(1,1))
 ```
 
 ```{r}
-# scatterplot?
-ggplot(df.7)
+df.7_mean <- df.7 %>% 
+  group_by(Klippning) %>% 
+  summarise(tree_mean = mean(Trädhöjd_cm),
+            tree_sd = sd(Trädhöjd_cm))
+```
+
+```{r}
+#| label: fig-7.2
+#| fig-cap: "Genomsnittlig tillväxt i trädhöjd med standardavvikelse."
+
+ggplot(df.7_mean) +
+  aes(x = as.factor(Klippning),
+      y = tree_mean,
+      fill = as.factor(Klippning)) +
+  theme_classic() +
+  geom_col(show.legend = F) +
+  scale_fill_brewer(palette = "Dark2") +
+  geom_errorbar(aes(ymin = tree_mean - tree_sd,
+                    ymax = tree_mean + tree_sd),
+                width = .2) +
+  labs(x = "Klippning [%]",
+       y = "Trädhöjd [cm]")
 ```
 
 **Tolkning**
 
-Större del av uppäten bladyta leder till lägre höjdtillväxt (@tbl-7.1).
+Större del av uppäten bladyta leder till lägre höjdtillväxt.
 
 {{< pagebreak >}}
 
@@ -602,9 +614,8 @@ Efter en kvadratrotstransformering ser residualanalysen (@fig-8.1) fortfarande i
 
 ```{r}
 #| label: fig-8.1
-#| fig-cap: ""
+#| fig-cap: "Residualanalys av varians (vänster) och normalfördelning (höger)."
 
-# residualanalys
 par(mfrow = c(1,2))
 plot(anova.8, which = 1)
 plot(anova.8, which = 2)
@@ -612,11 +623,34 @@ par(mfrow = c(1,1))
 ```
 
 ```{r}
+df.8_mean <- df.8 %>% 
+  summarise(blad_mean = mean(bladyta_diff),
+            blad_sd = sd(bladyta_diff),
+            .by = c(Sort,Behandling))
+```
+
+```{r}
 #| label: fig-8.2
-#| fig-cap: ""
+#| fig-cap: "Genomsnittlig bladyta uppdelat efter sort. Ingen standardavvikelse till följd av brist på observationer."
 
 # barplot of means with facet?
-ggplot(df.8)
+ggplot(df.8_mean) +
+  aes(x = Behandling,
+      y = blad_mean,
+      fill = Behandling) +
+  theme_classic() +
+  geom_col() +
+  facet_wrap(~Sort) +
+  scale_fill_brewer(palette = "Dark2",
+                    labels = c("Ingen klippning",
+                               "Klippning sidoskotten",
+                               "Klippning toppskottet")) +
+  scale_x_discrete(labels = NULL,
+                   breaks = NULL) +
+  labs(x = "Behandling",
+       y = bquote("Bladyta ["~dm^2~"]"),
+       fill = "") +
+  theme(legend.position = c(.84, .25))
 ```
 
 **Tolkning**
