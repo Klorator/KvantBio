@@ -10,6 +10,9 @@ format:
   html:
     toc: true
     echo: false
+  pdf: 
+    toc: true
+    echo: false
 editor: visual
 ---
 
@@ -20,6 +23,8 @@ library(tidyverse)
 library(readxl)
 library(kableExtra) # For styling?
 ```
+
+{{< pagebreak >}}
 
 # **1. Fältstudie – betestryck i olika miljöer**
 
@@ -650,7 +655,8 @@ ggplot(df.8_mean) +
   labs(x = "Behandling",
        y = bquote("Bladyta ["~dm^2~"]"),
        fill = "") +
-  theme(legend.position = c(.84, .25))
+  theme(legend.position = "inside",
+        legend.position.inside = c(.84, .25))
 ```
 
 **Tolkning**
@@ -667,21 +673,82 @@ Vi ser att Sorten Merton hade lägst tillväxt i bladyta jämfört med andra sor
 
 Uppgift nr. 9
 
-```{r}
+Frågeställning: Ibland gödslas skogen med kväve för att öka trädens tillväxt. Gör detta att träden blir mer känsliga för betesskador?
 
+42 st 3-åriga björkar användes i ett växthusexperiment. De delas upp i sex grupper om sju träd som fick olika kombinationer av behandlingar. Det fanns två gödslingsbehandlingar (nej, ja) och tre betesbehandlingar (ingen, låg, hög). Trädens höjdtillväxt mättes under en sommar. Ett träd dog, så en behandlingskombination har bara sex observationer.
+
+```{r}
+df.9 <- read_excel(
+  data_path,
+  sheet = "uppg9"
+)
 ```
 
 **Statistisk metod**
 
-H~0~:
+Jag väljer att göra en tvåvägs ANOVA för att undersöka skillnaden i tillväxt beroende på gödsling och/eller betning.
 
-H~1~:
+H~0~: Ingen skillnad i tillväxt beroende på gödsling och/eller betning.
+
+H~1~: Skillnad i tillväxt beroende på gödsling och/eller betning.
 
 Model i R:
 
 ```{r}
+#| echo: true
+
+anova.9 <- aov(
+  Tillväxt_cm ~ Gödsling * Betning,
+  data = df.9
+)
+
 ```
 
 **Resultat**
 
-**Tolkning:**
+Residualanalysen (@fig-9.1) indikerade lika varians och en okej normalfördelning. Analysen indikerade en skillnad i tillväxt baserat på gödsling och betning var för sig samt interaktionen. En Tukey HSD post-hoc analys visade att det fanns en skillnad baserat på gödsling, betning (Ingen/Låg jämfört med Hög betning). Interaktionen visade på ingen skillnad i tillväxt mellan Ingen-Låg betning utan gödsling, samt ingen skillnad då båda jämförda betningsgrader gödslades (se @fig-9.2).
+
+```{r}
+anova.9_tukey <- TukeyHSD(anova.9)
+```
+
+```{r}
+#| label: fig-9.1
+#| fig-cap: "Residualanalys av varians (vänster) och normalfördelning (höger)."
+
+par(mfrow = c(1,2))
+plot(anova.9, which = 1)
+plot(anova.9, which = 2)
+par(mfrow = c(1,1))
+```
+
+```{r}
+df.9_mean <- df.9 %>% 
+  summarise(growth_mean = mean(Tillväxt_cm),
+            growth_sd = sd(Tillväxt_cm),
+            .by = c(Gödsling, Betning))
+```
+
+```{r}
+#| label: fig-9.2
+#| fig-cap: "Tillväxt vid olika betningsgrad och gödsling (Ja:Nej)."
+
+ggplot(df.9_mean) +
+  aes(x = Betning,
+      y = growth_mean,
+      fill = Betning) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Dark2") +
+  geom_col(show.legend = F) +
+  scale_x_discrete(limits = c("Ingen", "Låg", "Hög")) +
+  geom_errorbar(aes(ymin = growth_mean - growth_sd,
+                    ymax = growth_mean + growth_sd),
+                width = .2) +
+  facet_wrap(~Gödsling) +
+  labs(x = "Betning",
+       y = "Tillväxt [cm]")
+```
+
+**Tolkning**
+
+Gödsling leder till högre tillväxt överlag och anullerar påverkan av betning. Utan gödsling orsakar högre betningsgrad en minskning i tillväxt.

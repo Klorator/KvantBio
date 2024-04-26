@@ -92,7 +92,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#laboratorieexperiment-beteseffekt-på-olika-sorters-körsbärsträdträd" id="toc-laboratorieexperiment-beteseffekt-på-olika-sorters-körsbärsträdträd" class="nav-link" data-scroll-target="#laboratorieexperiment-beteseffekt-på-olika-sorters-körsbärsträdträd"><strong>8. Laboratorieexperiment – beteseffekt på olika sorters körsbärsträdträd</strong></a></li>
   <li><a href="#laboratorieexperiment-kombinerad-effekt-av-bete-och-gödsling" id="toc-laboratorieexperiment-kombinerad-effekt-av-bete-och-gödsling" class="nav-link" data-scroll-target="#laboratorieexperiment-kombinerad-effekt-av-bete-och-gödsling"><strong>9. Laboratorieexperiment – kombinerad effekt av bete och gödsling</strong></a></li>
   </ul>
-</nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="EkoPop statistik inlämning.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -633,12 +633,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1><strong>9. Laboratorieexperiment – kombinerad effekt av bete och gödsling</strong></h1>
 <p><strong>Rasmus Hammar</strong></p>
 <p>Uppgift nr. 9</p>
+<p>Frågeställning: Ibland gödslas skogen med kväve för att öka trädens tillväxt. Gör detta att träden blir mer känsliga för betesskador?</p>
+<p>42 st 3-åriga björkar användes i ett växthusexperiment. De delas upp i sex grupper om sju träd som fick olika kombinationer av behandlingar. Det fanns två gödslingsbehandlingar (nej, ja) och tre betesbehandlingar (ingen, låg, hög). Trädens höjdtillväxt mättes under en sommar. Ett träd dog, så en behandlingskombination har bara sex observationer.</p>
 <p><strong>Statistisk metod</strong></p>
-<p>H<sub>0</sub>:</p>
-<p>H<sub>1</sub>:</p>
+<p>Jag väljer att göra en tvåvägs ANOVA för att undersöka skillnaden i tillväxt beroende på gödsling och/eller betning.</p>
+<p>H<sub>0</sub>: Ingen skillnad i tillväxt beroende på gödsling och/eller betning.</p>
+<p>H<sub>1</sub>: Skillnad i tillväxt beroende på gödsling och/eller betning.</p>
 <p>Model i R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.9</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  Tillväxt_cm <span class="sc">~</span> Gödsling <span class="sc">*</span> Betning,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.9</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p><strong>Resultat</strong></p>
-<p><strong>Tolkning:</strong></p>
+<p>Residualanalysen (<a href="#fig-9.1">Figur&nbsp;13</a>) indikerade lika varians och en okej normalfördelning. Analysen indikerade en skillnad i tillväxt baserat på gödsling och betning var för sig samt interaktionen. En Tukey HSD post-hoc analys visade att det fanns en skillnad baserat på gödsling, betning (Ingen/Låg jämfört med Hög betning). Interaktionen visade på ingen skillnad i tillväxt mellan Ingen-Låg betning utan gödsling, samt ingen skillnad då båda jämförda betningsgrader gödslades (se <a href="#fig-9.2">Figur&nbsp;14</a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-9.1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-9.1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;13: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-9.2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-9.2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;14: Tillväxt vid olika betningsgrad och gödsling (Ja:Nej).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Tolkning</strong></p>
+<p>Gödsling leder till högre tillväxt överlag och anullerar påverkan av betning. Utan gödsling orsakar högre betningsgrad en minskning i tillväxt.</p>
 </section>
 
 </main>
