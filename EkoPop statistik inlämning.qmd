@@ -6,13 +6,14 @@ crossref:
   fig-prefix: "Figur"
   tbl-title: "Tabell"
   tbl-prefix: "Tabell"
+execute: 
+  echo: false
 format: 
   html:
     toc: true
-    echo: false
   pdf: 
     toc: true
-    echo: false
+    fig-pos: "H"
 editor: visual
 ---
 
@@ -474,7 +475,9 @@ df.6_fancy <- read_excel(
 #| label: fig-6.2
 #| fig-cap: "Parvis förändring av koncentration av tanniner i mg/g. Referens träd utsattes för högre betning. Röda linjer indikerar parvisa mätningar."
 
-# https://stackoverflow.com/questions/67995585/plotting-paired-data-for-multiple-groups-in-ggplot
+# https://stackoverflow.com/questions/67995585/
+#  plotting-paired-data-for-multiple-groups-in-ggplot
+
 ggplot(df.6_fancy) +
   aes(x = behandling,
       y = `tanninkonc_mg/g`) +
