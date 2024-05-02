@@ -6,12 +6,13 @@ crossref:
   fig-prefix: "Figur"
   tbl-title: "Tabell"
   tbl-prefix: "Tabell"
-toc: true
 execute: 
   echo: false
 format: 
   html:
+    toc: true
   pdf: 
+    toc: true
     fig-pos: "H"
 editor: visual
 ---
@@ -219,7 +220,7 @@ anova.3 <- aov(
 
 Residualanalysen (@fig-3.1) indikerar att antaganden om lika varians och normalfördelning är uppfyllda.
 
-Analysen indikerar att förekomsten av hare leder till skillnad i medelvärde (F(1) = 24.816, p = 7.17e-5). Ett Tukey HSD post-hoc test visade att skillnaden förekom då förekomst av hare jämfördes med frånvaro av hare (@tbl-3.1).
+Analysen indikerar att förekomsten av hare leder till skillnad i medelvärde (F(1) = 24.816, p = 7.17e-5). Ett Tukey HSD post-hoc test visade att skillnaden förekom då förekomst av hare jämfördes med frånvaro av hare (@fig-3.2).
 
 ```{r}
 #| label: fig-3.1
@@ -232,19 +233,27 @@ par(mfrow = c(1,1))
 ```
 
 ```{r}
-anova.3_tukey <- TukeyHSD(anova.3)
-```
+#| label: fig-3.2
+#| fig-cap: "Biomassa av blad i gram grupperat efter förekomst av hare (kolumner) och rådjur (vänster/höger)."
+df.3_bar <- df.3 %>% 
+  summarise(blad_g_mean = mean(blad_g),
+            blad_g_sd = sd(blad_g),
+            .by = c(Hare, Rådjur))
 
-```{r}
-#| label: tbl-3.1
-#| tbl-cap: "Tukey HSD post-hoc test. "
-
-anova.3_tukey_df <- anova.3_tukey[["Hare:Rådjur"]] %>% 
-  as.data.frame() %>% 
-  rownames_to_column() %>% 
-  rename(`Hare:Rådjur` = rowname)
-
-kable(anova.3_tukey_df)
+ggplot(df.3_bar) +
+  aes(x = Hare,
+      y = blad_g_mean,
+      fill = Hare) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Dark2") +
+  geom_col(show.legend = F) +
+  geom_errorbar(aes(ymin = blad_g_mean - blad_g_sd,
+                    ymax = blad_g_mean + blad_g_sd),
+                width = .2) +
+  facet_wrap(~Rådjur) +
+  labs(x = "Förekomst av Hare",
+       y = "Biomassa blad [g]",
+       subtitle = "Förekomst av Rådjur")
 ```
 
 **Tolkning:**
@@ -524,6 +533,7 @@ H~1~: Skillnad i höjdtillväxt baserat på uppäten bladyta.
 Model i R:
 
 ```{r}
+#| echo: true
 anova.7 <- aov(
   Trädhöjd_cm ~ Klippning,
   data = df.7

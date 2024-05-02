@@ -346,7 +346,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><strong>Resultat</strong></p>
 <p>Residualanalysen (<a href="#fig-3.1">Figur&nbsp;3</a>) indikerar att antaganden om lika varians och normalfördelning är uppfyllda.</p>
-<p>Analysen indikerar att förekomsten av hare leder till skillnad i medelvärde (F(1) = 24.816, p = 7.17e-5). Ett Tukey HSD post-hoc test visade att skillnaden förekom då förekomst av hare jämfördes med frånvaro av hare (<a href="#tbl-3.1">Tabell&nbsp;4</a>).</p>
+<p>Analysen indikerar att förekomsten av hare leder till skillnad i medelvärde (F(1) = 24.816, p = 7.17e-5). Ett Tukey HSD post-hoc test visade att skillnaden förekom då förekomst av hare jämfördes med frånvaro av hare (<a href="#fig-3.2">Figur&nbsp;4</a>).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-3.1" class="quarto-figure quarto-figure-center anchored">
@@ -359,63 +359,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="tbl-3.1" class="anchored">
-<table class="table table-sm table-striped small">
-<caption>Tabell&nbsp;4: Tukey HSD post-hoc test.</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Hare:Rådjur</th>
-<th style="text-align: right;">diff</th>
-<th style="text-align: right;">lwr</th>
-<th style="text-align: right;">upr</th>
-<th style="text-align: right;">p adj</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Nej:Ja-Ja:Ja</td>
-<td style="text-align: right;">65</td>
-<td style="text-align: right;">10.17371</td>
-<td style="text-align: right;">119.82629</td>
-<td style="text-align: right;">0.0166128</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Ja:Nej-Ja:Ja</td>
-<td style="text-align: right;">-5</td>
-<td style="text-align: right;">-59.82629</td>
-<td style="text-align: right;">49.82629</td>
-<td style="text-align: right;">0.9939766</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Nej:Nej-Ja:Ja</td>
-<td style="text-align: right;">68</td>
-<td style="text-align: right;">13.17371</td>
-<td style="text-align: right;">122.82629</td>
-<td style="text-align: right;">0.0118594</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Ja:Nej-Nej:Ja</td>
-<td style="text-align: right;">-70</td>
-<td style="text-align: right;">-124.82629</td>
-<td style="text-align: right;">-15.17371</td>
-<td style="text-align: right;">0.0094520</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Nej:Nej-Nej:Ja</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">-51.82629</td>
-<td style="text-align: right;">57.82629</td>
-<td style="text-align: right;">0.9986755</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Nej:Nej-Ja:Nej</td>
-<td style="text-align: right;">73</td>
-<td style="text-align: right;">18.17371</td>
-<td style="text-align: right;">127.82629</td>
-<td style="text-align: right;">0.0067073</td>
-</tr>
-</tbody>
-</table>
+<div id="fig-3.2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-3.2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figur&nbsp;4: Biomassa av blad i gram grupperat efter förekomst av hare (kolumner) och rådjur (vänster/höger).</figcaption>
+</figure>
 </div>
 </div>
 </div>
@@ -446,7 +394,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-4.1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-4.1-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;4: Scatterplot med trendlinje av trädens ålder mot mängden insekter.</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;5: Scatterplot med trendlinje av trädens ålder mot mängden insekter.</figcaption>
 </figure>
 </div>
 </div>
@@ -473,13 +421,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Resultat</strong></p>
-<p>Residualanalysen (<a href="#fig-5.1">Figur&nbsp;5</a>) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning, men identifierar även en potentiell outlier (punkt 10). Analysen visar att det finns ett positivt samband mellan bladlängden och bladbredden (R<sup>2</sup>(18) = 0.550, p = 0.00018) enligt <span class="math inline">\(bladbredd = (0.3268 \pm 2 \cdot 0.0697) \cdot bladlängd + 7.8341\)</span> (<a href="#fig-5.2">Figur&nbsp;6</a>).</p>
+<p>Residualanalysen (<a href="#fig-5.1">Figur&nbsp;6</a>) indikerar att modellen uppfyller antaganden för lika varians och normalfördelning, men identifierar även en potentiell outlier (punkt 10). Analysen visar att det finns ett positivt samband mellan bladlängden och bladbredden (R<sup>2</sup>(18) = 0.550, p = 0.00018) enligt <span class="math inline">\(bladbredd = (0.3268 \pm 2 \cdot 0.0697) \cdot bladlängd + 7.8341\)</span> (<a href="#fig-5.2">Figur&nbsp;7</a>).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-5.1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-5.1-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;5: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;6: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
 </figure>
 </div>
 </div>
@@ -492,7 +440,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-5.2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-5.2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;6: Scatterplot med linjär regression och 95 % konfidens intervall. Träd nr 10 markerad som möjlig outlier men har låg påverkan på lutningen.</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;7: Scatterplot med linjär regression och 95 % konfidens intervall. Träd nr 10 markerad som möjlig outlier men har låg påverkan på lutningen.</figcaption>
 </figure>
 </div>
 </div>
@@ -520,13 +468,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Resultat</strong></p>
-<p>Analysen indikerade att det finns en skillnad i mängd tanniner mellan referens- och behandlade träd (t(9) = 2.506, p = 0.034) där behandlade träd hade lägre koncentration (<a href="#fig-6.1">Figur&nbsp;7</a> &amp; <a href="#fig-6.2">Figur&nbsp;8</a>).</p>
+<p>Analysen indikerade att det finns en skillnad i mängd tanniner mellan referens- och behandlade träd (t(9) = 2.506, p = 0.034) där behandlade träd hade lägre koncentration (<a href="#fig-6.1">Figur&nbsp;8</a> &amp; <a href="#fig-6.2">Figur&nbsp;9</a>).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-6.1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-6.1-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;7: Scatterplot för koncentration av tanniner för par av träd. Streckad referens linje [y = 1*x]</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;8: Scatterplot för koncentration av tanniner för par av träd. Streckad referens linje [y = 1*x]</figcaption>
 </figure>
 </div>
 </div>
@@ -536,7 +484,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-6.2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-6.2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;8: Parvis förändring av koncentration av tanniner i mg/g. Referens träd utsattes för högre betning. Röda linjer indikerar parvisa mätningar.</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;9: Parvis förändring av koncentration av tanniner i mg/g. Referens träd utsattes för högre betning. Röda linjer indikerar parvisa mätningar.</figcaption>
 </figure>
 </div>
 </div>
@@ -556,14 +504,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>H<sub>0</sub>: Ingen skillnad i höjdtillväxt baserat på uppäten bladyta.</p>
 <p>H<sub>1</sub>: Skillnad i höjdtillväxt baserat på uppäten bladyta.</p>
 <p>Model i R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.7</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  Trädhöjd_cm <span class="sc">~</span> Klippning,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.7</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p><strong>Resultat</strong></p>
-<p>Residualanalysen (<a href="#fig-7.1">Figur&nbsp;9</a>) visade på lika varians och normalfördelning. Analysen indikerade en skillnad i höjdtillväxt (F(3) = 3.947, p = 0.0113) beroende på nivå av klippning (<a href="#fig-7.2">Figur&nbsp;10</a>).</p>
+<p>Residualanalysen (<a href="#fig-7.1">Figur&nbsp;10</a>) visade på lika varians och normalfördelning. Analysen indikerade en skillnad i höjdtillväxt (F(3) = 3.947, p = 0.0113) beroende på nivå av klippning (<a href="#fig-7.2">Figur&nbsp;11</a>).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-7.1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-7.1-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;9: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;10: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
 </figure>
 </div>
 </div>
@@ -573,7 +527,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-7.2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-7.2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;10: Genomsnittlig tillväxt i trädhöjd med standardavvikelse.</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;11: Genomsnittlig tillväxt i trädhöjd med standardavvikelse.</figcaption>
 </figure>
 </div>
 </div>
@@ -594,23 +548,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>H<sub>1</sub>: Skillnad i tillväxt av bladyta baserat på sort och/eller behandling.</p>
 <p>Model i R:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df<span class="fl">.8</span> <span class="ot">&lt;-</span> df<span class="fl">.8</span> <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bladyta_diff =</span> bladyta_okt <span class="sc">-</span> bladyta_juni,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">bladyta_diff =</span> <span class="fu">sqrt</span>(bladyta_diff))</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.8</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  bladyta_diff <span class="sc">~</span> Sort <span class="sc">+</span> Behandling,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.8</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df<span class="fl">.8</span> <span class="ot">&lt;-</span> df<span class="fl">.8</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bladyta_diff =</span> bladyta_okt <span class="sc">-</span> bladyta_juni,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">bladyta_diff =</span> <span class="fu">sqrt</span>(bladyta_diff))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.8</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  bladyta_diff <span class="sc">~</span> Sort <span class="sc">+</span> Behandling,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.8</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Resultat</strong></p>
-<p>Efter en kvadratrotstransformering ser residualanalysen (<a href="#fig-8.1">Figur&nbsp;11</a>) fortfarande inte bra ut men beslutar att det är tillräckligt med tanke på det bristande antalet observationer. Analysen visar att tillväxten av bladyta skiljer sig baserat på både Sort (F(4) = 99.16, p = 7.52e-7) och Behandling (F(2) = 24.31, p = 0.00039) var för sig.</p>
+<p>Efter en kvadratrotstransformering ser residualanalysen (<a href="#fig-8.1">Figur&nbsp;12</a>) fortfarande inte bra ut men beslutar att det är tillräckligt med tanke på det bristande antalet observationer. Analysen visar att tillväxten av bladyta skiljer sig baserat på både Sort (F(4) = 99.16, p = 7.52e-7) och Behandling (F(2) = 24.31, p = 0.00039) var för sig.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-8.1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-8.1-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;11: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;12: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
 </figure>
 </div>
 </div>
@@ -620,7 +574,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-8.2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-8.2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;12: Genomsnittlig bladyta uppdelat efter sort. Ingen standardavvikelse till följd av brist på observationer.</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;13: Genomsnittlig bladyta uppdelat efter sort. Ingen standardavvikelse till följd av brist på observationer.</figcaption>
 </figure>
 </div>
 </div>
@@ -642,19 +596,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>H<sub>1</sub>: Skillnad i tillväxt beroende på gödsling och/eller betning.</p>
 <p>Model i R:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.9</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  Tillväxt_cm <span class="sc">~</span> Gödsling <span class="sc">*</span> Betning,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.9</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>anova<span class="fl">.9</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  Tillväxt_cm <span class="sc">~</span> Gödsling <span class="sc">*</span> Betning,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df<span class="fl">.9</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Resultat</strong></p>
-<p>Residualanalysen (<a href="#fig-9.1">Figur&nbsp;13</a>) indikerade lika varians och en okej normalfördelning. Analysen indikerade en skillnad i tillväxt baserat på gödsling och betning var för sig samt interaktionen. En Tukey HSD post-hoc analys visade att det fanns en skillnad baserat på gödsling, betning (Ingen/Låg jämfört med Hög betning). Interaktionen visade på ingen skillnad i tillväxt mellan Ingen-Låg betning utan gödsling, samt ingen skillnad då båda jämförda betningsgrader gödslades (se <a href="#fig-9.2">Figur&nbsp;14</a>).</p>
+<p>Residualanalysen (<a href="#fig-9.1">Figur&nbsp;14</a>) indikerade lika varians och en okej normalfördelning. Analysen indikerade en skillnad i tillväxt baserat på gödsling och betning var för sig samt interaktionen. En Tukey HSD post-hoc analys visade att det fanns en skillnad baserat på gödsling, betning (Ingen/Låg jämfört med Hög betning). Interaktionen visade på ingen skillnad i tillväxt mellan Ingen-Låg betning utan gödsling, samt ingen skillnad då båda jämförda betningsgrader gödslades (se <a href="#fig-9.2">Figur&nbsp;15</a>).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-9.1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-9.1-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;13: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;14: Residualanalys av varians (vänster) och normalfördelning (höger).</figcaption>
 </figure>
 </div>
 </div>
@@ -664,7 +618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-9.2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="EkoPop-statistik-inlämning_files/figure-html/fig-9.2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figur&nbsp;14: Tillväxt vid olika betningsgrad och gödsling (Ja:Nej).</figcaption>
+<figcaption class="figure-caption">Figur&nbsp;15: Tillväxt vid olika betningsgrad och gödsling (Ja:Nej).</figcaption>
 </figure>
 </div>
 </div>
