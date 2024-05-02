@@ -1,24 +1,20 @@
 ---
-title: ".daddy_code v2.1"
+title: ".daddy_code v2.2"
 author: "Rasmus Hammar, Hjalte Sveidqvist"
+highlight-style: atom-one
+toc: true
+number-sections: true
+number-depth: 4
 format:
   html: 
-    highlight-style: atom-one
-    toc: true
-    number-sections: true
-    number-depth: 4
     embed-resources: true
     self-contained-math: true
     code-overflow: wrap
   pdf:
-    highlight-style: atom-one
-    toc: true
-    number-sections: true
-    number-depth: 4
-include-in-header: 
-  text: |
-    \usepackage{fvextra}
-    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+    include-in-header: 
+      text: |
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 editor: visual
 execute: 
   echo: true

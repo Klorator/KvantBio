@@ -6,13 +6,12 @@ crossref:
   fig-prefix: "Figur"
   tbl-title: "Tabell"
   tbl-prefix: "Tabell"
+toc: true
 execute: 
   echo: false
 format: 
   html:
-    toc: true
   pdf: 
-    toc: true
     fig-pos: "H"
 editor: visual
 ---
