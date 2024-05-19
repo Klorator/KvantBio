@@ -14,6 +14,18 @@ df <- googlesheets4::read_sheet(
   col_types = "cciccc")
 
 
+# Coerce Tid to ordered factor (Morgon, Dag, Kväll)
+df$Tid <- factor(df$Tid,
+                 levels = c("Morgon", "Dag", "Kväll"),
+                 ordered = TRUE)
+# Coerce Punkt to ordered factor (1-10)
+df$Punkt <- factor(df$Punkt,
+                   levels = as.character(1:10),
+                   ordered = TRUE)
+# Sort by Dag, Tid, Punkt, Art
+df <- arrange(df, Dag, Tid, Punkt, Art)
+
+
 # Sum counts from points (technical replicates)
 df_antal <- df %>% 
   summarise(Antal_sum = sum(Antal),
