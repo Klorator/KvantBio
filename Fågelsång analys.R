@@ -29,7 +29,7 @@ df <- arrange(df, Dag, Tid, Punkt, Art)
 # Sum counts from points (technical replicates)
 df_antal <- df %>% 
   summarise(Antal_sum = sum(Antal),
-            .by = c(Art, Tid, Dag))
+            .by = c(Art, Tid, Dag, Punkt))
 
 
 # Calculate biodiversity index
@@ -38,21 +38,20 @@ df_antal <- df %>%
 df_index <- df_antal %>% 
   mutate(rel_ab = Antal_sum/sum(Antal_sum),
          S = length(unique(Art)),
-         .by = c(Tid, Dag))
+         .by = c(Tid, Dag, Punkt))
 
 df_Shannon <- df_index %>% 
   summarise(Shannon = -sum(rel_ab * log(rel_ab)),
-            .by = c(Tid, Dag)) %>% 
-  arrange(Dag, Tid)
+            .by = c(Tid, Dag, Punkt))
 
 df_Simpson <- df_index %>% 
   summarise(Simpson = 1/sum(rel_ab^2),
-            .by = c(Tid, Dag)) %>% 
-  arrange(Dag, Tid)
+            .by = c(Tid, Dag, Punkt))
 
 
 # Parade parvisa t-test av Shannon index mellan tid på dygnet
 test_Shannon <- df_Shannon %>% 
+  # group_by(Dag) %>%  ## This makes comparisons within days
   pairwise_t_test(Shannon ~ Tid,
                   paired = F, ### Ändra till TRUE ###
                   p.adjust.method = "holm") %>% 
@@ -61,49 +60,37 @@ test_Shannon <- df_Shannon %>%
 
 
 # Plot Shannon index t-test
-df_Shannon %>% 
-  ggplot() +
-  aes(x = Tid,
-      y = Shannon,
-      fill = Dag) +
-  theme_classic() +
-  geom_col(position = "dodge") +
-  scale_fill_brewer(palette = "Dark2") +
-  # stat_pvalue_manual(test_Shannon,
-  #                    label = "p = {p.adj}") +
-  labs(x = "",
-       y = "Shannon's index",
-       fill = "Datum")
-
-
-
-
-
-
-
-
-# plot_antal <- 
-  df_plot %>% 
-  ggplot() +
-  aes(x = Tid,
-      y = antal_mean,
-      fill = Tid) +
-  theme_classic() +
-  geom_col(#position = "dodge"
-           ) +
-    facet_wrap(~Art) +
-  scale_fill_brewer(palette = "Dark2") +
-  geom_errorbar(aes(ymax = antal_mean + antal_sd,
-                    ymin = antal_mean - antal_sd),
-                width = .2,
-                position = position_dodge(.9)) +
-  stat_pvalue_manual(test_antal,
+ggbarplot(df_Shannon,
+          x = "Tid",
+          y = "Shannon",
+          fill = "Dag",
+          position = position_dodge(.8), # position_dodge2(.8) gives bars by points
+          add = "mean_sd", # can't combine with dodge2
+          
+          palette = "Dark2",
+          xlab = FALSE,
+          ylab = "Shannon's index",
+          legend = "bottom") +
+  stat_pvalue_manual(test_Shannon,
                      label = "p = {p.adj}",
-                     tip.length = .1) +
-  theme(legend.position = "bottom",
-        legend.box = "horizontal",
-        legend.title = element_blank()) +
-  labs(x = "Tid på dygnet",
-       y = "Antal individer")
+                     tip.length = .01,
+                     step.increase = .03,
+                     bracket.nudge.y = .3
+                     ) 
+  # scale_y_continuous(expand = expansion(mult = c(.05, .1)))
 
-# plot_antal
+
+
+# Antal arter
+df_arter <- df %>% 
+  select(-Person,
+         -Antal) %>% 
+  count(Dag, Tid, Punkt,
+        name = "Arter")
+
+test_arter <- df_arter %>% 
+  pairwise_t_test(Arter ~ Tid,
+                  paired = F,
+                  p.adjust.method = "holm") %>% 
+  add_xy_position(fun = "mean_sd",
+                  x = "Tid")
