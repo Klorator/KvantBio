@@ -13,6 +13,7 @@ df <- googlesheets4::read_sheet(
   col_names = TRUE,
   col_types = "cciccc")
 
+df <- na.omit(df)
 
 # Coerce Tid to ordered factor (Morgon, Dag, Kväll)
 df$Tid <- factor(df$Tid,
@@ -29,7 +30,7 @@ df <- arrange(df, Dag, Tid, Punkt, Art)
 # Sum counts from points (technical replicates)
 df_antal <- df %>% 
   summarise(Antal_sum = sum(Antal),
-            .by = c(Art, Tid, Dag, Punkt))
+            .by = c(Art, Tid, Dag))
 
 
 # Calculate biodiversity index
@@ -38,28 +39,28 @@ df_antal <- df %>%
 df_index <- df_antal %>% 
   mutate(rel_ab = Antal_sum/sum(Antal_sum),
          S = length(unique(Art)),
-         .by = c(Tid, Dag, Punkt))
+         .by = c(Tid, Dag))
 
 df_Shannon <- df_index %>% 
   summarise(Shannon = -sum(rel_ab * log(rel_ab)),
-            .by = c(Tid, Dag, Punkt))
+            .by = c(Tid, Dag))
 
 df_Simpson <- df_index %>% 
   summarise(Simpson = 1/sum(rel_ab^2),
-            .by = c(Tid, Dag, Punkt))
+            .by = c(Tid, Dag))
 
 
 # Parade parvisa t-test av Shannon index mellan tid på dygnet
 test_Shannon <- df_Shannon %>% 
   # group_by(Dag) %>%  ## This makes comparisons within days
   pairwise_t_test(Shannon ~ Tid,
-                  paired = F, ### Ändra till TRUE ###
+                  paired = T, ### Ändra till TRUE ###
                   p.adjust.method = "holm") %>% 
   add_xy_position(fun = "mean_sd",
                   x = "Tid")
 
 
-# Plot Shannon index t-test
+# Plot Shannon index t-test (mean & sd)
 ggbarplot(df_Shannon,
           x = "Tid",
           y = "Shannon",
@@ -75,9 +76,25 @@ ggbarplot(df_Shannon,
                      label = "p = {p.adj}",
                      tip.length = .01,
                      step.increase = .03,
-                     bracket.nudge.y = .3
-                     ) 
-  # scale_y_continuous(expand = expansion(mult = c(.05, .1)))
+                     bracket.nudge.y = .3) 
+
+# Plot Shannon index t-test (individual points)
+ggbarplot(df_Shannon,
+          x = "Tid",
+          y = "Shannon",
+          fill = "Dag",
+          position = position_dodge2(.8), # position_dodge2(.8) gives bars by points
+          # add = "mean_sd", # can't combine with dodge2
+          
+          palette = "Dark2",
+          xlab = FALSE,
+          ylab = "Shannon's index",
+          legend = "bottom") +
+  stat_pvalue_manual(test_Shannon,
+                     label = "p = {p.adj}",
+                     tip.length = .01,
+                     step.increase = .04,
+                     bracket.nudge.y = .2) 
 
 
 
@@ -94,3 +111,39 @@ test_arter <- df_arter %>%
                   p.adjust.method = "holm") %>% 
   add_xy_position(fun = "mean_sd",
                   x = "Tid")
+
+# Plot antal arter (mean & sd)
+ggbarplot(df_arter,
+          x = "Tid",
+          y = "Arter",
+          fill = "Dag",
+          position = position_dodge(.8),
+          add = "mean_sd",
+          
+          palette = "Dark2",
+          xlab = FALSE,
+          ylab = "Antal arter",
+          legend = "bottom") +
+  stat_pvalue_manual(test_arter,
+                     label = "p = {p.adj}",
+                     tip.length = .01,
+                     # step.increase = .03,
+                     bracket.nudge.y = .9)
+
+# Plot antal arter (individual points)
+ggbarplot(df_arter,
+          x = "Tid",
+          y = "Arter",
+          fill = "Dag",
+          position = position_dodge2(.8),
+          # add = "mean_sd",
+          
+          palette = "Dark2",
+          xlab = FALSE,
+          ylab = "Antal arter",
+          legend = "bottom") +
+  stat_pvalue_manual(test_arter,
+                     label = "p = {p.adj}",
+                     tip.length = .01,
+                     # step.increase = .03,
+                     bracket.nudge.y = 3)
