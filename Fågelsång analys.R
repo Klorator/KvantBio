@@ -22,6 +22,13 @@ df$Tid <- factor(df$Tid,
 df$Punkt <- factor(df$Punkt,
                    levels = as.character(1:10),
                    ordered = TRUE)
+# Coerce Dag to ordered factor (Fredag, Lördag, Söndag)
+df <- df %>% 
+  mutate(Dag = case_when(Dag == "17" ~ "Fredag",
+                         Dag == "18" ~ "Lördag",
+                         Dag == "19" ~ "Söndag"))
+df$Dag <- factor(df$Dag,
+                 levels = c("Fredag","Lördag","Söndag"))
 # Sort by Dag, Tid, Punkt, Art
 df <- arrange(df, Dag, Tid, Punkt, Art)
 
@@ -37,8 +44,8 @@ df_antal <- df %>%
 # Calculate biodiversity index
   ## P = relative abundance
   ## S = number of species
-df_index <- df_antal %>% 
-  mutate(rel_ab = Antal_sum/sum(Antal_sum),
+df_index <- df %>% 
+  mutate(rel_ab = Antal/sum(Antal),
          S = length(unique(Art)),
          .by = c(Tid, Dag, Punkt))
 
@@ -50,31 +57,42 @@ df_Simpson <- df_index %>%
   summarise(Simpson = 1/sum(rel_ab^2),
             .by = c(Tid, Dag, Punkt))
 
+# ANOVA
+model_shannon <- aov(Shannon ~ Tid,
+                     data = df_Shannon)
+par(mfrow = c(2,2))
+plot(model_shannon)
+par(mfrow = c(2,2))
+summary(model_shannon)
 
 # Parade parvisa t-test av Shannon index mellan tid på dygnet
-test_Shannon <- df_Shannon %>% 
-  # group_by(Dag) %>%  ## This makes comparisons within days
+test_Shannon <- df_Shannon %>%
+  group_by(Dag) %>%  ## This makes comparisons within days
   pairwise_t_test(Shannon ~ Tid,
                   paired = F, ### Ändra till TRUE ###
                   p.adjust.method = "holm") %>% 
   add_xy_position(fun = "mean_sd",
                   x = "Tid")
-
+test_Shannon$p.format <- test_Shannon$p.adj %>%
+  format(scientific = F,
+         digits = 3,
+         drop0trailing = T)
 
 # Plot Shannon index t-test (mean & sd)
 ggbarplot(df_Shannon,
           x = "Tid",
           y = "Shannon",
-          fill = "Dag",
+          fill = "Tid",
           position = position_dodge(.8), # position_dodge2(.8) gives bars by points
           add = "mean_sd", # can't combine with dodge2
+          facet.by = "Dag",
           
           palette = "Dark2",
           xlab = FALSE,
           ylab = "Shannon's index",
-          legend = "bottom") +
+          legend = "none") +
   stat_pvalue_manual(test_Shannon,
-                     label = "p = {p.adj}",
+                     label = "p = {p.format}",
                      tip.length = .01,
                      step.increase = .03,
                      bracket.nudge.y = .3) 
@@ -193,8 +211,17 @@ df_arter <- df %>%
   count(Dag, Tid, Punkt,
         name = "Arter")
 
+# ANOVA
+model_arter <- aov(Arter ~ Tid,
+                   data = df_arter)
+par(mfrow = c(2,2))
+plot(model_arter)
+par(mfrow = c(2,2))
+summary(model_arter)
+
 ### T-test ----
 test_arter <- df_arter %>% 
+  group_by(Dag) %>% 
   pairwise_t_test(Arter ~ Tid,
                   paired = F,
                   p.adjust.method = "holm") %>% 
@@ -205,14 +232,15 @@ test_arter <- df_arter %>%
 ggbarplot(df_arter,
           x = "Tid",
           y = "Arter",
-          fill = "Dag",
+          fill = "Tid",
+          facet.by = "Dag",
           position = position_dodge(.8),
           add = "mean_sd",
           
           palette = "Dark2",
           xlab = FALSE,
           ylab = "Antal arter",
-          legend = "bottom") +
+          legend = "none") +
   stat_pvalue_manual(test_arter,
                      label = "p = {p.adj}",
                      tip.length = .01,
@@ -285,34 +313,39 @@ ggbarplot(df_arter_paired,
 
 
 # Subset of species ----
+hot_species <- c("Koltrast",
+                 "Bofink",
+                 "Rödhake")
+plots <- list()
+
+for (species in hot_species) {
 df_subset <- df %>% 
-  filter(Art %in% c("Koltrast",
-                    "Svartvit flugsnappare",
-                    "Rödhake")) %>% 
-  summarise(Antal_sum = sum(Antal),
-            .by = c(Tid, Dag, Art))
+  filter(Art == species)
 
 test_antal <- df_subset %>% 
-  group_by(Art) %>% 
-  pairwise_t_test(Antal_sum ~ Tid,
-                  paired = T,
+  group_by(Dag) %>% 
+  pairwise_t_test(Antal ~ Tid,
+                  paired = F,
                   p.adjust.method = "holm") %>% 
   add_xy_position(fun = "mean_sd",
                   x = "Tid")
 
 # Plot (facet by species)
-ggbarplot(df_subset,
-          x = "Tid",
-          y = "Antal_sum",
-          fill = "Tid",
-          facet.by = "Art",
-          position = position_dodge(.8),
-          add = "mean_sd",
-          palette = "Dark2",
-          legend = "none",
-          xlab = FALSE,
-          ylab = "Individer") +
+plots[[species]] <- df_subset %>% 
+  ggbarplot(
+    x = "Tid",
+    y = "Antal",
+    fill = "Tid",
+    facet.by = c("Dag"),
+    position = position_dodge(.8),
+    add = "mean_sd",
+    palette = "Dark2",
+    legend = "none",
+    xlab = FALSE,
+    ylab = paste0("Antal individer [",species,"]")) +
   stat_pvalue_manual(test_antal,
                      label = "p = {p.adj}",
-                     step.group.by = "Art",
-                     tip.length = .01)
+                     tip.length = .01,
+                     step.increase = .1)
+}
+plots
