@@ -5,7 +5,8 @@ library(rstatix)
 library(ggpubr)
 library(googlesheets4)
 
-# Read data from google sheets
+# Data ----
+## Read data from google sheets----
   ## gs4_auth() # For signing in to get access
 df <- googlesheets4::read_sheet(
   "https://docs.google.com/spreadsheets/d/1Paig6TZZLAFfF86WBTSRWvn7nUHvwh9G0yNVeQWN-DU/edit#gid=0",
@@ -13,7 +14,7 @@ df <- googlesheets4::read_sheet(
   col_names = TRUE,
   col_types = "cciccc")
 
-
+## Cleaning ----
 # Coerce Tid to ordered factor (Morgon, Dag, Kväll)
 df$Tid <- factor(df$Tid,
                  levels = c("Morgon", "Dag", "Kväll"),
@@ -34,14 +35,7 @@ df <- arrange(df, Dag, Tid, Punkt, Art)
 
 
 # Shannon ----
-## not paired t-test ----
-# Sum counts from points (technical replicates)
-df_antal <- df %>% 
-  summarise(Antal_sum = sum(Antal),
-            .by = c(Art, Tid, Dag, Punkt))
-
-
-# Calculate biodiversity index
+## Calculate biodiversity index ----
   ## P = relative abundance
   ## S = number of species
 df_index <- df %>% 
@@ -57,151 +51,49 @@ df_Simpson <- df_index %>%
   summarise(Simpson = 1/sum(rel_ab^2),
             .by = c(Tid, Dag, Punkt))
 
-# ANOVA
-model_shannon <- aov(Shannon ~ Tid,
-                     data = df_Shannon)
-par(mfrow = c(2,2))
-plot(model_shannon)
-par(mfrow = c(2,2))
-summary(model_shannon)
+## Repeated measures ANOVA ----
+df_Shannon <- df_Shannon %>% 
+  mutate(ID = paste0(Tid,"_",Punkt))
+aov_shannon <- anova_test(data = df_Shannon,
+                          dv = Shannon,
+                          wid = ID,
+                          within = Dag)
 
-# Parade parvisa t-test av Shannon index mellan tid på dygnet
-test_Shannon <- df_Shannon %>%
-  group_by(Dag) %>%  ## This makes comparisons within days
+x <- get_anova_table(aov_shannon)
+aov_results_shannon <- paste0("ANOVA, F(",x$DFn,", ",x$DFd,") = ",x$`F`,", p = ",x$p,", ges = ",x$ges)
+
+## Post-hoc ----
+test_Shannon <- df_Shannon %>% 
+  group_by(Dag) %>%
   pairwise_t_test(Shannon ~ Tid,
-                  paired = F, ### Ändra till TRUE ###
+                  paired = F,
                   p.adjust.method = "holm") %>% 
-  add_xy_position(fun = "mean_sd",
-                  x = "Tid")
+  add_xy_position(x = "Tid")
 test_Shannon$p.format <- test_Shannon$p.adj %>%
-  format(scientific = F,
-         digits = 3,
-         drop0trailing = T)
+  p_format(leading.zero = F)
 
-# Plot Shannon index t-test (mean & sd)
+
+## Plot ----
 ggbarplot(df_Shannon,
           x = "Tid",
           y = "Shannon",
           fill = "Tid",
-          position = position_dodge(.8), # position_dodge2(.8) gives bars by points
-          add = "mean_sd", # can't combine with dodge2
+          position = position_dodge(.8),
+          add = "mean_sd",
           facet.by = "Dag",
           
           palette = "Dark2",
           xlab = FALSE,
           ylab = "Shannon's index",
+          subtitle = aov_results_shannon,
           legend = "none") +
   stat_pvalue_manual(test_Shannon,
                      label = "p = {p.format}",
-                     tip.length = .01,
-                     step.increase = .03,
-                     bracket.nudge.y = .3) 
-
-# Plot Shannon index t-test (individual points)
-ggbarplot(df_Shannon,
-          x = "Tid",
-          y = "Shannon",
-          fill = "Dag",
-          position = position_dodge2(.8), # position_dodge2(.8) gives bars by points
-          # add = "mean_sd", # can't combine with dodge2
-          
-          palette = "Dark2",
-          xlab = FALSE,
-          ylab = "Shannon's index",
-          legend = "bottom") +
-  stat_pvalue_manual(test_Shannon,
-                     label = "p = {p.adj}",
-                     tip.length = .01,
-                     step.increase = .04,
-                     bracket.nudge.y = .2)
+                     tip.length = .01) 
 
 
-## Paired t-test ----
-# Sum counts from points (technical replicates)
-df_antal_paired <- df %>% 
-  summarise(Antal_sum = sum(Antal),
-            .by = c(Art, Tid, Dag))
 
 
-# Calculate biodiversity index
-## P = relative abundance
-## S = number of species
-df_index_paired <- df_antal_paired %>% 
-  mutate(rel_ab = Antal_sum/sum(Antal_sum),
-         S = length(unique(Art)),
-         .by = c(Tid, Dag))
-
-df_Shannon_paired <- df_index_paired %>% 
-  summarise(Shannon = -sum(rel_ab * log(rel_ab)),
-            .by = c(Tid, Dag))
-
-df_Simpson_paired <- df_index_paired %>% 
-  summarise(Simpson = 1/sum(rel_ab^2),
-            .by = c(Tid, Dag))
-
-
-### ANOVA & residualanalys ----
-# Outliers
-df_Shannon_paired %>% 
-  group_by(Tid) %>%
-  identify_outliers(Shannon)
-# Normality
-df_Shannon_paired %>% 
-  group_by(Tid) %>% 
-  shapiro_test(Shannon)
-
-df_Shannon_paired %>% 
-  ggqqplot("Shannon",
-           facet.by = "Tid")
-# ANOVA & residuals
-aov_shannon <- anova_test(data = df_Shannon_paired,
-                          dv = Shannon,
-                          wid = Tid,
-                          within = Dag)
-get_anova_table(aov_shannon)
-
-### Parade parvisa t-test
-  #   av Shannon index mellan tid på dygnet ----
-test_Shannon_paired <- df_Shannon_paired %>% 
-  # group_by(Dag) %>%  ## This makes comparisons within days
-  pairwise_t_test(Shannon ~ Tid,
-                  paired = T, ### Ändra till TRUE ###
-                  p.adjust.method = "holm") %>% 
-  add_xy_position(fun = "mean_sd",
-                  x = "Tid")
-
-
-# Plot Shannon index t-test (mean)
-ggbarplot(df_Shannon_paired,
-          x = "Tid",
-          y = "Shannon",
-          fill = "Dag",
-          position = position_dodge2(.8),
-
-          palette = "Dark2",
-          xlab = FALSE,
-          ylab = "Shannon's index",
-          legend = "bottom") +
-  stat_pvalue_manual(test_Shannon,
-                     label = "p = {p.adj}",
-                     tip.length = .01,
-                     step.increase = .04,
-                     bracket.nudge.y = .5)
-
-### Averaged across days plot ----
-ggbarplot(df_Shannon_paired,
-          x = "Tid",
-          y = "Shannon",
-          fill = "Tid",
-          palette = "Dark2",
-          add = "mean_sd",
-          xlab = FALSE,
-          ylab = "Shannon's index",
-          legend = "none") +
-  stat_pvalue_manual(test_Shannon_paired,
-                     label = "p = {p.adj}",
-                     tip.length = .01,
-                     step.increase = .03)
 
 
 # Antal arter ----
@@ -210,25 +102,29 @@ df_arter <- df %>%
          -Antal) %>% 
   count(Dag, Tid, Punkt,
         name = "Arter")
+df_arter <- df_arter %>% 
+  mutate(ID = paste0(Tid,"_",Punkt))
 
-# ANOVA
-model_arter <- aov(Arter ~ Tid,
-                   data = df_arter)
-par(mfrow = c(2,2))
-plot(model_arter)
-par(mfrow = c(2,2))
-summary(model_arter)
+## Repeated measures ANOVA ----
+aov_arter <- anova_test(data = df_arter,
+                        dv = Arter,
+                        wid = ID,
+                        within = Dag)
 
-### T-test ----
+y <- get_anova_table(aov_arter)
+aov_results_arter <- paste0("ANOVA, F(",y$DFn,", ",y$DFd,") = ",y$`F`,", p = ",y$p,", ges = ",y$ges)
+
+## Post-hoc ----
 test_arter <- df_arter %>% 
   group_by(Dag) %>% 
   pairwise_t_test(Arter ~ Tid,
                   paired = F,
                   p.adjust.method = "holm") %>% 
-  add_xy_position(fun = "mean_sd",
-                  x = "Tid")
+  add_xy_position(x = "Tid")
+test_arter$p.format <- test_arter$p.adj %>%
+  p_format(leading.zero = F)
 
-# Plot antal arter (mean & sd)
+## Plot ----
 ggbarplot(df_arter,
           x = "Tid",
           y = "Arter",
@@ -240,76 +136,18 @@ ggbarplot(df_arter,
           palette = "Dark2",
           xlab = FALSE,
           ylab = "Antal arter",
+          subtitle = aov_results_arter,
           legend = "none") +
   stat_pvalue_manual(test_arter,
-                     label = "p = {p.adj}",
+                     label = "p = {p.format}",
                      tip.length = .01,
                      bracket.nudge.y = .9)
 
-# Plot antal arter (individual points)
-ggbarplot(df_arter,
-          x = "Tid",
-          y = "Arter",
-          fill = "Dag",
-          position = position_dodge2(.8),
-          
-          palette = "Dark2",
-          xlab = FALSE,
-          ylab = "Antal arter",
-          legend = "bottom") +
-  stat_pvalue_manual(test_arter,
-                     label = "p = {p.adj}",
-                     tip.length = .01,
-                     bracket.nudge.y = 3)
 
 
-## Paired t-test ----
-df_arter_paired <- df %>% 
-  select(-Person,
-         -Antal) %>% 
-  summarise(Arter = length(unique(Art)),
-            .by = c(Dag, Tid))
 
-### ANOVA & residualanalys ----
-# Outliers
-df_arter_paired %>% 
-  group_by(Tid) %>%
-  identify_outliers(Arter)
-# Normality
-df_arter_paired %>% 
-  group_by(Tid) %>% 
-  shapiro_test(Arter)
 
-df_arter_paired %>% 
-  ggqqplot("Arter",
-           facet.by = "Tid")
-# ANOVA & residuals
-aov_arter <- anova_test(data = df_arter_paired,
-                          dv = Arter,
-                          wid = Tid,
-                          within = Dag)
-get_anova_table(aov_arter)
 
-### Paired t-test ----
-test_arter_paired <- df_arter_paired %>% 
-  pairwise_t_test(Arter ~ Tid,
-                  paired = T,
-                  p.adjust.method = "holm") %>% 
-  add_xy_position(fun = "mean_sd",
-                  x = "Tid")
-
-ggbarplot(df_arter_paired,
-          x = "Tid",
-          y = "Arter",
-          fill = "Tid",
-          palette = "Dark2",
-          legend = "none",
-          add = "mean_sd",
-          xlab = FALSE,
-          ylab = "Antal arter") +
-  stat_pvalue_manual(test_arter_paired,
-                     label = "p = {p.adj}",
-                     tip.length = .01)
 
 
 # Subset of species ----
@@ -319,33 +157,48 @@ hot_species <- c("Koltrast",
 plots <- list()
 
 for (species in hot_species) {
-df_subset <- df %>% 
-  filter(Art == species)
-
-test_antal <- df_subset %>% 
-  group_by(Dag) %>% 
-  pairwise_t_test(Antal ~ Tid,
-                  paired = F,
-                  p.adjust.method = "holm") %>% 
-  add_xy_position(fun = "mean_sd",
-                  x = "Tid")
-
-# Plot (facet by species)
-plots[[species]] <- df_subset %>% 
-  ggbarplot(
-    x = "Tid",
-    y = "Antal",
-    fill = "Tid",
-    facet.by = c("Dag"),
-    position = position_dodge(.8),
-    add = "mean_sd",
-    palette = "Dark2",
-    legend = "none",
-    xlab = FALSE,
-    ylab = paste0("Antal individer [",species,"]")) +
-  stat_pvalue_manual(test_antal,
-                     label = "p = {p.adj}",
-                     tip.length = .01,
-                     step.increase = .1)
+  ## Subset dataframe ----
+  df_subset <- df %>% 
+    filter(Art == species)
+  df_subset <- df_subset %>% 
+    mutate(ID = paste0(Tid,"_",Punkt))
+  
+  ## Repeated measures ANOVA ----
+  aov_species <- anova_test(data = df_subset,
+                            dv = Antal,
+                            wid = ID,
+                            within = Dag)
+  
+  z <- get_anova_table(aov_species)
+  aov_results_species <- paste0("ANOVA, F(",z$DFn,", ",z$DFd,") = ",z$`F`,", p = ",z$p,", ges = ",z$ges)
+  
+  
+  ## Post-hoc ----
+  test_antal <- df_subset %>% 
+    group_by(Dag) %>% 
+    pairwise_t_test(Antal ~ Tid,
+                    paired = F,
+                    p.adjust.method = "holm") %>% 
+    add_xy_position(x = "Tid")
+  test_antal$p.format <- test_antal$p.adj %>%
+    p_format(leading.zero = F)
+  
+  ## Plot ----
+  plots[[species]] <- df_subset %>% 
+    ggbarplot(
+      x = "Tid",
+      y = "Antal",
+      fill = "Tid",
+      facet.by = c("Dag"),
+      position = position_dodge(.8),
+      add = "mean_sd",
+      palette = "Dark2",
+      legend = "none",
+      xlab = FALSE,
+      ylab = paste0("Antal individer [",species,"]"),
+      subtitle = aov_results_species) +
+    stat_pvalue_manual(test_antal,
+                       label = "p = {p.format}",
+                       tip.length = .01)
 }
 plots
