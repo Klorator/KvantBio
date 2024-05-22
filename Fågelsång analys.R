@@ -52,15 +52,42 @@ df_Simpson <- df_index %>%
             .by = c(Tid, Dag, Punkt))
 
 ## Repeated measures ANOVA ----
-df_Shannon <- df_Shannon %>% 
-  mutate(ID = paste0(Tid,"_",Punkt))
-aov_shannon <- anova_test(data = df_Shannon,
-                          dv = Shannon,
-                          wid = ID,
-                          within = Dag)
+shannon_tukey <- list()
+for (day in unique(df_Shannon$Dag)) {
+  df_shannon_day <- df_Shannon %>% 
+    filter(Dag == day)
+  aov_shannon <- aov(Shannon ~ Tid,
+                     data = df_shannon_day)
+  print(summary(aov_shannon))
+  print(TukeyHSD(aov_shannon))
+  shannon_tukey[[day]] <- TukeyHSD(aov_shannon)
+  print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+}
 
-x <- get_anova_table(aov_shannon)
-aov_results_shannon <- paste0("ANOVA, F(",x$DFn,", ",x$DFd,") = ",x$`F`,", p = ",x$p,", ges = ",x$ges)
+
+
+
+
+####################
+
+# Repeated measures ANOVA formula
+## response ~ within factor + Error(between factor)
+## within factor = the comparisons of interest
+## between factor = what to control for (a "paired" factor)
+
+rep_test <- aov(Shannon ~ Tid + Error(Dag),
+                data = df_Shannon)
+summary(rep_test)
+
+
+###################
+
+
+
+
+
+
+
 
 ## Post-hoc ----
 test_Shannon <- df_Shannon %>% 
@@ -69,6 +96,11 @@ test_Shannon <- df_Shannon %>%
                   paired = F,
                   p.adjust.method = "holm") %>% 
   add_xy_position(x = "Tid")
+
+test_Shannon$p.adj[test_Shannon$Dag == "Fredag"] <- shannon_tukey[["Fredag"]][["Tid"]][,4]
+test_Shannon$p.adj[test_Shannon$Dag == "Lördag"] <- shannon_tukey[["Lördag"]][["Tid"]][,4]
+test_Shannon$p.adj[test_Shannon$Dag == "Söndag"] <- shannon_tukey[["Söndag"]][["Tid"]][,4]
+
 test_Shannon$p.format <- test_Shannon$p.adj %>%
   p_format(leading.zero = F)
 
@@ -85,7 +117,7 @@ ggbarplot(df_Shannon,
           palette = "Dark2",
           xlab = FALSE,
           ylab = "Shannon's index",
-          subtitle = aov_results_shannon,
+          # subtitle = aov_results_shannon,
           legend = "none") +
   stat_pvalue_manual(test_Shannon,
                      label = "p = {p.format}",
@@ -102,17 +134,30 @@ df_arter <- df %>%
          -Antal) %>% 
   count(Dag, Tid, Punkt,
         name = "Arter")
-df_arter <- df_arter %>% 
-  mutate(ID = paste0(Tid,"_",Punkt))
+# df_arter <- df_arter %>% 
+#   mutate(ID = paste0(Tid,"_",Punkt))
 
 ## Repeated measures ANOVA ----
-aov_arter <- anova_test(data = df_arter,
-                        dv = Arter,
-                        wid = ID,
-                        within = Dag)
+arter_tukey <- list()
+for (day in unique(df_arter$Dag)) {
+  df_arter_day <- df_arter %>% 
+    filter(Dag == day)
+  aov_arter <- aov(Arter ~ Tid,
+                     data = df_arter_day)
+  print(summary(aov_arter))
+  print(TukeyHSD(aov_arter))
+  arter_tukey[[day]] <- TukeyHSD(aov_arter)
+  print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+}
 
-y <- get_anova_table(aov_arter)
-aov_results_arter <- paste0("ANOVA, F(",y$DFn,", ",y$DFd,") = ",y$`F`,", p = ",y$p,", ges = ",y$ges)
+# 
+# aov_arter <- anova_test(data = df_arter,
+#                         dv = Arter,
+#                         wid = ID,
+#                         within = Dag)
+# 
+# y <- get_anova_table(aov_arter)
+# aov_results_arter <- paste0("ANOVA, F(",y$DFn,", ",y$DFd,") = ",y$`F`,", p = ",y$p,", ges = ",y$ges)
 
 ## Post-hoc ----
 test_arter <- df_arter %>% 
@@ -121,6 +166,11 @@ test_arter <- df_arter %>%
                   paired = F,
                   p.adjust.method = "holm") %>% 
   add_xy_position(x = "Tid")
+
+test_arter$p.adj[test_arter$Dag == "Fredag"] <- arter_tukey[["Fredag"]][["Tid"]][,4]
+test_arter$p.adj[test_arter$Dag == "Lördag"] <- arter_tukey[["Lördag"]][["Tid"]][,4]
+test_arter$p.adj[test_arter$Dag == "Söndag"] <- arter_tukey[["Söndag"]][["Tid"]][,4]
+
 test_arter$p.format <- test_arter$p.adj %>%
   p_format(leading.zero = F)
 
@@ -136,7 +186,7 @@ ggbarplot(df_arter,
           palette = "Dark2",
           xlab = FALSE,
           ylab = "Antal arter",
-          subtitle = aov_results_arter,
+          # subtitle = aov_results_arter,
           legend = "none") +
   stat_pvalue_manual(test_arter,
                      label = "p = {p.format}",
@@ -160,17 +210,29 @@ for (species in hot_species) {
   ## Subset dataframe ----
   df_subset <- df %>% 
     filter(Art == species)
-  df_subset <- df_subset %>% 
-    mutate(ID = paste0(Tid,"_",Punkt))
+  # df_subset <- df_subset %>% 
+  #   mutate(ID = paste0(Tid,"_",Punkt))
   
   ## Repeated measures ANOVA ----
-  aov_species <- anova_test(data = df_subset,
-                            dv = Antal,
-                            wid = ID,
-                            within = Dag)
-  
-  z <- get_anova_table(aov_species)
-  aov_results_species <- paste0("ANOVA, F(",z$DFn,", ",z$DFd,") = ",z$`F`,", p = ",z$p,", ges = ",z$ges)
+  subset_tukey <- list()
+  for (day in unique(df_subset$Dag)) {
+    df_subset_day <- df_arter %>% 
+      filter(Dag == day)
+    aov_subset <- aov(Arter ~ Tid,
+                     data = df_subset_day)
+    print(paste("++++++++++++++++++++++++++++++++++++++++",species,"-",day,"++++++++++++++"))
+    print(summary(aov_subset))
+    print(TukeyHSD(aov_subset))
+    subset_tukey[[day]] <- TukeyHSD(aov_subset)
+    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+  }
+  # aov_species <- anova_test(data = df_subset,
+  #                           dv = Antal,
+  #                           wid = ID,
+  #                           within = Dag)
+  # 
+  # z <- get_anova_table(aov_species)
+  # aov_results_species <- paste0("ANOVA, F(",z$DFn,", ",z$DFd,") = ",z$`F`,", p = ",z$p,", ges = ",z$ges)
   
   
   ## Post-hoc ----
@@ -180,6 +242,11 @@ for (species in hot_species) {
                     paired = F,
                     p.adjust.method = "holm") %>% 
     add_xy_position(x = "Tid")
+  
+  test_antal$p.adj[test_antal$Dag == "Fredag"] <- subset_tukey[["Fredag"]][["Tid"]][,4]
+  test_antal$p.adj[test_antal$Dag == "Lördag"] <- subset_tukey[["Lördag"]][["Tid"]][,4]
+  test_antal$p.adj[test_antal$Dag == "Söndag"] <- subset_tukey[["Söndag"]][["Tid"]][,4]
+  
   test_antal$p.format <- test_antal$p.adj %>%
     p_format(leading.zero = F)
   
@@ -195,8 +262,7 @@ for (species in hot_species) {
       palette = "Dark2",
       legend = "none",
       xlab = FALSE,
-      ylab = paste0("Antal individer [",species,"]"),
-      subtitle = aov_results_species) +
+      ylab = paste0("Antal individer [",species,"]")) +
     stat_pvalue_manual(test_antal,
                        label = "p = {p.format}",
                        tip.length = .01)
