@@ -13,6 +13,7 @@ df_Vattenkemi <- read_excel(
 ## Kvalitetsflagga, Parameter, Enhet, Värde/Koncentration
 df_Vattenkemi2 <- df_Vattenkemi %>% 
   dplyr::select(Provplats,
+                Provdatum,
                 Provtagningsår,
                 Provtagningsmånad,
                 Kvalitetsflagga,
@@ -20,7 +21,8 @@ df_Vattenkemi2 <- df_Vattenkemi %>%
                 Enhet,
                 `Värde/Koncentration`,
                 `Kvantifieringsgräns/rapporteringsgräns`,
-                Mätosäkerhet)
+                Mätosäkerhet) %>% 
+  mutate(Tid = paste0(Provtagningsår,"-",Provtagningsmånad))
 
 df_PlanktonPlant <- read_excel(
   path = "./EkoPop Ljungsjöarna data/slu_mvm_240527_163717437_data.xlsx",
@@ -44,3 +46,11 @@ df_Index <- read_excel(
 
 # Plot ----
 
+## Vattenkemi ----
+df_Vattenkemi2 %>% 
+  ggplot() +
+  aes(x = Tid,
+      y = `Värde/Koncentration`) +
+  theme_classic() +
+  geom_line() +
+  facet_wrap(~Parameter)
